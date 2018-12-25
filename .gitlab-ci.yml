@@ -1,0 +1,143 @@
+# Test kitchen with docker .gitlab-ci.yml
+#
+stages:
+  - lint  
+  - converge
+  - test
+  - destroy
+  - deploy
+  - cleanup
+
+.kitchen_docker_definition: &kitchen_docker_definition
+  before_script:
+    - echo 'We are using docker.'
+    - export KITCHEN_YAML=.kitchen.yml
+    - export KITCHEN_LOCAL_YAML=.kitchen.dokken.yml
+
+.kitchen_tags_definition: &kitchen_tags_definition
+  tags:
+      - chef
+      - kitchen
+
+.kitchen_suite_definition_default-centos-7: &kitchen_suite_definition_default-centos-7
+  variables:
+    KITCHEN_NAME: "default-centos-7"
+
+.kitchen_suite_definition_default-fedora-28: &kitchen_suite_definition_default-fedora-28
+  variables:
+    KITCHEN_NAME: "default-fedora-28"
+
+.kitchen_converge_definition_default: &kitchen_converge_definition_default
+  <<: *kitchen_tags_definition
+  stage: converge
+  script:
+    - kitchen create $KITCHEN_NAME
+    - kitchen exec $KITCHEN_NAME -c 'yum install rsync -y'
+    - kitchen converge $KITCHEN_NAME
+    - cp -Rfvp /tmp/gitlab-runner-artifacts/$CI_JOB_NAME-$CI_COMMIT_SHA/etc/* etc/
+  artifacts:
+    name: "$CI_JOB_NAME-$CI_COMMIT_SHA"
+    when: always
+    expire_in: 3 days
+    paths:
+      - etc/*
+      - .kitchen/
+
+.kitchen_converge_definition_disabled: &kitchen_converge_definition_disabled
+  <<: *kitchen_tags_definition
+  stage: converge
+  script:
+    - kitchen create $KITCHEN_NAME
+    - kitchen exec $KITCHEN_NAME -c 'yum install rsync -y'
+    - kitchen converge $KITCHEN_NAME
+  artifacts:
+    name: "$CI_JOB_NAME-$CI_COMMIT_SHA"
+    when: always
+    expire_in: 3 days
+    paths:
+      - etc/*
+      - .kitchen/
+
+.kitchen_test_definition: &kitchen_test_definition
+  <<: *kitchen_tags_definition
+  stage: test
+  script:
+    - kitchen verify $KITCHEN_NAME
+
+.kitchen_destroy_definition: &kitchen_destroy_definition
+  <<: *kitchen_tags_definition
+  stage: destroy
+  script:
+    - kitchen destroy $KITCHEN_NAME
+
+
+foodcritic:
+  stage: lint
+  script:
+    - foodcritic .
+  tags:
+    - chef
+
+cookstyle:
+  stage: lint
+  script:
+    - cookstyle .
+  tags:
+    - chef
+
+kitchen_converge_default-centos-7:
+  <<: *kitchen_docker_definition
+  <<: *kitchen_converge_definition_default
+  <<: *kitchen_suite_definition_default-centos-7
+    
+kitchen_test_default-centos-7:
+  <<: *kitchen_docker_definition
+  <<: *kitchen_test_definition
+  <<: *kitchen_suite_definition_default-centos-7
+
+kitchen_destroy_default-centos-7:
+  <<: *kitchen_docker_definition
+  <<: *kitchen_destroy_definition
+  <<: *kitchen_suite_definition_default-centos-7
+
+kitchen_converge_default-fedora-28:
+  <<: *kitchen_docker_definition
+  <<: *kitchen_converge_definition_default
+  <<: *kitchen_suite_definition_default-fedora-28
+    
+kitchen_test_default-fedora-28:
+  <<: *kitchen_docker_definition
+  <<: *kitchen_test_definition
+  <<: *kitchen_suite_definition_default-fedora-28
+
+kitchen_destroy_default-fedora-28:
+  <<: *kitchen_docker_definition
+  <<: *kitchen_destroy_definition
+  <<: *kitchen_suite_definition_default-fedora-28
+
+# Only run berks upload on push to the 'production' branch
+berks_upload:
+  stage: deploy
+  script:
+    - berks install
+    - berks update
+    - berks verify
+    - berks upload --no-freeze --force --except integration
+  environment:
+    name: production
+  only:
+    - production
+  tags:
+    - chef
+    - chef-berks-upload
+
+cleanup_job:
+  <<: *kitchen_docker_definition
+  stage: cleanup
+  script:
+    - kitchen destroy
+    - sudo rm -Rf /tmp/gitlab-runner-artifacts/*
+  when: always
+  tags:
+      - chef
+      - kitchen

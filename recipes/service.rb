@@ -1,6 +1,6 @@
 #
 # Cookbook:: syslog-ng
-# Recipe:: default
+# Recipe:: service
 #
 # Copyright:: 2018, Ben Hughes
 #
@@ -15,11 +15,3 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
-include_recipe '::install'
-include_recipe '::configure'
-
-execute 'config-test' do
-  command '/usr/sbin/syslog-ng -s'
-  action :nothing
-end

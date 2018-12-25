@@ -1,6 +1,6 @@
 #
 # Cookbook:: syslog-ng
-# Recipe:: default
+# Recipe:: configure
 #
 # Copyright:: 2018, Ben Hughes
 #
@@ -16,10 +16,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-include_recipe '::install'
-include_recipe '::configure'
-
-execute 'config-test' do
-  command '/usr/sbin/syslog-ng -s'
-  action :nothing
+template '/etc/syslog-ng/syslog-ng.conf' do
+  source 'syslog-ng/syslog-ng.conf.erb'
+  owner 'root'
+  group 'root'
+  mode '0755'
+  action :create
+  notifies :run, 'execute[config-test]', :delayed
 end
