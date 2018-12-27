@@ -1,5 +1,5 @@
 #
-# Cookbook:: syslog-ng
+# Cookbook:: syslog_ng
 # Recipe:: install
 #
 # Copyright:: 2018, Ben Hughes
@@ -18,17 +18,17 @@
 
 service 'rsyslog' do
   action [ :stop, :disable ]
-  only_if { node['syslog-ng']['install']['remove_rsyslog'] }
+  only_if { node['syslog_ng']['install']['remove_rsyslog'] }
 end
 
 package 'rsyslog' do
   action :remove
-  only_if { node['syslog-ng']['install']['remove_rsyslog'] }
+  only_if { node['syslog_ng']['install']['remove_rsyslog'] }
 end
 
 include_recipe 'yum-epel' if %w(rhel centos).include?(node['platform'])
 
-case node['syslog-ng']['install']['method']
+case node['syslog_ng']['install']['method']
 when 'repo_distro'
   include_recipe '::install_repo_distro'
 when 'repo_copr'
@@ -37,7 +37,7 @@ else
   raise ArgumentError
 end
 
-# service 'syslog-ng' do
+# service 'syslog_ng' do
 #   action [ :enable, :start ]
 #   supports status: true, restart: true, reload: true
 # end

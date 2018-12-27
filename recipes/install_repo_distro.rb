@@ -1,5 +1,5 @@
 #
-# Cookbook:: syslog-ng
+# Cookbook:: syslog_ng
 # Recipe:: install_repo_distro
 #
 # Copyright:: 2018, Ben Hughes
@@ -16,7 +16,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-package 'Syslog-NG' do
-  package_name node['syslog-ng']['install']['distro_repo_packages']
+package 'syslog_ng' do
+  package_name node['syslog_ng']['install']['distro_repo_packages']
   action :upgrade
 end

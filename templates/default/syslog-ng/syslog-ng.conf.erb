@@ -1,4 +1,4 @@
-@version:"<%= node['syslog-ng']['install']['copr_repo_version'] -%>"
+@version:"<%= node['syslog_ng']['install']['copr_repo_version'] -%>"
 @include "scl.conf"
 
 #
@@ -6,27 +6,27 @@
 # Do NOT modify this file by hand, any changes will be overwritten.
 #
 
-# syslog-ng configuration file.
+# syslog_ng configuration file.
 #
 # This should behave pretty much like the original syslog on RedHat. But
 # it could be configured a lot smarter.
 #
-# See syslog-ng(8) and syslog-ng.conf(5) for more information.
+# See syslog_ng(8) and syslog_ng.conf(5) for more information.
 #
 # Note: it also sources additional configuration files (*.conf)
-#       located in /etc/syslog-ng/conf.d/
+#       located in /etc/syslog_ng/conf.d/
 
-<% unless node['syslog-ng']['options'].nil? || node['syslog-ng']['options'].empty? -%>
+<% unless node['syslog_ng']['options'].nil? || node['syslog_ng']['options'].empty? -%>
 options {
-    <% node['syslog-ng']['options'].each do |key, value| -%>
+    <% node['syslog_ng']['options'].each do |key, value| -%>
     <%= key %> (<%= value %>);
     <% end -%>
 };
 <% end -%>
 
 # Sources
-<% unless node['syslog-ng']['source'].nil? || node['syslog-ng']['source'].empty? -%>
-<% node['syslog-ng']['source'].each do |key, hash| -%>
+<% unless node['syslog_ng']['source'].nil? || node['syslog_ng']['source'].empty? -%>
+<% node['syslog_ng']['source'].each do |key, hash| -%>
 source <%= key -%> {
 <% hash.each do |driver, options| -%>
     <%= driver %> (<%= options.each { |option| option } -%>)
@@ -77,6 +77,6 @@ log { source(s_sys); filter(f_cron); destination(d_cron); };
 
 
 # Source additional configuration files (.conf extension only)
-@include "/etc/syslog-ng/conf.d/*.conf"
+@include "/etc/syslog_ng/conf.d/*.conf"
 
-# vim:ft=syslog-ng:ai:si:ts=4:sw=4:et:
+# vim:ft=syslog_ng:ai:si:ts=4:sw=4:et:

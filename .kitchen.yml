@@ -18,7 +18,7 @@ platforms:
 suites:
   - name: default
     run_list:           
-      - recipe[syslog-ng]
+      - recipe[syslog_ng]
     verifier:
       inspec_tests:
         - test/integration/default

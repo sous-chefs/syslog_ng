@@ -1,6 +1,6 @@
-# syslog-ng CHANGELOG
+# syslog_ng CHANGELOG
 
-This file is used to list changes made in each version of the syslog-ng cookbook.
+This file is used to list changes made in each version of the syslog_ng cookbook.
 
 # 0.1.0
 

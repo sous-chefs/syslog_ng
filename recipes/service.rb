@@ -1,5 +1,5 @@
 #
-# Cookbook:: syslog-ng
+# Cookbook:: syslog_ng
 # Recipe:: service
 #
 # Copyright:: 2018, Ben Hughes

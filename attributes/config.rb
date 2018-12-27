@@ -1,11 +1,11 @@
 #
-# Cookbook:: syslog-ng
+# Cookbook:: syslog_ng
 # Attribute:: config
 #
 # Copyright:: 2018, Ben Hughes
 #
 
-default['syslog-ng']['options'] = {
+default['syslog_ng']['options'] = {
   'flush_lines': 0,
   'time_reopen': 10,
   'log_fifo_size': 1000,
@@ -16,15 +16,15 @@ default['syslog-ng']['options'] = {
   'keep_hostname': 'yes',
 }
 
-default['syslog-ng']['console_logging'] = false
+default['syslog_ng']['console_logging'] = false
 
-default['syslog-ng']['combined'] = {}
-default['syslog-ng']['destination'] = {}
-default['syslog-ng']['filter'] = {}
-default['syslog-ng']['log'] = {}
+default['syslog_ng']['combined'] = {}
+default['syslog_ng']['destination'] = {}
+default['syslog_ng']['filter'] = {}
+default['syslog_ng']['log'] = {}
 
-# default['syslog-ng']['source'] = {}
-default['syslog-ng']['source']['s_sys'] = {
+# default['syslog_ng']['source'] = {}
+default['syslog_ng']['source']['s_sys'] = {
   'system': {},
   'internal': {},
   'udp': {

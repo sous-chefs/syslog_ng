@@ -1,6 +1,6 @@
 # # encoding: utf-8
 
-# Inspec test for recipe syslog-ng::install
+# Inspec test for recipe syslog_ng::install
 
 # The Inspec reference, with examples and extensive documentation, can be
 # found at http://inspec.io/docs/reference/resources/

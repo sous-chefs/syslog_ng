@@ -1,5 +1,5 @@
 #
-# Cookbook:: syslog-ng
+# Cookbook:: syslog_ng
 # Recipe:: configure
 #
 # Copyright:: 2018, Ben Hughes
@@ -16,8 +16,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-template '/etc/syslog-ng/syslog-ng.conf' do
-  source 'syslog-ng/syslog-ng.conf.erb'
+template '/etc/syslog_ng/syslog_ng.conf' do
+  source 'syslog_ng/syslog_ng.conf.erb'
   owner 'root'
   group 'root'
   mode '0755'

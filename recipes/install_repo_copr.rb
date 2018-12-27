@@ -1,5 +1,5 @@
 #
-# Cookbook:: syslog-ng
+# Cookbook:: syslog_ng
 # Recipe:: install_repo_copr
 #
 # Copyright:: 2018, Ben Hughes
@@ -16,7 +16,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-repo_name = "syslog-ng#{node['syslog-ng']['install_copr_version'].delete('.')}"
+repo_name = "syslog_ng#{node['syslog_ng']['install_copr_version'].delete('.')}"
 
 yum_repository repo_name do
   description "Copr repo for #{repo_name} owned by czanik"
@@ -33,7 +33,7 @@ yum_repository repo_name do
   action :create
 end
 
-package 'Syslog-NG' do
-  package_name node['syslog-ng']['install_copr_repo_packages']
+package 'syslog_ng' do
+  package_name node['syslog_ng']['install_copr_repo_packages']
   action :upgrade
 end
