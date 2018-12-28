@@ -12,16 +12,31 @@ provisioner:
   deprecations_as_errors: true
 
 platforms:
+- name: centos-6
+  driver:
+    image: dokken/centos-6
+    volumes:
+      - /tmp/gitlab-runner-artifacts:/var/gitlab-runner-artifacts   
 - name: centos-7
   driver:
     image: dokken/centos-7
     pid_one_command: /usr/lib/systemd/systemd
     volumes:
       - /tmp/gitlab-runner-artifacts:/var/gitlab-runner-artifacts   
-- name: fedora-28
+- name: fedora-29
   driver:
-    image: dokken/fedora-28
+    image: dokken/fedora-29
     pid_one_command: /usr/lib/systemd/systemd
+    volumes:
+      - /tmp/gitlab-runner-artifacts:/var/gitlab-runner-artifacts
+- name: ubuntu-18.04
+  driver:
+    image: dokken/ubuntu-18.04
+    volumes:
+      - /tmp/gitlab-runner-artifacts:/var/gitlab-runner-artifacts
+- name: debian-9
+  driver:
+    image: dokken/debian-9
     volumes:
       - /tmp/gitlab-runner-artifacts:/var/gitlab-runner-artifacts
 ...

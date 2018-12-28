@@ -19,13 +19,25 @@ stages:
       - chef
       - kitchen
 
+.kitchen_suite_definition_default-centos-6: &kitchen_suite_definition_default-centos-6
+  variables:
+    KITCHEN_NAME: "default-centos-6"
+
 .kitchen_suite_definition_default-centos-7: &kitchen_suite_definition_default-centos-7
   variables:
     KITCHEN_NAME: "default-centos-7"
 
-.kitchen_suite_definition_default-fedora-28: &kitchen_suite_definition_default-fedora-28
+.kitchen_suite_definition_default-fedora-29: &kitchen_suite_definition_default-fedora-29
   variables:
-    KITCHEN_NAME: "default-fedora-28"
+    KITCHEN_NAME: "default-fedora-29"
+
+.kitchen_suite_definition_default-ubuntu-18.04: &kitchen_suite_definition_default-ubuntu-18.04
+  variables:
+    KITCHEN_NAME: "default-ubuntu-18.04"
+
+.kitchen_suite_definition_default-debian-9: &kitchen_suite_definition_default-debian-9
+  variables:
+    KITCHEN_NAME: "default-debian-9"
 
 .kitchen_converge_definition_default: &kitchen_converge_definition_default
   <<: *kitchen_tags_definition
@@ -85,6 +97,21 @@ cookstyle:
   tags:
     - chef
 
+kitchen_converge_default-centos-6:
+  <<: *kitchen_docker_definition
+  <<: *kitchen_converge_definition_default
+  <<: *kitchen_suite_definition_default-centos-6
+    
+kitchen_test_default-centos-6:
+  <<: *kitchen_docker_definition
+  <<: *kitchen_test_definition
+  <<: *kitchen_suite_definition_default-centos-6
+
+kitchen_destroy_default-centos-6:
+  <<: *kitchen_docker_definition
+  <<: *kitchen_destroy_definition
+  <<: *kitchen_suite_definition_default-centos-6
+
 kitchen_converge_default-centos-7:
   <<: *kitchen_docker_definition
   <<: *kitchen_converge_definition_default
@@ -100,20 +127,50 @@ kitchen_destroy_default-centos-7:
   <<: *kitchen_destroy_definition
   <<: *kitchen_suite_definition_default-centos-7
 
-kitchen_converge_default-fedora-28:
+kitchen_converge_default-fedora-29:
   <<: *kitchen_docker_definition
   <<: *kitchen_converge_definition_default
-  <<: *kitchen_suite_definition_default-fedora-28
+  <<: *kitchen_suite_definition_default-fedora-29
     
-kitchen_test_default-fedora-28:
+kitchen_test_default-fedora-29:
   <<: *kitchen_docker_definition
   <<: *kitchen_test_definition
-  <<: *kitchen_suite_definition_default-fedora-28
+  <<: *kitchen_suite_definition_default-fedora-29
 
-kitchen_destroy_default-fedora-28:
+kitchen_destroy_default-fedora-29:
   <<: *kitchen_docker_definition
   <<: *kitchen_destroy_definition
-  <<: *kitchen_suite_definition_default-fedora-28
+  <<: *kitchen_suite_definition_default-fedora-29
+
+kitchen_converge_default-ubuntu-18.04:
+  <<: *kitchen_docker_definition
+  <<: *kitchen_converge_definition_default
+  <<: *kitchen_suite_definition_default-ubuntu-18.04
+    
+kitchen_test_default-ubuntu-18.04:
+  <<: *kitchen_docker_definition
+  <<: *kitchen_test_definition
+  <<: *kitchen_suite_definition_default-ubuntu-18.04
+
+kitchen_destroy_default-ubuntu-18.04:
+  <<: *kitchen_docker_definition
+  <<: *kitchen_destroy_definition
+  <<: *kitchen_suite_definition_default-ubuntu-18.04
+
+kitchen_converge_default-debian-9:
+  <<: *kitchen_docker_definition
+  <<: *kitchen_converge_definition_default
+  <<: *kitchen_suite_definition_default-debian-9
+    
+kitchen_test_default-debian-9:
+  <<: *kitchen_docker_definition
+  <<: *kitchen_test_definition
+  <<: *kitchen_suite_definition_default-debian-9
+
+kitchen_destroy_default-debian-9:
+  <<: *kitchen_docker_definition
+  <<: *kitchen_destroy_definition
+  <<: *kitchen_suite_definition_default-debian-9
 
 # Only run berks upload on push to the 'production' branch
 berks_upload:

@@ -33,7 +33,13 @@ yum_repository repo_name do
   action :create
 end
 
+packages = node['syslog_ng']['install']['rhel']['repo_packages_base']
+
+if node['syslog_ng']['install']['all_modules']
+  packages = (node['syslog_ng']['install']['rhel']['repo_packages_base'] + node['syslog_ng']['install']['rhel']['copr_repo_packages_modules'])
+end
+
 package 'syslog_ng' do
-  package_name node['syslog_ng']['install_copr_repo_packages']
+  package_name packages
   action :upgrade
 end

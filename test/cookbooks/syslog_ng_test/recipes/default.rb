@@ -1,6 +1,6 @@
 #
-# Cookbook:: syslog_ng
-# Recipe:: configure
+# Cookbook:: test
+# Recipe:: default
 #
 # Copyright:: 2018, Ben Hughes
 #
@@ -16,8 +16,5 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-global_config_path = node['syslog_ng']['config']['path']
-
-syslog_ng_config_global global_config_path do
-  action :create
-end
+include_recipe '::package_distro'
+include_recipe '::config_global'

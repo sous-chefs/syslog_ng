@@ -18,8 +18,3 @@
 
 include_recipe '::install'
 include_recipe '::configure'
-
-execute 'config-test' do
-  command '/usr/sbin/syslog-ng -s'
-  action :nothing
-end

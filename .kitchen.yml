@@ -12,13 +12,17 @@ verifier:
   name: inspec
 
 platforms:
+  - name: centos-6
   - name: centos-7
-  - name: fedora-28
+  - name: fedora-29
+  - name: ubuntu-18.10
+  - name: ubuntu-18.04
+  - name: debian-9.6
 
 suites:
   - name: default
     run_list:           
-      - recipe[syslog_ng]
+      - recipe[syslog_ng_test]
     verifier:
       inspec_tests:
         - test/integration/default
