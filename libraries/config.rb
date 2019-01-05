@@ -1,6 +1,6 @@
 #
 # Cookbook:: syslog_ng
-# Library:: config_helpers
+# Library:: config
 #
 # Copyright:: 2018, Ben Hughes, All Rights Reserved.
 #

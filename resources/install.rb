@@ -17,49 +17,42 @@
 # limitations under the License.
 
 property :package_source, String, equal_to: %w(package_distro package_copr)
-property :package_all_modules, [true, false], default: true
 property :remove_rsyslog, [true, false], default: true
 
 action :install do
+  extend SyslogNg::InstallHelpers
   packages = []
 
   # RHEL/CentOS need EPEL installed
   if %w(rhel centos).include?(node['platform'])
-    log 'Running on RHEL/CentOS, we need epel'
+    log 'Running on RHEL/CentOS, we need epel.'
     include_recipe 'yum-epel'
   end
 
   case new_resource.package_source
   when 'package_distro'
     log 'Installing syslog-ng from distribution package repositories'
-
-    platform_family = node['platform_family']
-    case platform_family
-    when 'rhel', 'fedora'
-      log 'RHEL/Fedora platform'
-      platform_family = 'rhel' # Override for Fedora
-      packages << node['syslog_ng']['install']['rhel']['package_distro_base']
-    when 'debian'
-      log 'Debian platform'
-      packages << node['syslog_ng']['install']['debian']['package_distro_base']
-    else
-      log 'Platform family not matched' do
-        level :error
-      end
-      raise ArgumentError
-    end
-
-    if new_resource.package_all_modules
-      packages << node['syslog_ng']['install'][platform_family]['package_distro_modules']
-    end
   when 'package_copr'
     log "Installing syslog-ng #{node['syslog_ng']['install']['rhel']['copr_repo_version']} from COPR package repositories"
-    unless %w(fedora centos).include?(node['platform'])
+
+    case node['platform_family']
+    when 'fedora'
+      unless node['platform_family'].to_i >= 28
+        Chef::Log.error('COPR package installation is not supported on Fedora version < 28!')
+        raise 'COPR package installation is not supported on Fedora version < 28!'
+      end
+    when 'rhel'
+      unless node['platform_family'].to_i >= 7
+        Chef::Log.error('COPR package installation is not supported on RHEL/CentOS version < 7!')
+        raise 'COPR package installation is not supported on RHEL/CentOS version < 7!'
+      end
+    else
       log 'COPR installation method selected but platform is not CentOS/Fedora!' do
         level :error
       end
-      break
+      raise 'COPR installation method selected but platform is not CentOS/Fedora!'
     end
+
     repo_name = "syslog-ng#{node['syslog_ng']['install']['rhel']['copr_repo_version'].delete('.')}"
     repo_platform_name = (node['platform'] == 'fedora') ? 'fedora' : 'epel'
 
@@ -71,22 +64,27 @@ action :install do
       gpgkey "https://copr-be.cloud.fedoraproject.org/results/czanik/#{repo_name}/pubkey.gpg"
       repo_gpgcheck false
       enabled true
+      make_cache true
       options(
         'enabled_metadata' => '1',
         'type' => 'rpm-md'
       )
       action :create
     end
+  end
 
-    packages << node['syslog_ng']['install']['rhel']['package_distro_base']
-
-    if new_resource.package_all_modules
-      packages << node['syslog_ng']['install']['rhel']['package_copr_modules']
+  ruby_block 'repo_get_packages' do
+    extend SyslogNg::InstallHelpers
+    block do
+      packages = repo_get_packages(node['platform_family'])
+      log "Found #{packages.count} packages to install."
+      Chef::Log.debug("Packages to install are: #{packages.join(', ')}.")
     end
+    action :run
   end
 
   package 'syslog_ng' do
-    package_name packages
+    package_name lazy { packages }
     notifies :reload, 'ohai[Reload ohai]', :immediately
     action :upgrade
   end

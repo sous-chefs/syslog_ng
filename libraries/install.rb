@@ -1,0 +1,48 @@
+#
+# Cookbook:: syslog_ng
+# Library:: install
+#
+# Copyright:: 2018, Ben Hughes, All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+module SyslogNg
+  module InstallHelpers
+    def repo_get_packages(platform)
+      raise ArgumentException, "Expected platform to be a String, got a #{platform.class}." unless platform.is_a?(String)
+
+      require 'mixlib/shellout'
+
+      case platform
+      when 'rhel'
+        command = "yum -q search syslog-ng | grep -i 'syslog-ng' | awk '{print $1}' | grep -Po '(syslog-ng)((-[a-z]+)?)+' | uniq"
+        Chef::Log.debug("RHEL selected, command will be '#{command}'")
+      when 'fedora'
+        command = "dnf -q search syslog-ng | grep -i 'syslog-ng' | awk '{print $1}' | grep -Po '(syslog-ng)((-[a-z]+)?)+' | uniq"
+        Chef::Log.debug("Fedora selected, command will be '#{command}'")
+      when 'debian'
+        command = "apt-cache search syslog-ng | grep -i 'syslog-ng' | awk '{print $1}' | grep -Po '(syslog-ng)((-[a-z]+)?)+' | uniq"
+        Chef::Log.debug("Debian selected, command will be '#{command}'")
+      else
+        raise 'repo_get_packages: Unknown platform.'
+      end
+
+      package_search = Mixlib::ShellOut.new(command)
+      package_search.run_command
+      package_search.error!
+      packages = package_search.stdout.split(/\n+/)
+
+      packages
+    end
+  end
+end

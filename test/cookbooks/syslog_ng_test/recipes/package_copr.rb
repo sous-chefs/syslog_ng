@@ -1,6 +1,6 @@
 #
 # Cookbook:: test
-# Recipe:: package_distro
+# Recipe:: package_copr
 #
 # Copyright:: 2018, Ben Hughes
 #
@@ -17,6 +17,6 @@
 # limitations under the License.
 
 syslog_ng_install '' do
-  package_source 'package_distro'
+  package_source 'package_copr'
   action :install
 end
