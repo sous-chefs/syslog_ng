@@ -10,6 +10,11 @@ default['syslog_ng']['config']['config_file'] = 'syslog-ng.conf'
 default['syslog_ng']['config']['config_template_cookbook'] = 'syslog_ng'
 default['syslog_ng']['config']['config_template_template'] = 'syslog-ng/syslog-ng.conf.erb'
 
+default['syslog_ng']['config']['config_dirs']['destinations'] = '/etc/syslog-ng/destinations.d'
+default['syslog_ng']['config']['config_dirs']['filters'] = '/etc/syslog-ng/filters.d'
+default['syslog_ng']['config']['config_dirs']['logs'] = '/etc/syslog-ng/logs.d'
+default['syslog_ng']['config']['config_dirs']['sources'] = '/etc/syslog-ng/sources.d'
+
 # Global Options
 default['syslog_ng']['config']['options'] = {
   'flush_lines': 0,

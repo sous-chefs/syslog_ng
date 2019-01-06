@@ -29,6 +29,8 @@ property :console_logging, [true, false]
 property :perform_config_test, [true, false], default: true
 
 action :create do
+  extend SyslogNg::InstallHelpers
+  
   template new_resource.name do
     cookbook new_resource.cookbook.nil? ? node['syslog_ng']['config']['config_template_cookbook'] : new_resource.cookbook
     source new_resource.source.nil? ? node['syslog_ng']['config']['config_template_template'] : new_resource.source
@@ -38,7 +40,7 @@ action :create do
     variables(
       lazy do
         {
-          version: node['packages']['syslog-ng']['version'].to_f,
+          version: installed_version_get,
           options: new_resource.options.nil? ? node['syslog_ng']['config']['options'] : new_resource.options,
           source: new_resource.source.nil? ? node['syslog_ng']['config']['source'] : new_resource.source,
           destination: new_resource.destination.nil? ? node['syslog_ng']['config']['destination'] : new_resource.destination,
@@ -56,39 +58,14 @@ action :create do
     action :create
   end
 
-  directory '/etc/syslog-ng/source.d' do
-    owner 'root'
-    group 'root'
-    mode '0755'
-    action :create
-  end
-
-  directory '/etc/syslog-ng/destination.d' do
-    owner 'root'
-    group 'root'
-    mode '0755'
-    action :create
-  end
-
-  directory '/etc/syslog-ng/filter.d' do
-    owner 'root'
-    group 'root'
-    mode '0755'
-    action :create
-  end
-
-  directory '/etc/syslog-ng/log.d' do
-    owner 'root'
-    group 'root'
-    mode '0755'
-    action :create
-  end
-
-  directory '/etc/syslog-ng/combined.d' do
-    owner 'root'
-    group 'root'
-    mode '0755'
-    action :create
+  node['syslog_ng']['config']['config_dirs'].each do |name, directory|
+    directory name do
+      owner 'root'
+      group 'root'
+      mode '0755'
+      path directory
+      action :create
+    end
   end
 
   execute 'syslog-ng-global-config-test' do

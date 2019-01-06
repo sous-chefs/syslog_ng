@@ -18,6 +18,16 @@
 
 module SyslogNg
   module InstallHelpers
+    def installed_version_get
+      require 'mixlib/shellout'
+
+      syslog_ng_version_cmd = Mixlib::ShellOut.new("syslog-ng --version | grep 'Installer-Version' | grep -Po '([0-9]\.?)+'")
+      syslog_ng_version_cmd.run_command
+      syslog_ng_version_cmd.error!
+
+      syslog_ng_version_cmd.stdout.to_f
+    end
+
     def repo_get_packages(platform)
       raise ArgumentException, "Expected platform to be a String, got a #{platform.class}." unless platform.is_a?(String)
 
