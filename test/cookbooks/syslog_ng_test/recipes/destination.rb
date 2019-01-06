@@ -19,6 +19,7 @@
 syslog_ng_destination 'd_test_basic' do
   driver 'file'
   path '/var/log/test.log'
+  action :create
 end
 
 syslog_ng_destination 'd_test_params' do
@@ -28,4 +29,5 @@ syslog_ng_destination 'd_test_params' do
     'flush_lines' => 10,
     'create-dirs' => 'yes'
   )
+  action :create
 end

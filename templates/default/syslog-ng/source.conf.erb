@@ -3,12 +3,12 @@
 # Do NOT modify this file by hand, any changes will be overwritten.
 #
 
-# Destination
-<% unless (@destination.nil? || @destination.empty?) -%>
-<% @destination.each do |name, config| -%>
-destination <%= name -%> {
+# Source
+<% unless (@source.nil? || @source.empty?) -%>
+<% @source.each do |name, config| -%>
+source <%= name -%> {
     <% config.each do |driver, parameters| -%>
-    <%= config_destination_driver_map(driver, parameters) %>
+    <%= config_source_driver_map(driver, parameters) %>
     <% end -%>
 };
 <% end -%>

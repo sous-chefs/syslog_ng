@@ -91,8 +91,11 @@ module SyslogNg
       raise ArgumentError, "config_format_string: Expected a configuration String to format, got a #{string.class}." unless string.is_a?(String)
 
       param_string = string.dup
-      param_string.prepend('"')
-      param_string.concat('"')
+
+      unless %w(yes YES no NO).include?(param_string)
+        param_string.prepend('"')
+        param_string.concat('"')
+      end
       Chef::Log.debug("config_format_string: Formatted parameter string to: #{param_string}.")
 
       param_string
