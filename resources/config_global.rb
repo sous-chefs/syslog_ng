@@ -2,7 +2,7 @@
 # Cookbook:: syslog_ng
 # Resource:: config_global
 #
-# Copyright:: 2018, Ben Hughes
+# Copyright:: 2018, Ben Hughes <bmhughes@bmhughes.co.uk>
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -30,7 +30,7 @@ property :perform_config_test, [true, false], default: true
 
 action :create do
   extend SyslogNg::InstallHelpers
-  
+
   template new_resource.name do
     cookbook new_resource.cookbook.nil? ? node['syslog_ng']['config']['config_template_cookbook'] : new_resource.cookbook
     source new_resource.source.nil? ? node['syslog_ng']['config']['config_template_template'] : new_resource.source

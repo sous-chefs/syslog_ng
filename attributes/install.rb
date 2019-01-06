@@ -2,7 +2,7 @@
 # Cookbook:: syslog_ng
 # Attribute:: install
 #
-# Copyright:: 2018, Ben Hughes
+# Copyright:: 2018, Ben Hughes <bmhughes@bmhughes.co.uk>
 #
 
 default['syslog_ng']['install']['remove_rsyslog'] = true

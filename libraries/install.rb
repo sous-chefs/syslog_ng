@@ -2,7 +2,7 @@
 # Cookbook:: syslog_ng
 # Library:: install
 #
-# Copyright:: 2018, Ben Hughes, All Rights Reserved.
+# Copyright:: 2018, Ben Hughes <bmhughes@bmhughes.co.uk>, All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
