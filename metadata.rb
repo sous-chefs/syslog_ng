@@ -21,8 +21,10 @@ source_url 'https://github.com/bmhughes/syslog_ng'
 
 os_support = {
   'redhat' => '>= 7.0.0',
-  'centos' => '>= 7.0.0',
+  'centos' => '>= 6.0.0',
   'fedora' => '>= 28.0',
+  'debian' => '>= 9.0.0',
+  'ubuntu' => '>= 14.04',
 }
 
 os_support.each do |os, ver|

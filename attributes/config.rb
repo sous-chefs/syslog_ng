@@ -10,10 +10,12 @@ default['syslog_ng']['config']['config_file'] = 'syslog-ng.conf'
 default['syslog_ng']['config']['config_template_cookbook'] = 'syslog_ng'
 default['syslog_ng']['config']['config_template_template'] = 'syslog-ng/syslog-ng.conf.erb'
 
-default['syslog_ng']['config']['config_dirs']['destinations'] = '/etc/syslog-ng/destinations.d'
-default['syslog_ng']['config']['config_dirs']['filters'] = '/etc/syslog-ng/filters.d'
-default['syslog_ng']['config']['config_dirs']['logs'] = '/etc/syslog-ng/logs.d'
-default['syslog_ng']['config']['config_dirs']['sources'] = '/etc/syslog-ng/sources.d'
+default['syslog_ng']['config']['config_dirs'] = [
+  '/etc/syslog-ng/destinations.d',
+  '/etc/syslog-ng/filters.d',
+  '/etc/syslog-ng/logs.d',
+  '/etc/syslog-ng/sources.d',
+]
 
 # Global Options
 default['syslog_ng']['config']['options'] = {
@@ -34,10 +36,9 @@ default['syslog_ng']['config']['source'] = {
   's_sys': {
     'system': {},
     'internal': {},
-    'network': {
+    'udp': {
       'ip': '0.0.0.0',
       'port': 514,
-      'transport': 'udp',
     },
   },
 }

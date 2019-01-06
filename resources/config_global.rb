@@ -31,6 +31,18 @@ property :perform_config_test, [true, false], default: true
 action :create do
   extend SyslogNg::InstallHelpers
 
+  include_dirs = if new_resource.include.nil?
+                   node['syslog_ng']['config']['include'].dup
+                 else
+                   new_resource.include.dup
+                 end
+
+  unless node['syslog_ng']['config']['config_dirs'].nil?
+    node['syslog_ng']['config']['config_dirs'].each do |directory|
+      include_dirs.push(directory + '/*.conf')
+    end
+  end
+
   template new_resource.name do
     cookbook new_resource.cookbook.nil? ? node['syslog_ng']['config']['config_template_cookbook'] : new_resource.cookbook
     source new_resource.source.nil? ? node['syslog_ng']['config']['config_template_template'] : new_resource.source
@@ -47,7 +59,7 @@ action :create do
           filter: new_resource.filter.nil? ? node['syslog_ng']['config']['filter'] : new_resource.filter,
           log: new_resource.log.nil? ? node['syslog_ng']['config']['log'] : new_resource.log,
           preinclude: new_resource.preinclude.nil? ? node['syslog_ng']['config']['preinclude'] : new_resource.include,
-          include: new_resource.include.nil? ? node['syslog_ng']['config']['include'] : new_resource.include,
+          include: include_dirs,
           console_logging: new_resource.console_logging.nil? ? node['syslog_ng']['config']['console_logging'] : new_resource.console_logging,
         }
       end
