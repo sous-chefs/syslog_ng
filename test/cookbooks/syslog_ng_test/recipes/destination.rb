@@ -1,6 +1,6 @@
 #
 # Cookbook:: test
-# Recipe:: default
+# Recipe:: destination
 #
 # Copyright:: 2018, Ben Hughes <bmhughes@bmhughes.co.uk>
 #
@@ -16,7 +16,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-include_recipe '::package_distro'
-include_recipe '::config_global'
+syslog_ng_destination 'd_test_basic' do
+  driver 'file'
+  path '/var/log/test.log'
+end
 
-include_recipe '::destination'
+syslog_ng_destination 'd_test_params' do
+  driver 'file'
+  path '/var/log/test/test_params.log'
+  parameters(
+    'flush_lines' => 10,
+    'create-dirs' => 'yes'
+  )
+end

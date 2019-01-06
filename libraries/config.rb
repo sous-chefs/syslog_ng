@@ -99,7 +99,7 @@ module SyslogNg
     end
 
     def config_format_parameter(parameter, value)
-      raise ArgumentError, "config_format_string: Type error, got #{parameter.class} and #{value.class}." unless parameter.is_a?(String) && (value.is_a?(String) || value.is_a?(Integer))
+      raise ArgumentError, "config_format_parameter: Type error, got #{parameter.class} and #{value.class}." unless parameter.is_a?(String) && (value.is_a?(String) || value.is_a?(Integer))
 
       parameter_value = value.is_a?(String) ? config_format_string(value) : value.to_s
       parameter_string = ''

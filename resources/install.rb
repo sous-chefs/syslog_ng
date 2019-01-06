@@ -29,6 +29,18 @@ action :install do
     include_recipe 'yum-epel'
   end
 
+  if new_resource.remove_rsyslog
+    log 'Remove rsyslog selected, removing'
+    package 'rsyslog' do
+      action :remove
+    end
+  else
+    log 'Remove rsyslog is not selected, service will be disabled'
+    service 'rsyslog' do
+      action [:stop, :disable]
+    end
+  end
+
   case new_resource.package_source
   when 'package_distro'
     log 'Installing syslog-ng from distribution package repositories'
@@ -77,7 +89,7 @@ action :install do
     extend SyslogNg::InstallHelpers
     block do
       packages = repo_get_packages(node['platform_family'])
-      log "Found #{packages.count} packages to install."
+      log "Found #{packages.count} packages to install"
       Chef::Log.debug("Packages to install are: #{packages.join(', ')}.")
     end
     action :run

@@ -16,14 +16,40 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-property :destination, Hash
+property :source, String
+property :cookbook, String
+property :driver, String
+property :path, String
+property :parameters, Hash, default: {}
+property :config_dir, String, default: '/etc/syslog-ng/destinations.d'
 
 action :create do
-  template '' do
-    source 'source_file'
+  destination = {
+    new_resource.name => {
+      new_resource.driver => {
+        'path' => new_resource.path,
+        'parameters' => new_resource.parameters,
+      },
+    },
+  }
+
+  template "#{new_resource.config_dir}/#{new_resource.name}.conf" do
+    source new_resource.source ? new_resource.source : 'syslog-ng/destination.conf.erb'
+    cookbook new_resource.cookbook ? new_resource.cookbook : node['syslog_ng']['config']['config_template_cookbook']
     owner 'root'
-    group '3'
+    group 'root'
     mode '0755'
+    sensitive new_resource.sensitive
+    variables(
+      destination: destination
+    )
+    helpers(SyslogNg::ConfigHelpers)
     action :create
+  end
+end
+
+action :delete do
+  template "#{new_resource.config_dir}/#{new_resource.name}/.conf" do
+    action :delete
   end
 end

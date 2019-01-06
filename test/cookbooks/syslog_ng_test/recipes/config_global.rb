@@ -18,5 +18,4 @@
 
 syslog_ng_config_global '/etc/syslog-ng/syslog-ng.conf' do
   action :create
-  # perform_config_test false
 end
