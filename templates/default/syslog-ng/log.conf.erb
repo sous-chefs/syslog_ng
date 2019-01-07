@@ -4,14 +4,14 @@
 #
 
 # Log
-<% unless (@log.nil? || @log.empty?) -%>
-<% @log.each do |name, config| -%>
 log {
-    <% config.each do |element, values| -%>
-    <% values.each do |value| -%>
-    <%= element %>(<%= value %>);
+    <% @source.each do |source| -%>
+    source(<%= source %>);
     <% end -%>
+    <% @filter.each do |filter| -%>
+    filter(<%= filter %>);
+    <% end -%>
+    <% @destination.each do |destination| -%>
+    destination(<%= destination %>);
     <% end -%>
 };
-<% end -%>
-<% end -%>

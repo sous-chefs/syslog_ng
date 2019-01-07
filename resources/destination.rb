@@ -17,12 +17,12 @@
 # limitations under the License.
 
 property :perform_config_test, [true, false], default: true
+property :config_dir, String, default: '/etc/syslog-ng/destinations.d'
 property :source, String
 property :cookbook, String
 property :driver, String
 property :path, String
 property :parameters, Hash, default: {}
-property :config_dir, String, default: '/etc/syslog-ng/destinations.d'
 
 action :create do
   destination = {
