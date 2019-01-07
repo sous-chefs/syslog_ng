@@ -57,6 +57,18 @@ describe 'SyslogNg::ConfigHelpers' do
         expect(dummy_class.new.config_destination_driver_map('file', param)).to eql('file("/var/log/maillog" flush_lines(10));')
       end
     end
+
+    context('given string') do
+      param = {
+        'path' => '/var/log/maillog',
+        'parameters' => 'flush_lines(10)',
+      }
+
+      it 'returns valid config string' do
+        expect(dummy_class.new.config_destination_driver_map('file', param)).to be_a(String)
+        expect(dummy_class.new.config_destination_driver_map('file', param)).to eql('file("/var/log/maillog" flush_lines(10));')
+      end
+    end
   end
 
   describe '.config_filter_map' do
@@ -88,6 +100,98 @@ describe 'SyslogNg::ConfigHelpers' do
       it 'returns valid config string' do
         expect(dummy_class.new.config_filter_map(param)).to be_a(String)
         expect(dummy_class.new.config_filter_map(param)).to eql('level(info..emerg) and not (facility(mail) or facility(authpriv) or facility(cron))')
+      end
+    end
+
+    context('given inplicit _and_ filter') do
+      param = {
+        'container' => {
+          'facility' => [
+            'mail',
+            'authpriv',
+            'cron',
+          ],
+        },
+      }
+
+      it 'returns valid config string with _and_ present' do
+        expect(dummy_class.new.config_filter_map(param)).to be_a(String)
+        expect(dummy_class.new.config_filter_map(param)).to eql('(facility(mail) and facility(authpriv) and facility(cron))')
+      end
+    end
+
+    context('given contained string') do
+      param = {
+        'container' => {
+          'facility' => 'mail',
+        },
+      }
+
+      it 'returns valid config string with _and_ present' do
+        expect(dummy_class.new.config_filter_map(param)).to be_a(String)
+        expect(dummy_class.new.config_filter_map(param)).to eql('(facility(mail))')
+      end
+    end
+
+    context('given multiple contained strings') do
+      param = {
+        'container_outside' => {
+          'operator' => 'and',
+          'container_1' => {
+            'facility' => 'mail',
+          },
+          'container_2' => {
+            'facility' => 'cron',
+          },
+        },
+      }
+
+      it 'returns valid config string with _and_ present' do
+        expect(dummy_class.new.config_filter_map(param)).to be_a(String)
+        expect(dummy_class.new.config_filter_map(param)).to eql('(facility(mail)) and (facility(cron))')
+      end
+    end
+
+    context('given hash array key') do
+      param = {
+        'facility' => %w(mail authpriv cron),
+      }
+
+      it 'returns valid config string' do
+        expect(dummy_class.new.config_filter_map(param)).to be_a(String)
+        expect(dummy_class.new.config_filter_map(param)).to eql('facility(mail) facility(authpriv) facility(cron)')
+      end
+    end
+
+    context('given array') do
+      param = [
+        'facility(mail)',
+        'facility(authpriv)',
+        'facility(cron)',
+      ]
+
+      it 'returns valid config string' do
+        expect(dummy_class.new.config_filter_map(param)).to be_a(String)
+        expect(dummy_class.new.config_filter_map(param)).to eql('facility(mail) facility(authpriv) facility(cron)')
+      end
+    end
+
+    context('given string') do
+      param = 'level(emerg)'
+
+      it 'returns valid config string' do
+        expect(dummy_class.new.config_filter_map(param)).to be_a(String)
+        expect(dummy_class.new.config_filter_map(param)).to eql('level(emerg)')
+      end
+    end
+
+    context('invalid filter') do
+      param = {
+        'invalidfilter': 'bollocks',
+      }
+
+      it 'raises ArgumentError' do
+        expect {dummy_class.new.config_filter_map(param)}.to raise_exception(ArgumentError)
       end
     end
   end

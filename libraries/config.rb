@@ -49,13 +49,13 @@ module SyslogNg
     end
 
     def config_filter_map(parameters)
-      raise ArgumentError, "config_filter_map: Expected syslog-ng filter definition to be passed as a Hash, got a #{parameters.class}." unless parameters.is_a?(Hash) || parameters.is_a?(Array)
+      raise ArgumentError, "config_filter_map: Expected syslog-ng filter definition to be passed as a Hash, Array or String. Got a #{parameters.class}." unless (parameters.is_a?(Hash) || parameters.is_a?(Array) || parameters.is_a?(String))
 
       config_string = ''
       if parameters.is_a?(Hash)
         parameters.each do |filter, parameter|
-          if SYSLOG_NG_BOOLEAN_OPERATORS.include?(filter) && parameter.is_a?(Hash)
-            if filter.eql?('container')
+          if (SYSLOG_NG_BOOLEAN_OPERATORS.include?(filter) || filter.match?('container')) && parameter.is_a?(Hash)
+            if filter.match?('container')
               config_string.concat(config_contained_group_string(parameter))
             else
               config_string.concat(filter.tr('_', ' ') + ' ' + config_filter_map(parameter) + ' ')
@@ -76,11 +76,12 @@ module SyslogNg
         config_string.rstrip!
       elsif parameters.is_a?(Array)
         parameters.each do |parameter|
-          config_string.concat(parameter)
+          config_string.concat(parameter + ' ')
         end
       elsif parameters.is_a?(String)
         config_string.concat(parameters)
       end
+      config_string.rstrip!
 
       config_string
     end
@@ -113,7 +114,7 @@ module SyslogNg
     end
 
     def config_build_parameter_string(parameters)
-      raise ArgumentError, "config_build_parameter_string: Expected configuration parameters to be passed as a Hash or Array, got a #{parameters.class}." unless parameters.is_a?(Hash) || parameters.is_a?(Array)
+      raise ArgumentError, "config_build_parameter_string: Expected configuration parameters to be passed as a Hash, Array or String. Got a #{parameters.class}." unless parameters.is_a?(Hash) || parameters.is_a?(Array) || parameters.is_a?(String)
       param_string = ''
       return param_string if parameters.empty?
       if parameters.is_a?(Hash)
@@ -128,6 +129,8 @@ module SyslogNg
         parameters.each do |parameter|
           param_string.concat(parameter + ' ')
         end
+      elsif parameters.is_a?(String)
+        param_string.concat(parameters + ' ')
       end
       param_string.rstrip!
       Chef::Log.debug("config_build_parameter_string: Generated parameter string is: #{param_string}.")
@@ -138,36 +141,45 @@ module SyslogNg
     def config_contained_group_string(hash)
       raise ArgumentError, "config_contained_group_string: Expected configuration parameters to be passed as a Hash, got a #{hash.class}." unless hash.is_a?(Hash)
 
-      config_string = '('
-      if hash.key?('operator')
-        boolean_operator = hash.delete('operator')
+      local_hash =  hash.dup
+
+      config_string = ''
+      config_string = '(' unless local_hash.empty?
+
+      if local_hash.key?('operator')
+        boolean_operator = local_hash.delete('operator')
         raise ArgumentError, "config_contained_group_string: Invalid combining operator '#{boolean_operator}' specified." unless SYSLOG_NG_BOOLEAN_OPERATORS.include?(boolean_operator)
         Chef::Log.debug("config_contained_group_string: Contained group operator is '#{boolean_operator}'.")
-
-        hash.each do |filter, value|
-          if value.is_a?(String)
-            if config_string.include?(')')
-              config_string.concat(boolean_operator.tr('_', ' ') + ' ' + filter + '(' + value + ') ')
-            else
-              config_string.concat(filter + '(' + value + ') ')
-            end
-          elsif value.is_a?(Array)
-            value.each do |val|
-              if config_string.include?(')')
-                config_string.concat(boolean_operator.tr('_', ' ') + ' ' + filter + '(' + val + ') ')
-              else
-                config_string.concat(filter + '(' + val + ') ')
-              end
-            end
-          else
-            raise
-          end
-        end
-        config_string.rstrip!
-        config_string.concat(')')
-
-        config_string
+      else
+        boolean_operator = 'and'
       end
+
+      local_hash.each do |filter, value|
+        if value.is_a?(String)
+          config_string.concat(config_append_combined_group(config_string, boolean_operator, filter, value))
+        elsif value.is_a?(Array)
+          value.each do |val|
+            config_string.concat(config_append_combined_group(config_string, boolean_operator, filter, val))
+          end
+        elsif value.is_a?(Hash)
+          config_string.concat(config_contained_group_string(value))
+        else
+          raise "Invalid value found. Got a #{value.class}."
+        end
+      end
+      config_string.rstrip!
+      config_string.concat(')') unless local_hash.empty?
+
+      config_string
+    end
+
+    def config_append_combined_group(config_string, operator, filter, value)
+      append_string = if config_string.include?(')')
+                        operator.tr('_', ' ') + ' ' + filter + '(' + value + ') '
+                      else
+                        filter + '(' + value + ') '
+                      end
+      append_string
     end
   end
 end
