@@ -18,7 +18,7 @@
 
 module SyslogNg
   module ConfigHelpers
-    # I've added a __container__ 'operator' and __operator__ 'filter' here to allow nested boolean operation, syslog-ng doesn't know anything about it.
+    # I've added the __container__ 'operator' and __operator__ 'filter' here to allow nested boolean operation, syslog-ng doesn't know anything about it.
     SYSLOG_NG_BOOLEAN_OPERATORS = %w(and or and_not or_not container).freeze
     SYSLOG_NG_FILTER_FUNCTIONS = %w(facility filter host inlist level priority match message netmask netmask6 program source tags operator).freeze
 
@@ -70,7 +70,7 @@ module SyslogNg
               config_string.rstrip!
             end
           else
-            raise ArgumentError, "config_filter_map: Invalid operator '#{filter}' specified in filter configuration. #{parameter.class}"
+            raise ArgumentError, "config_filter_map: Invalid operator '#{filter}' specified in filter configuration. Object type #{parameter.class}."
           end
         end
         config_string.rstrip!
@@ -102,7 +102,7 @@ module SyslogNg
     end
 
     def config_format_parameter(parameter, value)
-      raise ArgumentError, "config_format_parameter: Type error, got #{parameter.class} and #{value.class}." unless parameter.is_a?(String) && (value.is_a?(String) || value.is_a?(Integer))
+      raise ArgumentError, "config_format_parameter: Type error, got #{parameter.class} and #{value.class}. Expected String and String/Integer." unless parameter.is_a?(String) && (value.is_a?(String) || value.is_a?(Integer))
 
       parameter_value = value.is_a?(String) ? config_format_string(value) : value.to_s
       parameter_string = ''
@@ -118,7 +118,7 @@ module SyslogNg
       return param_string if parameters.empty?
       if parameters.is_a?(Hash)
         parameters.each do |parameter, value|
-          if !(value.is_a?(Hash) && value.is_a?(Array))
+          if !(value.is_a?(Hash) || value.is_a?(Array))
             param_string.concat(config_format_parameter(parameter, value))
           else
             param_string.concat(config_build_parameter_string(value))

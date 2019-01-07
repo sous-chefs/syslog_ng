@@ -16,7 +16,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-property :perform_config_test, [true, false], default: true
 property :config_dir, String, default: '/etc/syslog-ng/filters.d'
 property :source, String
 property :cookbook, String
@@ -38,30 +37,12 @@ action :create do
       filter: filter
     )
     helpers(SyslogNg::ConfigHelpers)
-    notifies :run, 'execute[syslog-ng-global-config-test]', :delayed if new_resource.perform_config_test
-    notifies :restart, 'service[syslog-ng]', :delayed
     action :create
-  end
-
-  execute 'syslog-ng-global-config-test' do
-    command '/usr/sbin/syslog-ng -s'
-    action :nothing
-  end
-
-  service 'syslog-ng' do
-    action :nothing
   end
 end
 
 action :delete do
   file "#{new_resource.config_dir}/#{new_resource.name}.conf" do
-    notifies :restart, 'service[syslog-ng]', :delayed
     action :delete
   end
-
-  find_resource!(:execute, 'syslog-ng-global-config-test') do
-  end.run_action(:run) if new_resource.perform_config_test
-
-  find_resource!(:service, 'syslog-ng') do
-  end.run_action(:restart)
 end

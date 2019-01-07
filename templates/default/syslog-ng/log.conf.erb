@@ -5,13 +5,25 @@
 
 # Log
 log {
+    <% if @source.is_a?(Array) -%>
     <% @source.each do |source| -%>
     source(<%= source %>);
     <% end -%>
+    <% else -%>
+    source(<%= @source %>);
+    <% end -%>
+    <% if @filter.is_a?(Array) -%>
     <% @filter.each do |filter| -%>
     filter(<%= filter %>);
     <% end -%>
+    <% else -%>
+    filter(<%= @filter %>);
+    <% end -%>
+    <% if @destination.is_a?(Array) -%>
     <% @destination.each do |destination| -%>
     destination(<%= destination %>);
+    <% end -%>
+    <% else -%>
+    destination(<%= @destination %>);
     <% end -%>
 };

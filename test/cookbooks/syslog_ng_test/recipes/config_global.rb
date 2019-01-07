@@ -17,5 +17,16 @@
 # limitations under the License.
 
 syslog_ng_config_global '/etc/syslog-ng/syslog-ng.conf' do
+  notifies :run, 'execute[syslog-ng-config-test]', :delayed
+  notifies :reload, 'service[syslog-ng]', :delayed
   action :create
+end
+
+execute 'syslog-ng-config-test' do
+  command '/sbin/syslog-ng -s'
+  action :nothing
+end
+
+service 'syslog-ng' do
+  action :nothing
 end

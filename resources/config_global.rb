@@ -26,7 +26,6 @@ property :log, Hash
 property :preinclude, Array
 property :include, Array
 property :console_logging, [true, false]
-property :perform_config_test, [true, false], default: true
 
 action :create do
   extend SyslogNg::InstallHelpers
@@ -65,8 +64,6 @@ action :create do
       end
     )
     helpers(SyslogNg::ConfigHelpers)
-    notifies :run, 'execute[syslog-ng-global-config-test]', :delayed if new_resource.perform_config_test
-    notifies :restart, 'service[syslog-ng]', :delayed
     action :create
   end
 
@@ -78,15 +75,6 @@ action :create do
       path directory
       action :create
     end
-  end
-
-  execute 'syslog-ng-global-config-test' do
-    command '/usr/sbin/syslog-ng -s'
-    action :nothing
-  end
-
-  service 'syslog-ng' do
-    action :nothing
   end
 end
 

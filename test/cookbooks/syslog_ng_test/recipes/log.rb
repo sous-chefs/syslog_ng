@@ -1,6 +1,6 @@
 #
 # Cookbook:: test
-# Recipe:: default
+# Recipe:: log
 #
 # Copyright:: 2018, Ben Hughes <bmhughes@bmhughes.co.uk>
 #
@@ -16,7 +16,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-include_recipe '::package_distro'
-include_recipe '::config_global'
-
-include_recipe '::destination'
+syslog_ng_log 'l_test' do
+  source 's_test'
+  filter 'f_test'
+  destination 'd_test'
+  notifies :run, 'execute[syslog-ng-config-test]', :delayed
+  notifies :reload, 'service[syslog-ng]', :delayed
+  action :create
+end

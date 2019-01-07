@@ -1,6 +1,6 @@
 #
 # Cookbook:: test
-# Recipe:: destination
+# Recipe:: source
 #
 # Copyright:: 2018, Ben Hughes <bmhughes@bmhughes.co.uk>
 #
@@ -16,20 +16,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-syslog_ng_destination 'd_test' do
-  driver 'file'
-  path '/var/log/test.log'
-  notifies :run, 'execute[syslog-ng-config-test]', :delayed
-  notifies :reload, 'service[syslog-ng]', :delayed
-  action :create
-end
-
-syslog_ng_destination 'd_test_params' do
-  driver 'file'
-  path '/var/log/test/test_params.log'
+syslog_ng_source 's_test' do
+  driver 'tcp'
   parameters(
-    'flush_lines' => 10,
-    'create-dirs' => 'yes'
+    'ip' => '127.0.0.1',
+    'port' => '5514'
   )
   notifies :run, 'execute[syslog-ng-config-test]', :delayed
   notifies :reload, 'service[syslog-ng]', :delayed
