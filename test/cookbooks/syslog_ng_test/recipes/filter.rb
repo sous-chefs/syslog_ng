@@ -20,11 +20,7 @@ syslog_ng_filter 'f_test' do
   parameters(
     'container' => {
       'operator' => 'or',
-      'facility' => [
-        'mail',
-        'authpriv',
-        'cron',
-      ],
+      'facility' => %w(mail authpriv cron),
     }
   )
   notifies :run, 'execute[syslog-ng-config-test]', :delayed

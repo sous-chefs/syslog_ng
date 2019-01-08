@@ -34,6 +34,42 @@ describe 'SyslogNg::ConfigHelpers' do
         expect(dummy_class.new.config_source_driver_map('udp', 'ip' => '0.0.0.0', 'port' => 514)).to eql('udp(ip("0.0.0.0") port(514));')
       end
     end
+
+    context('given driver with parameters as an array as string') do
+      it 'returns config string' do
+        expect(dummy_class.new.config_source_driver_map('network', {})).to be_a(String)
+        expect(dummy_class.new.config_source_driver_map('network', ['ip("127.0.0.1")', 'port(5514)'])).to eql('network(ip("127.0.0.1") port(5514));')
+      end
+    end
+
+    context('given driver with parameters as an array with non-string') do
+      param = {
+        'ip' => [
+          '127.0.0.1',
+        ],
+        'port' => [
+          5614,
+        ],
+      }
+
+      it 'returns config string' do
+        expect(dummy_class.new.config_source_driver_map('network', {})).to be_a(String)
+        expect(dummy_class.new.config_source_driver_map('network', param)).to eql('network(ip("127.0.0.1") port(5614));')
+      end
+    end
+
+    context('given driver with parameters as a hash containing an array') do
+      param = {
+        'program-override' => 'testing',
+        'use_fqdn' => 'yes',
+        'tags' => %w(test_tag_01 test_tag_02),
+      }
+
+      it 'returns config string' do
+        expect(dummy_class.new.config_source_driver_map('internal', {})).to be_a(String)
+        expect(dummy_class.new.config_source_driver_map('internal', param)).to eql('internal(program-override("testing") use_fqdn(yes) tags("test_tag_01", "test_tag_02"));')
+      end
+    end
   end
 
   describe '.config_destination_driver_map' do
@@ -88,11 +124,7 @@ describe 'SyslogNg::ConfigHelpers' do
         'and_not' => {
           'container' => {
             'operator' => 'or',
-            'facility' => [
-              'mail',
-              'authpriv',
-              'cron',
-            ],
+            'facility' => %w(mail authpriv cron),
           },
         },
       }
@@ -148,7 +180,7 @@ describe 'SyslogNg::ConfigHelpers' do
 
       it 'returns valid config string with _and_ present' do
         expect(dummy_class.new.config_filter_map(param)).to be_a(String)
-        expect(dummy_class.new.config_filter_map(param)).to eql('(facility(mail)) and (facility(cron))')
+        expect(dummy_class.new.config_filter_map(param)).to eql('((facility(mail)) and (facility(cron)))')
       end
     end
 
@@ -191,7 +223,7 @@ describe 'SyslogNg::ConfigHelpers' do
       }
 
       it 'raises ArgumentError' do
-        expect {dummy_class.new.config_filter_map(param)}.to raise_exception(ArgumentError)
+        expect { dummy_class.new.config_filter_map(param) }.to raise_exception(ArgumentError)
       end
     end
   end

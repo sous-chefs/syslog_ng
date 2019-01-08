@@ -34,7 +34,7 @@ action :create do
     variables(
       source: new_resource.source,
       filter: new_resource.filter,
-      destination: new_resource.destination,
+      destination: new_resource.destination
     )
     action :create
   end
