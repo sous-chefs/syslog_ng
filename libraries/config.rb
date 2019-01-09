@@ -40,7 +40,7 @@ module SyslogNg
 
       config_string = ''
       config_string.concat(driver + '(')
-      config_string.concat(config_format_string(parameters['path']) + ' ') if parameters.key?('path') # Certain drivers have an unnamed 'path' parameter (eg File)
+      config_string.concat(config_format_string_value(parameters['path']) + ' ') if parameters.key?('path') # Certain drivers have an unnamed 'path' parameter (eg File)
       config_string.concat(config_build_parameter_string(parameters['parameters'])) if parameters.key?('parameters')
       config_string.rstrip!
       config_string.concat(');')
@@ -56,7 +56,7 @@ module SyslogNg
         parameters.each do |filter, parameter|
           if (SYSLOG_NG_BOOLEAN_OPERATORS.include?(filter) || filter.match?('container')) && parameter.is_a?(Hash)
             if filter.match?('container')
-              config_string.concat(config_contained_group_string(parameter))
+              config_string.concat(config_contained_group(parameter))
             else
               config_string.concat(filter.tr('_', ' ') + ' ' + config_filter_map(parameter) + ' ')
             end
@@ -88,37 +88,37 @@ module SyslogNg
 
     private
 
-    def config_format_string(string)
-      raise ArgumentError, "config_format_string: Expected a configuration String to format, got a #{string.class}." unless string.is_a?(String)
+    def config_format_string_value(string)
+      raise ArgumentError, "config_format_string_value: Expected a configuration String to format, got a #{string.class}." unless string.is_a?(String)
 
       param_string = string.dup
       unless %w(yes YES no NO).include?(param_string)
         param_string.prepend('"')
         param_string.concat('"')
       end
-      Chef::Log.debug("config_format_string: Formatted parameter string to: #{param_string}.")
+      Chef::Log.debug("config_format_string_value: Formatted parameter string to: #{param_string}.")
 
       param_string
     end
 
-    def config_format_parameter(parameter, value)
-      raise ArgumentError, "config_format_parameter: Type error, got #{parameter.class} and #{value.class}. Expected String and String/Integer." unless parameter.is_a?(String) && (value.is_a?(String) || value.is_a?(Integer))
+    def config_format_parameter_pair(parameter, value)
+      raise ArgumentError, "config_format_parameter_pair: Type error, got #{parameter.class} and #{value.class}. Expected String and String/Integer." unless parameter.is_a?(String) && (value.is_a?(String) || value.is_a?(Integer))
 
-      parameter_value = value.is_a?(String) && !value.match?('"') ? config_format_string(value) : value.to_s # TODO: Don't like this matching for already quoted strings
+      parameter_value = value.is_a?(String) && !value.match?('"') ? config_format_string_value(value) : value.to_s # TODO: Don't like this matching for already quoted strings
       parameter_string = ''
       parameter_string.concat(parameter + '(' + parameter_value + ') ')
-      Chef::Log.debug("config_format_parameter: Generated parameter: #{parameter_string}.")
+      Chef::Log.debug("config_format_parameter_pair: Generated parameter: #{parameter_string}.")
 
       parameter_string
     end
 
-    def config_format_parameter_array(array)
+    def config_format_parameter_pair_array(array)
       #
       # Formats an array of either strings of already correctly formatted parameters or constructs a set of correctly formatted parameters from
       # an array of multiple common parameters.
       #
 
-      raise ArgumentError, "config_format_parameter_array: Excepted configuration parameters to be passed as an Array, got #{array.class}." unless array.is_a?(Array)
+      raise ArgumentError, "config_format_parameter_pair_array: Excepted configuration parameters to be passed as an Array, got #{array.class}." unless array.is_a?(Array)
 
       parameter_string = ''
       join_comma = false
@@ -130,14 +130,14 @@ module SyslogNg
           else
             # Needed to be formatted
             join_comma = true
-            config_format_string(parameter)
+            config_format_string_value(parameter)
           end
         else
           parameter.to_s
         end
       end
       join_comma ? parameter_string.concat(parameters_formatted.join(', ')) : parameter_string.concat(parameters_formatted.join(' '))
-      Chef::Log.debug("config_format_parameter: Generated parameter: #{parameter_string}.")
+      Chef::Log.debug("config_format_parameter_pair: Generated parameter: #{parameter_string}.")
 
       parameter_string
     end
@@ -150,13 +150,17 @@ module SyslogNg
       if parameters.is_a?(Hash)
         parameters.each do |parameter, value|
           if value.is_a?(Hash) || value.is_a?(Array)
-            param_string.concat(config_format_parameter(parameter, config_build_parameter_string(value)))
+            param_string.concat(config_format_parameter_pair(parameter, config_build_parameter_string(value)))
           else
-            param_string.concat(config_format_parameter(parameter, value))
+            param_string.concat(config_format_parameter_pair(parameter, value))
           end
         end
       elsif parameters.is_a?(Array)
-        param_string.concat(config_format_parameter_array(parameters))
+        if parameters.count > 1
+          param_string.concat(config_format_parameter_pair_array(parameters))
+        else
+          return parameters.first
+        end
       elsif parameters.is_a?(String)
         param_string.concat(parameters + ' ')
       end
@@ -166,8 +170,8 @@ module SyslogNg
       param_string
     end
 
-    def config_contained_group_string(hash)
-      raise ArgumentError, "config_contained_group_string: Expected configuration parameters to be passed as a Hash, got a #{hash.class}." unless hash.is_a?(Hash)
+    def config_contained_group(hash)
+      raise ArgumentError, "config_contained_group: Expected configuration parameters to be passed as a Hash, got a #{hash.class}." unless hash.is_a?(Hash)
 
       local_hash = hash.dup
 
@@ -176,24 +180,24 @@ module SyslogNg
 
       if local_hash.key?('operator')
         boolean_operator = local_hash.delete('operator')
-        raise ArgumentError, "config_contained_group_string: Invalid combining operator '#{boolean_operator}' specified." unless SYSLOG_NG_BOOLEAN_OPERATORS.include?(boolean_operator)
-        Chef::Log.debug("config_contained_group_string: Contained group operator is '#{boolean_operator}'.")
+        raise ArgumentError, "config_contained_group: Invalid combining operator '#{boolean_operator}' specified." unless SYSLOG_NG_BOOLEAN_OPERATORS.include?(boolean_operator)
+        Chef::Log.debug("config_contained_group: Contained group operator is '#{boolean_operator}'.")
       else
         boolean_operator = 'and'
       end
 
       local_hash.each do |filter, value|
         if value.is_a?(String)
-          config_string.concat(config_append_combined_group(config_string, boolean_operator, filter, value))
+          config_string.concat(config_contained_group_append(config_string, boolean_operator, filter, value))
         elsif value.is_a?(Array)
           value.each do |val|
-            config_string.concat(config_append_combined_group(config_string, boolean_operator, filter, val))
+            config_string.concat(config_contained_group_append(config_string, boolean_operator, filter, val))
           end
         elsif value.is_a?(Hash)
           if config_string.include?(')')
-            config_string.concat(boolean_operator.tr('_', ' ') + ' ' + config_contained_group_string(value))
+            config_string.concat(boolean_operator.tr('_', ' ') + ' ' + config_contained_group(value))
           else
-            config_string.concat(config_contained_group_string(value) + ' ')
+            config_string.concat(config_contained_group(value) + ' ')
           end
         else
           raise "Invalid value found. Got a #{value.class}."
@@ -205,7 +209,7 @@ module SyslogNg
       config_string
     end
 
-    def config_append_combined_group(config_string, operator, filter, value)
+    def config_contained_group_append(config_string, operator, filter, value)
       append_string = if config_string.include?(')')
                         operator.tr('_', ' ') + ' ' + filter + '(' + value + ') '
                       else

@@ -58,6 +58,23 @@ describe 'SyslogNg::ConfigHelpers' do
       end
     end
 
+    context('given driver with parameter as an array with multiple non-string') do # There is no valid config I can see that would use this but it validates a code path.
+      param = {
+        'ip' => [
+          '127.0.0.1',
+        ],
+        'port' => [
+          5614,
+          5714,
+        ],
+      }
+
+      it 'returns config string' do
+        expect(dummy_class.new.config_source_driver_map('network', {})).to be_a(String)
+        expect(dummy_class.new.config_source_driver_map('network', param)).to eql('network(ip("127.0.0.1") port("5614 5714"));')
+      end
+    end
+
     context('given driver with parameters as a hash containing an array') do
       param = {
         'program-override' => 'testing',
@@ -181,6 +198,21 @@ describe 'SyslogNg::ConfigHelpers' do
       it 'returns valid config string with _and_ present' do
         expect(dummy_class.new.config_filter_map(param)).to be_a(String)
         expect(dummy_class.new.config_filter_map(param)).to eql('((facility(mail)) and (facility(cron)))')
+      end
+    end
+
+    context('given contained integer') do
+      param = {
+        'container_outside' => {
+          'operator' => 'and',
+          'container_1' => {
+            'port' => 514,
+          },
+        },
+      }
+
+      it 'raises RuntimeError' do
+        expect { dummy_class.new.config_filter_map(param) }.to raise_exception(RuntimeError)
       end
     end
 
