@@ -35,3 +35,12 @@ syslog_ng_destination 'd_test_params' do
   notifies :reload, 'service[syslog-ng]', :delayed
   action :create
 end
+
+execute 'syslog-ng-config-test' do
+  command '/sbin/syslog-ng -s'
+  action :nothing
+end
+
+service 'syslog-ng' do
+  action :nothing
+end

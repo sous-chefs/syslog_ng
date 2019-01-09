@@ -41,6 +41,7 @@ describe 'SyslogNg::InstallHelpers' do
     platforms = {
       'rhel' => "syslog-ng-debuginfo\nsyslog-ng-devel\nsyslog-ng-geoip\nsyslog-ng-http\nsyslog-ng-java\nsyslog-ng-java-deps\nsyslog-ng-json\nsyslog-ng-libdbi\nsyslog-ng-mongodb\nsyslog-ng-python\nsyslog-ng-redis\nsyslog-ng-riemann\nsyslog-ng-smtp\nsyslog-ng\n",
       'fedora' => "syslog-ng\nsyslog-ng-http\nsyslog-ng-smtp\nsyslog-ng-http\nsyslog-ng-smtp\nsyslog-ng-amqp\nsyslog-ng-geoip\nsyslog-ng-redis\nsyslog-ng-geoip\nsyslog-ng-redis\nsyslog-ng-libdbi\nsyslog-ng-devel\nsyslog-ng-riemann\nsyslog-ng-devel\nsyslog-ng-riemann\nsyslog-ng-devel\nsyslog-ng-mongodb\nsyslog-ng-java\nsyslog-ng-python\nsyslog-ng-debugsource\nsyslog-ng-python\nsyslog-ng-java-deps\nsyslog-ng-debuginfo\nsyslog-ng-http-debuginfo\nsyslog-ng-java-debuginfo\nsyslog-ng-smtp-debuginfo\nsyslog-ng-geoip-debuginfo\nsyslog-ng-redis-debuginfo\nsyslog-ng-libdbi-debuginfo\nsyslog-ng-python-debuginfo\nsyslog-ng-riemann-debuginfo\n",
+      'debian' => "syslog-ng\nsyslog-ng-core\nsyslog-ng-dbg\nsyslog-ng-dev\nsyslog-ng-mod-add-contextual-data\nsyslog-ng-mod-amqp\nsyslog-ng-mod-geoip\nsyslog-ng-mod-graphite\nsyslog-ng-mod-journal\nsyslog-ng-mod-json\nsyslog-ng-mod-mongodb\nsyslog-ng-mod-python\nsyslog-ng-mod-redis\nsyslog-ng-mod-riemann\nsyslog-ng-mod-smtp\nsyslog-ng-mod-sql\nsyslog-ng-mod-stomp\nsyslog-ng-mod-basicfuncs-plus\nsyslog-ng-mod-date\nsyslog-ng-mod-grok\nsyslog-ng-mod-kafka\nsyslog-ng-mod-lua\nsyslog-ng-mod-perl\nsyslog-ng-mod-rss\nsyslog-ng-mod-trigger\nsyslog-ng-mod-zmq\n",
     }
 
     platforms.each do |platform, packages|
@@ -57,6 +58,13 @@ describe 'SyslogNg::InstallHelpers' do
           expect(dummy_class.new.repo_get_packages(platform)).to be_a(Array)
           expect(dummy_class.new.repo_get_packages(platform)).to eq(packages.split(/\n+/))
         end
+      end
+    end
+
+    context('when given unknown platform') do
+      let(:dummy_class) { Class.new { include SyslogNg::InstallHelpers } }
+      it 'raises RuntimeError' do
+        expect { dummy_class.new.repo_get_packages('unknown') }.to raise_exception(RuntimeError)
       end
     end
   end
