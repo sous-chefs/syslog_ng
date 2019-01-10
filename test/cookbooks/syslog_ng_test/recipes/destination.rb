@@ -16,6 +16,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+with_run_context :root do
+  find_resource(:execute, 'syslog-ng-config-test') do
+    command '/sbin/syslog-ng -s'
+    action :nothing
+  end
+  find_resource(:service, 'syslog-ng') do
+    action :nothing
+  end
+end
+
 syslog_ng_destination 'd_test' do
   driver 'file'
   path '/var/log/test.log'
@@ -34,13 +44,4 @@ syslog_ng_destination 'd_test_params' do
   notifies :run, 'execute[syslog-ng-config-test]', :delayed
   notifies :reload, 'service[syslog-ng]', :delayed
   action :create
-end
-
-execute 'syslog-ng-config-test' do
-  command '/sbin/syslog-ng -s'
-  action :nothing
-end
-
-service 'syslog-ng' do
-  action :nothing
 end
