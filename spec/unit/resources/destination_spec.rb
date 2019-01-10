@@ -67,7 +67,7 @@ describe 'syslog_ng_test::destination' do
 
       second_dest = chef_run.syslog_ng_destination('d_test_params')
       expect(second_dest).to notify('execute[syslog-ng-config-test]').to(:run).delayed
-      expect(second_dest).to notify('service[syslog-ng]').to(:reload).delayed    
+      expect(second_dest).to notify('service[syslog-ng]').to(:reload).delayed
     end
   end
 end

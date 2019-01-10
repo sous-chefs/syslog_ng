@@ -19,8 +19,8 @@
 module SyslogNg
   module ConfigHelpers
     # I've added the __container__ 'operator' and __operator__ 'filter' here to allow nested boolean operation, syslog-ng doesn't know anything about it.
-    SYSLOG_NG_BOOLEAN_OPERATORS = %w(and or and_not or_not container).freeze
-    SYSLOG_NG_FILTER_FUNCTIONS = %w(facility filter host inlist level priority match message netmask netmask6 program source tags operator).freeze
+    SYSLOG_NG_BOOLEAN_OPERATORS ||= %w(and or and_not or_not container).freeze
+    SYSLOG_NG_FILTER_FUNCTIONS ||= %w(facility filter host inlist level priority match message netmask netmask6 program source tags operator).freeze
 
     def config_source_driver_map(driver, parameters)
       raise ArgumentError, "config_source_driver_map: Expected syslog-ng source driver name to be a String, got a #{driver.class}." unless driver.is_a?(String)
