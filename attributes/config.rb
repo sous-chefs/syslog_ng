@@ -105,11 +105,7 @@ default['syslog_ng']['config']['filter'] = {
     'and_not': {
       'container': {
         'operator': 'or',
-        'facility': [
-          'mail',
-          'authpriv',
-          'cron',
-        ],
+        'facility': %w(mail authpriv cron),
       },
     },
   },

@@ -155,11 +155,7 @@ describe 'SyslogNg::ConfigHelpers' do
     context('given inplicit _and_ filter') do
       param = {
         'container' => {
-          'facility' => [
-            'mail',
-            'authpriv',
-            'cron',
-          ],
+          'facility' => %w(mail authpriv cron),
         },
       }
 
