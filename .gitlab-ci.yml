@@ -65,9 +65,17 @@ chefspec:
   variables:
     KITCHEN_NAME: "default-fedora-29"
 
-.kitchen_suite_definition_default-ubuntu-18.04: &kitchen_suite_definition_default-ubuntu-1804
+.kitchen_suite_definition_default-ubuntu-1404: &kitchen_suite_definition_default-ubuntu-1404
   variables:
-    KITCHEN_NAME: "default-ubuntu-18.04"
+    KITCHEN_NAME: "default-ubuntu-1404"
+
+.kitchen_suite_definition_default-ubuntu-1604: &kitchen_suite_definition_default-ubuntu-1604
+  variables:
+    KITCHEN_NAME: "default-ubuntu-1604"
+
+.kitchen_suite_definition_default-ubuntu-1804: &kitchen_suite_definition_default-ubuntu-1804
+  variables:
+    KITCHEN_NAME: "default-ubuntu-1804"
 
 .kitchen_suite_definition_default-debian-9: &kitchen_suite_definition_default-debian-9
   variables:
@@ -80,7 +88,9 @@ chefspec:
     - kitchen create $KITCHEN_NAME
     - kitchen exec $KITCHEN_NAME -c 'yum install rsync -y'
     - kitchen converge $KITCHEN_NAME
-    - cp -Rfvp /tmp/gitlab-runner-artifacts/$CI_JOB_NAME-$CI_COMMIT_SHA/etc/* etc/
+    - kitchen exec $KITCHEN_NAME -c "rsync -a --no-links /etc/syslog-ng /var/gitlab-runner-artifacts/${CI_JOB_NAME}-${CI_COMMIT_SHA}/"
+    - mkdir etc
+    - cp -Rfvp /tmp/gitlab-runner-artifacts/$CI_JOB_NAME-$CI_COMMIT_SHA/* etc/
   artifacts:
     name: "$CI_JOB_NAME-$CI_COMMIT_SHA"
     when: always
@@ -116,65 +126,95 @@ chefspec:
   script:
     - kitchen destroy $KITCHEN_NAME
 
-# kitchen_converge_default-centos-6:
-#   <<: *kitchen_docker_definition
-#   <<: *kitchen_converge_definition_default
-#   <<: *kitchen_suite_definition_default-centos-6
+kitchen_converge_default-centos-6:
+  <<: *kitchen_docker_definition
+  <<: *kitchen_converge_definition_default
+  <<: *kitchen_suite_definition_default-centos-6
     
-# kitchen_test_default-centos-6:
-#   <<: *kitchen_docker_definition
-#   <<: *kitchen_test_definition
-#   <<: *kitchen_suite_definition_default-centos-6
+kitchen_test_default-centos-6:
+  <<: *kitchen_docker_definition
+  <<: *kitchen_test_definition
+  <<: *kitchen_suite_definition_default-centos-6
 
-# kitchen_destroy_default-centos-6:
-#   <<: *kitchen_docker_definition
-#   <<: *kitchen_destroy_definition
-#   <<: *kitchen_suite_definition_default-centos-6
+kitchen_destroy_default-centos-6:
+  <<: *kitchen_docker_definition
+  <<: *kitchen_destroy_definition
+  <<: *kitchen_suite_definition_default-centos-6
 
-# kitchen_converge_default-centos-7:
-#   <<: *kitchen_docker_definition
-#   <<: *kitchen_converge_definition_default
-#   <<: *kitchen_suite_definition_default-centos-7
+kitchen_converge_default-centos-7:
+  <<: *kitchen_docker_definition
+  <<: *kitchen_converge_definition_default
+  <<: *kitchen_suite_definition_default-centos-7
     
-# kitchen_test_default-centos-7:
-#   <<: *kitchen_docker_definition
-#   <<: *kitchen_test_definition
-#   <<: *kitchen_suite_definition_default-centos-7
+kitchen_test_default-centos-7:
+  <<: *kitchen_docker_definition
+  <<: *kitchen_test_definition
+  <<: *kitchen_suite_definition_default-centos-7
 
-# kitchen_destroy_default-centos-7:
-#   <<: *kitchen_docker_definition
-#   <<: *kitchen_destroy_definition
-#   <<: *kitchen_suite_definition_default-centos-7
+kitchen_destroy_default-centos-7:
+  <<: *kitchen_docker_definition
+  <<: *kitchen_destroy_definition
+  <<: *kitchen_suite_definition_default-centos-7
 
-# kitchen_converge_default-fedora-29:
-#   <<: *kitchen_docker_definition
-#   <<: *kitchen_converge_definition_default
-#   <<: *kitchen_suite_definition_default-fedora-29
+kitchen_converge_default-fedora-29:
+  <<: *kitchen_docker_definition
+  <<: *kitchen_converge_definition_default
+  <<: *kitchen_suite_definition_default-fedora-29
     
-# kitchen_test_default-fedora-29:
-#   <<: *kitchen_docker_definition
-#   <<: *kitchen_test_definition
-#   <<: *kitchen_suite_definition_default-fedora-29
+kitchen_test_default-fedora-29:
+  <<: *kitchen_docker_definition
+  <<: *kitchen_test_definition
+  <<: *kitchen_suite_definition_default-fedora-29
 
-# kitchen_destroy_default-fedora-29:
-#   <<: *kitchen_docker_definition
-#   <<: *kitchen_destroy_definition
-#   <<: *kitchen_suite_definition_default-fedora-29
+kitchen_destroy_default-fedora-29:
+  <<: *kitchen_docker_definition
+  <<: *kitchen_destroy_definition
+  <<: *kitchen_suite_definition_default-fedora-29
 
-# kitchen_converge_default-ubuntu-1804:
-#   <<: *kitchen_docker_definition
-#   <<: *kitchen_converge_definition_default
-#   <<: *kitchen_suite_definition_default-ubuntu-1804
+kitchen_converge_default-ubuntu-1404:
+  <<: *kitchen_docker_definition
+  <<: *kitchen_converge_definition_default
+  <<: *kitchen_suite_definition_default-ubuntu-1404
     
-# kitchen_test_default-ubuntu-1804:
-#   <<: *kitchen_docker_definition
-#   <<: *kitchen_test_definition
-#   <<: *kitchen_suite_definition_default-ubuntu-1804
+kitchen_test_default-ubuntu-1404:
+  <<: *kitchen_docker_definition
+  <<: *kitchen_test_definition
+  <<: *kitchen_suite_definition_default-ubuntu-1404
 
-# kitchen_destroy_default-ubuntu-1804:
-#   <<: *kitchen_docker_definition
-#   <<: *kitchen_destroy_definition
-#   <<: *kitchen_suite_definition_default-ubuntu-1804
+kitchen_destroy_default-ubuntu-1404:
+  <<: *kitchen_docker_definition
+  <<: *kitchen_destroy_definition
+  <<: *kitchen_suite_definition_default-ubuntu-1404
+
+kitchen_converge_default-ubuntu-1604:
+  <<: *kitchen_docker_definition
+  <<: *kitchen_converge_definition_default
+  <<: *kitchen_suite_definition_default-ubuntu-1604
+    
+kitchen_test_default-ubuntu-1604:
+  <<: *kitchen_docker_definition
+  <<: *kitchen_test_definition
+  <<: *kitchen_suite_definition_default-ubuntu-1604
+
+kitchen_destroy_default-ubuntu-1604:
+  <<: *kitchen_docker_definition
+  <<: *kitchen_destroy_definition
+  <<: *kitchen_suite_definition_default-ubuntu-1604
+
+kitchen_converge_default-ubuntu-1804:
+  <<: *kitchen_docker_definition
+  <<: *kitchen_converge_definition_default
+  <<: *kitchen_suite_definition_default-ubuntu-1804
+    
+kitchen_test_default-ubuntu-1804:
+  <<: *kitchen_docker_definition
+  <<: *kitchen_test_definition
+  <<: *kitchen_suite_definition_default-ubuntu-1804
+
+kitchen_destroy_default-ubuntu-1804:
+  <<: *kitchen_docker_definition
+  <<: *kitchen_destroy_definition
+  <<: *kitchen_suite_definition_default-ubuntu-1804
 
 # kitchen_converge_default-debian-9:
 #   <<: *kitchen_docker_definition
