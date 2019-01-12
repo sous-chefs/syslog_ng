@@ -55,38 +55,36 @@ chefspec:
 
 .kitchen_suite_definition_default-centos-6: &kitchen_suite_definition_default-centos-6
   variables:
-    KITCHEN_NAME: "default-centos-6"
+    KITCHEN_NAME: default-centos-6
 
 .kitchen_suite_definition_default-centos-7: &kitchen_suite_definition_default-centos-7
   variables:
-    KITCHEN_NAME: "default-centos-7"
+    KITCHEN_NAME: default-centos-7
 
 .kitchen_suite_definition_default-fedora-29: &kitchen_suite_definition_default-fedora-29
   variables:
-    KITCHEN_NAME: "default-fedora-29"
+    KITCHEN_NAME: default-fedora-29
 
 .kitchen_suite_definition_default-ubuntu-1404: &kitchen_suite_definition_default-ubuntu-1404
   variables:
-    KITCHEN_NAME: "default-ubuntu-1404"
+    KITCHEN_NAME: default-ubuntu-1404
 
 .kitchen_suite_definition_default-ubuntu-1604: &kitchen_suite_definition_default-ubuntu-1604
   variables:
-    KITCHEN_NAME: "default-ubuntu-1604"
+    KITCHEN_NAME: default-ubuntu-1604
 
 .kitchen_suite_definition_default-ubuntu-1804: &kitchen_suite_definition_default-ubuntu-1804
   variables:
-    KITCHEN_NAME: "default-ubuntu-1804"
+    KITCHEN_NAME: default-ubuntu-1804
 
 .kitchen_suite_definition_default-debian-9: &kitchen_suite_definition_default-debian-9
   variables:
-    KITCHEN_NAME: "default-debian-9"
+    KITCHEN_NAME: default-debian-9
 
 .kitchen_converge_definition_default: &kitchen_converge_definition_default
   <<: *kitchen_tags_definition
   stage: converge
   script:
-    - kitchen create $KITCHEN_NAME
-    - kitchen exec $KITCHEN_NAME -c 'yum install rsync -y'
     - kitchen converge $KITCHEN_NAME
     - kitchen exec $KITCHEN_NAME -c "rsync -a --no-links /etc/syslog-ng /var/gitlab-runner-artifacts/${CI_JOB_NAME}-${CI_COMMIT_SHA}/"
     - mkdir etc

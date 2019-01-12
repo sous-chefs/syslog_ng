@@ -40,6 +40,12 @@ suites:
       inspec_tests:
         - test/integration/config
   - name: copr
+    excludes:
+      - ubuntu-18.10
+      - ubuntu-18.04
+      - ubuntu-16.04
+      - ubuntu-14.04
+      - debian-9.6
     run_list:           
       - recipe[syslog_ng_test::package_copr]
       - recipe[syslog_ng_test::config_global]

@@ -22,9 +22,17 @@ syslog_ng_config_global '/etc/syslog-ng/syslog-ng.conf' do
   action :create
 end
 
-execute 'syslog-ng-config-test' do
-  command '/sbin/syslog-ng -s'
-  action :nothing
+case node['platform_family']
+when 'rhel', 'centos', 'fedora'
+  execute 'syslog-ng-config-test' do
+    command '/sbin/syslog-ng -s'
+    action :nothing
+  end
+when 'debian'
+  execute 'syslog-ng-config-test' do
+    command '/usr/sbin/syslog-ng -s'
+    action :nothing
+  end
 end
 
 service 'syslog-ng' do
