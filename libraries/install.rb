@@ -34,7 +34,7 @@ module SyslogNg
       require 'mixlib/shellout'
 
       case platform
-      when 'rhel'
+      when 'rhel', 'amazon'
         command = "yum -q search syslog-ng | grep -i 'syslog-ng' | awk '{print $1}' | grep -Po '(syslog-ng)((-[a-z]+)?)+' | uniq"
         Chef::Log.debug("RHEL selected, command will be '#{command}'")
       when 'fedora'
@@ -44,7 +44,7 @@ module SyslogNg
         command = "apt-cache search syslog-ng | grep -i 'syslog-ng' | awk '{print $1}' | grep -Po '(syslog-ng)((-[a-z]+)?)+' | uniq"
         Chef::Log.debug("Debian selected, command will be '#{command}'")
       else
-        raise 'repo_get_packages: Unknown platform.'
+        raise "repo_get_packages: Unknown platform. Given platform: #{platform}."
       end
 
       package_search = Mixlib::ShellOut.new(command)

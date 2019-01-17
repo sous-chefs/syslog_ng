@@ -24,8 +24,8 @@ action :install do
   packages = []
 
   # RHEL/CentOS need EPEL installed
-  if %w(rhel centos).include?(node['platform'])
-    log 'Running on RHEL/CentOS, we need epel'
+  if %w(rhel centos amazon).include?(node['platform'])
+    log 'Running on RHEL/CentOS/Amazon, we need epel'
     include_recipe 'yum-epel'
   end
 

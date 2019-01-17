@@ -23,12 +23,12 @@ syslog_ng_config_global '/etc/syslog-ng/syslog-ng.conf' do
 end
 
 case node['platform_family']
-when 'rhel', 'centos', 'fedora'
+when 'amazon'
   execute 'syslog-ng-config-test' do
     command '/sbin/syslog-ng -s'
     action :nothing
   end
-when 'debian'
+else
   execute 'syslog-ng-config-test' do
     command '/usr/sbin/syslog-ng -s'
     action :nothing

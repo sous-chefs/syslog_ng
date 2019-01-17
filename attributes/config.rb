@@ -11,6 +11,7 @@ default['syslog_ng']['config']['config_template_cookbook'] = 'syslog_ng'
 default['syslog_ng']['config']['config_template_template'] = 'syslog-ng/syslog-ng.conf.erb'
 
 default['syslog_ng']['config']['config_dirs'] = [
+  '/etc/syslog-ng/conf.d',
   '/etc/syslog-ng/destinations.d',
   '/etc/syslog-ng/filters.d',
   '/etc/syslog-ng/logs.d',
@@ -232,8 +233,6 @@ default['syslog_ng']['config']['preinclude'] = [
   'scl.conf',
 ]
 
-default['syslog_ng']['config']['include'] = [
-  '/etc/syslog_ng/conf.d/*.conf',
-]
+default['syslog_ng']['config']['include'] = []
 
 default['syslog_ng']['config']['combined'] = {}
