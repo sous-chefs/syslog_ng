@@ -2,9 +2,7 @@
 stages:
   - lint  
   - chefspec
-  - converge
-  - test
-  - destroy
+  - default
   - deploy
   - cleanup
   - cleanup_manual
@@ -54,182 +52,92 @@ chefspec:
       - artifacts/
 
 .kitchen_suite_definition_default-centos-7: &kitchen_suite_definition_default-centos-7
+  stage: default
   variables:
     KITCHEN_NAME: default-centos-7
 
 .kitchen_suite_definition_default-fedora-latest: &kitchen_suite_definition_default-fedora-latest
+  stage: default
   variables:
     KITCHEN_NAME: default-fedora-latest
 
 .kitchen_suite_definition_default-ubuntu-1604: &kitchen_suite_definition_default-ubuntu-1604
+  stage: default
   variables:
     KITCHEN_NAME: default-ubuntu-1604
 
 .kitchen_suite_definition_default-ubuntu-1804: &kitchen_suite_definition_default-ubuntu-1804
+  stage: default
   variables:
     KITCHEN_NAME: default-ubuntu-1804
 
 .kitchen_suite_definition_default-debian-8: &kitchen_suite_definition_default-debian-8
+  stage: default
   variables:
     KITCHEN_NAME: default-debian-8
 
 .kitchen_suite_definition_default-debian-9: &kitchen_suite_definition_default-debian-9
+  stage: default
   variables:
     KITCHEN_NAME: default-debian-9
 
 .kitchen_suite_definition_default-amazonlinux-2: &kitchen_suite_definition_default-amazonlinux-2
+  stage: default
   variables:
     KITCHEN_NAME: default-amazonlinux-2
 
-.kitchen_converge_definition_default: &kitchen_converge_definition_default
+.kitchen_test_definition: &kitchen_test_definition
   <<: *kitchen_tags_definition
-  stage: converge
   script:
     - kitchen converge $KITCHEN_NAME
+    - kitchen verify $KITCHEN_NAME
     - kitchen exec $KITCHEN_NAME -c "rsync -a --no-links /etc/syslog-ng /var/gitlab-runner-artifacts/${CI_JOB_NAME}-${CI_COMMIT_SHA}/"
     - mkdir etc
     - cp -Rfvp /tmp/gitlab-runner-artifacts/$CI_JOB_NAME-$CI_COMMIT_SHA/* etc/
-  artifacts:
-    name: "$CI_JOB_NAME-$CI_COMMIT_SHA"
-    when: always
-    expire_in: 3 days
-    paths:
-      - etc/*
-      - .kitchen/
-
-.kitchen_converge_definition_disabled: &kitchen_converge_definition_disabled
-  <<: *kitchen_tags_definition
-  stage: converge
-  script:
-    - kitchen create $KITCHEN_NAME
-    - kitchen exec $KITCHEN_NAME -c 'yum install rsync -y'
-    - kitchen converge $KITCHEN_NAME
-  artifacts:
-    name: "$CI_JOB_NAME-$CI_COMMIT_SHA"
-    when: always
-    expire_in: 3 days
-    paths:
-      - etc/*
-      - .kitchen/
-
-.kitchen_test_definition: &kitchen_test_definition
-  <<: *kitchen_tags_definition
-  stage: test
-  script:
-    - kitchen verify $KITCHEN_NAME
-
-.kitchen_destroy_definition: &kitchen_destroy_definition
-  <<: *kitchen_tags_definition
-  stage: destroy
-  script:
     - kitchen destroy $KITCHEN_NAME
+  artifacts:
+    name: "$CI_JOB_NAME-$CI_COMMIT_SHA"
+    when: always
+    expire_in: 3 days
+    paths:
+      - etc/*
+      - .kitchen/
 
-kitchen_converge_default-centos-7:
-  <<: *kitchen_docker_definition
-  <<: *kitchen_converge_definition_default
-  <<: *kitchen_suite_definition_default-centos-7
-    
-kitchen_test_default-centos-7:
+kitchen_default-centos-7:
   <<: *kitchen_docker_definition
   <<: *kitchen_test_definition
   <<: *kitchen_suite_definition_default-centos-7
 
-kitchen_destroy_default-centos-7:
-  <<: *kitchen_docker_definition
-  <<: *kitchen_destroy_definition
-  <<: *kitchen_suite_definition_default-centos-7
-
-kitchen_converge_default-fedora-latest:
-  <<: *kitchen_docker_definition
-  <<: *kitchen_converge_definition_default
-  <<: *kitchen_suite_definition_default-fedora-latest
-    
-kitchen_test_default-fedora-latest:
+kitchen_default-fedora-latest:
   <<: *kitchen_docker_definition
   <<: *kitchen_test_definition
   <<: *kitchen_suite_definition_default-fedora-latest
 
-kitchen_destroy_default-fedora-latest:
-  <<: *kitchen_docker_definition
-  <<: *kitchen_destroy_definition
-  <<: *kitchen_suite_definition_default-fedora-latest
-
-kitchen_converge_default-ubuntu-1604:
-  <<: *kitchen_docker_definition
-  <<: *kitchen_converge_definition_default
-  <<: *kitchen_suite_definition_default-ubuntu-1604
-    
-kitchen_test_default-ubuntu-1604:
+kitchen_default-ubuntu-1604:
   <<: *kitchen_docker_definition
   <<: *kitchen_test_definition
   <<: *kitchen_suite_definition_default-ubuntu-1604
 
-kitchen_destroy_default-ubuntu-1604:
-  <<: *kitchen_docker_definition
-  <<: *kitchen_destroy_definition
-  <<: *kitchen_suite_definition_default-ubuntu-1604
-
-kitchen_converge_default-ubuntu-1804:
-  <<: *kitchen_docker_definition
-  <<: *kitchen_converge_definition_default
-  <<: *kitchen_suite_definition_default-ubuntu-1804
-    
-kitchen_test_default-ubuntu-1804:
+kitchen_default-ubuntu-1804:
   <<: *kitchen_docker_definition
   <<: *kitchen_test_definition
   <<: *kitchen_suite_definition_default-ubuntu-1804
-
-kitchen_destroy_default-ubuntu-1804:
-  <<: *kitchen_docker_definition
-  <<: *kitchen_destroy_definition
-  <<: *kitchen_suite_definition_default-ubuntu-1804
-
-kitchen_converge_default-debian-8:
-  <<: *kitchen_docker_definition
-  <<: *kitchen_converge_definition_default
-  <<: *kitchen_suite_definition_default-debian-8
     
-kitchen_test_default-debian-8:
+kitchen_default-debian-8:
   <<: *kitchen_docker_definition
   <<: *kitchen_test_definition
   <<: *kitchen_suite_definition_default-debian-8
 
-kitchen_destroy_default-debian-8:
-  <<: *kitchen_docker_definition
-  <<: *kitchen_destroy_definition
-  <<: *kitchen_suite_definition_default-debian-8
-
-kitchen_converge_default-debian-9:
-  <<: *kitchen_docker_definition
-  <<: *kitchen_converge_definition_default
-  <<: *kitchen_suite_definition_default-debian-9
-    
-kitchen_test_default-debian-9:
+kitchen_default-debian-9:
   <<: *kitchen_docker_definition
   <<: *kitchen_test_definition
   <<: *kitchen_suite_definition_default-debian-9
 
-kitchen_destroy_default-debian-9:
-  <<: *kitchen_docker_definition
-  <<: *kitchen_destroy_definition
-  <<: *kitchen_suite_definition_default-debian-9
-
-kitchen_converge_default-amazonlinux-2:
-  <<: *kitchen_docker_definition
-  <<: *kitchen_converge_definition_default
-  <<: *kitchen_suite_definition_default-amazonlinux-2
-    
-kitchen_test_default-amazonlinux-2:
+kitchen_default-amazonlinux-2:
   <<: *kitchen_docker_definition
   <<: *kitchen_test_definition
   <<: *kitchen_suite_definition_default-amazonlinux-2
 
-kitchen_destroy_default-amazonlinux-2:
-  <<: *kitchen_docker_definition
-  <<: *kitchen_destroy_definition
-  <<: *kitchen_suite_definition_default-amazonlinux-2  
-
-# Only run berks upload on push to the 'production' branch
 berks_upload:
   stage: deploy
   script:
