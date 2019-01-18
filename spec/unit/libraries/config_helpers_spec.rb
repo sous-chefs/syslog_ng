@@ -31,7 +31,7 @@ describe 'SyslogNg::ConfigHelpers' do
     context('given driver with parameters') do
       it 'returns config string' do
         expect(dummy_class.new.config_source_driver_map('system', {})).to be_a(String)
-        expect(dummy_class.new.config_source_driver_map('udp', 'ip' => '0.0.0.0', 'port' => 514)).to eql('udp(ip("0.0.0.0") port(514));')
+        expect(dummy_class.new.config_source_driver_map('udp', 'ip' => '0.0.0.0', 'port' => 514)).to eql('udp(ip(0.0.0.0) port(514));')
       end
     end
 
@@ -54,7 +54,7 @@ describe 'SyslogNg::ConfigHelpers' do
 
       it 'returns config string' do
         expect(dummy_class.new.config_source_driver_map('network', {})).to be_a(String)
-        expect(dummy_class.new.config_source_driver_map('network', param)).to eql('network(ip("127.0.0.1") port(5614));')
+        expect(dummy_class.new.config_source_driver_map('network', param)).to eql('network(ip(127.0.0.1) port(5614));')
       end
     end
 
@@ -71,7 +71,7 @@ describe 'SyslogNg::ConfigHelpers' do
 
       it 'returns config string' do
         expect(dummy_class.new.config_source_driver_map('network', {})).to be_a(String)
-        expect(dummy_class.new.config_source_driver_map('network', param)).to eql('network(ip("127.0.0.1") port("5614 5714"));')
+        expect(dummy_class.new.config_source_driver_map('network', param)).to eql('network(ip(127.0.0.1) port("5614 5714"));')
       end
     end
 
@@ -85,6 +85,23 @@ describe 'SyslogNg::ConfigHelpers' do
       it 'returns config string' do
         expect(dummy_class.new.config_source_driver_map('internal', {})).to be_a(String)
         expect(dummy_class.new.config_source_driver_map('internal', param)).to eql('internal(program-override("testing") use_fqdn(yes) tags("test_tag_01", "test_tag_02"));')
+      end
+    end
+
+    context('given nested source driver config') do
+      param = {
+        'transport' => 'tls',
+        'ip' => '127.0.0.1',
+        'port' => 9999,
+        'tls' => {
+          'peer-verify' => 'required-trusted',
+          'key-file' => '/etc/syslog-ng/tls/syslog-ng.key',
+          'cert-file' => '/etc/syslog-ng/tls/syslog-ng.crt',
+        },
+      }
+      it 'returns config string' do
+        expect(dummy_class.new.config_source_driver_map('network', param)).to be_a(String)
+        expect(dummy_class.new.config_source_driver_map('network', param)).to eql('network(transport("tls") ip(127.0.0.1) port(9999) tls(peer-verify("required-trusted") key-file("/etc/syslog-ng/tls/syslog-ng.key") cert-file("/etc/syslog-ng/tls/syslog-ng.crt")));')
       end
     end
   end

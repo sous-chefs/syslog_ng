@@ -16,6 +16,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+require 'ipaddr'
+
 module SyslogNg
   module ConfigHelpers
     # I've added the __container__ 'operator' and __operator__ 'filter' here to allow nested boolean operation, syslog-ng doesn't know anything about it.
@@ -92,7 +94,7 @@ module SyslogNg
       raise ArgumentError, "config_format_string_value: Expected a configuration String to format, got a #{string.class}." unless string.is_a?(String)
 
       param_string = string.dup
-      unless %w(yes YES no NO).include?(param_string)
+      unless %w(yes YES no NO).include?(param_string) || ip_address?(param_string)
         param_string.prepend('"')
         param_string.concat('"')
       end
@@ -216,6 +218,12 @@ module SyslogNg
                         filter + '(' + value + ') '
                       end
       append_string
+    end
+
+    def ip_address?(string)
+      IPAddr.new(string).ipv4? || IPAddr.new(string).ipv6?
+    rescue IPAddr::InvalidAddressError
+      false
     end
   end
 end
