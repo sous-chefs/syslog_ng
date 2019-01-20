@@ -13,7 +13,7 @@ verifier:
 
 platforms:
   - name: centos-7
-  - name: fedora-latest
+  - name: fedora-29
   - name: ubuntu-18.04
   - name: ubuntu-16.04
   - name: debian-8
@@ -30,16 +30,6 @@ suites:
     verifier:
       inspec_tests:
         - test/integration/default
-  - name: config
-    run_list:
-      - recipe[syslog_ng_test]
-      - recipe[syslog_ng_test::destination]
-      - recipe[syslog_ng_test::source]
-      - recipe[syslog_ng_test::filter]
-      - recipe[syslog_ng_test::log]
-    verifier:
-      inspec_tests:
-        - test/integration/config
   - name: copr
     excludes:
       - ubuntu-18.04
@@ -53,5 +43,16 @@ suites:
       - recipe[syslog_ng_test::config_global]
     verifier:
       inspec_tests:
-        - test/integration/default
+        - test/integration/copr
+  - name: config
+    run_list:
+      - recipe[syslog_ng_test::package_distro]
+      - recipe[syslog_ng_test::config_global]
+      - recipe[syslog_ng_test::destination]
+      - recipe[syslog_ng_test::source]
+      - recipe[syslog_ng_test::filter]
+      - recipe[syslog_ng_test::log]
+    verifier:
+      inspec_tests:
+        - test/integration/config
 ...

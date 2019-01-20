@@ -28,17 +28,25 @@ module SyslogNg
       syslog_ng_version_cmd.stdout.to_f
     end
 
-    def repo_get_packages(platform)
+    def repo_get_packages(platform:, copr: false)
       raise ArgumentException, "Expected platform to be a String, got a #{platform.class}." unless platform.is_a?(String)
 
       require 'mixlib/shellout'
 
       case platform
       when 'rhel', 'amazon'
-        command = "yum -q search syslog-ng | grep -i 'syslog-ng' | awk '{print $1}' | grep -Po '(syslog-ng)((-[a-z]+)?)+' | uniq"
+        command = if copr
+                    "yum -q --disablerepo=* --enablerepo=syslog-ng319 search syslog-ng | grep -i 'syslog-ng' | awk '{print $1}' | grep -Po '(syslog-ng)((-[a-z]+)?)+' | uniq"
+                  else
+                    "yum -q search syslog-ng | grep -i 'syslog-ng' | awk '{print $1}' | grep -Po '(syslog-ng)((-[a-z]+)?)+' | uniq"
+                  end
         Chef::Log.debug("RHEL selected, command will be '#{command}'")
       when 'fedora'
-        command = "dnf -q search syslog-ng | grep -i 'syslog-ng' | awk '{print $1}' | grep -Po '(syslog-ng)((-[a-z]+)?)+' | uniq"
+        command = if copr
+                    "dnf -q --disablerepo=* --enablerepo=syslog-ng319 search syslog-ng | grep -i 'syslog-ng' | awk '{print $1}' | grep -Po '(syslog-ng)((-[a-z]+)?)+' | uniq"
+                  else
+                    "dnf -q search syslog-ng | grep -i 'syslog-ng' | awk '{print $1}' | grep -Po '(syslog-ng)((-[a-z]+)?)+' | uniq"
+                  end
         Chef::Log.debug("Fedora selected, command will be '#{command}'")
       when 'debian'
         command = "apt-cache search syslog-ng | grep -i 'syslog-ng' | awk '{print $1}' | grep -Po '(syslog-ng)((-[a-z]+)?)+' | uniq"

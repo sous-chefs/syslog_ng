@@ -44,17 +44,19 @@ action :install do
   case new_resource.package_source
   when 'package_distro'
     log 'Installing syslog-ng from distribution package repositories'
+    copr = false
   when 'package_copr'
     log "Installing syslog-ng #{node['syslog_ng']['install']['rhel']['copr_repo_version']} from COPR package repositories"
+    copr = true
 
     case node['platform_family']
     when 'fedora'
-      unless node['platform_family'].to_i >= 28
+      unless node['platform_version'].to_i >= 28
         Chef::Log.error('COPR package installation is not supported on Fedora version < 28!')
         raise 'COPR package installation is not supported on Fedora version < 28!'
       end
     when 'rhel'
-      unless node['platform_family'].to_i >= 7
+      unless node['platform_version'].to_i >= 7
         Chef::Log.error('COPR package installation is not supported on RHEL/CentOS version < 7!')
         raise 'COPR package installation is not supported on RHEL/CentOS version < 7!'
       end
@@ -88,7 +90,7 @@ action :install do
   ruby_block 'repo_get_packages' do
     extend SyslogNg::InstallHelpers
     block do
-      packages = repo_get_packages(node['platform_family'])
+      packages = repo_get_packages(platform: node['platform_family'], copr: copr)
       log "Found #{packages.count} packages to install"
       Chef::Log.debug("Packages to install are: #{packages.join(', ')}.")
     end

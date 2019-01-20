@@ -55,8 +55,8 @@ describe 'SyslogNg::InstallHelpers' do
           allow(shellout).to receive(:error!).and_return(nil)
           allow(shellout).to receive(:stdout).and_return(packages)
 
-          expect(dummy_class.new.repo_get_packages(platform)).to be_a(Array)
-          expect(dummy_class.new.repo_get_packages(platform)).to eq(packages.split(/\n+/))
+          expect(dummy_class.new.repo_get_packages(platform: platform)).to be_a(Array)
+          expect(dummy_class.new.repo_get_packages(platform: platform)).to eq(packages.split(/\n+/))
         end
       end
     end
@@ -64,7 +64,7 @@ describe 'SyslogNg::InstallHelpers' do
     context('when given unknown platform') do
       let(:dummy_class) { Class.new { include SyslogNg::InstallHelpers } }
       it 'raises RuntimeError' do
-        expect { dummy_class.new.repo_get_packages('unknown') }.to raise_exception(RuntimeError)
+        expect { dummy_class.new.repo_get_packages(platform: 'unknown') }.to raise_exception(RuntimeError)
       end
     end
   end
