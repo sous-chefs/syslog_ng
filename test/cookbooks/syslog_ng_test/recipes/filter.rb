@@ -37,3 +37,44 @@ syslog_ng_filter 'f_test' do
   notifies :reload, 'service[syslog-ng]', :delayed
   action :create
 end
+
+syslog_ng_filter 'f_test_contained' do
+  parameters(
+    'container_outside' => {
+      'operator' => 'and',
+      'container_1' => {
+        'facility' => 'mail',
+      },
+      'container_2' => {
+        'operator' => 'or',
+        'facility' => %w(cron authpriv),
+      },
+    }
+  )
+  notifies :run, 'execute[syslog-ng-config-test]', :delayed
+  notifies :reload, 'service[syslog-ng]', :delayed
+  action :create
+end
+
+syslog_ng_filter 'f_test_array_and' do
+  parameters(
+    'container' => {
+      'facility' => %w(mail authpriv cron),
+    }
+  )
+  notifies :run, 'execute[syslog-ng-config-test]', :delayed
+  notifies :reload, 'service[syslog-ng]', :delayed
+  action :create
+end
+
+syslog_ng_filter 'f_test_array_or' do
+  parameters(
+    'container' => {
+      'operator' => 'or',
+      'facility' => %w(mail authpriv cron),
+    }
+  )
+  notifies :run, 'execute[syslog-ng-config-test]', :delayed
+  notifies :reload, 'service[syslog-ng]', :delayed
+  action :create
+end

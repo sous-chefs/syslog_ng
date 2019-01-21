@@ -1,7 +1,5 @@
 # syslog_ng
 
-[![pipeline status](https://gitlab.bmhughes.co.uk/bmhughes-net-chef/cookbooks/syslog_ng/badges/master/pipeline.svg)](https://gitlab.bmhughes.co.uk/bmhughes-net-chef/cookbooks/syslog_ng/commits/master) [![coverage report](https://gitlab.bmhughes.co.uk/bmhughes-net-chef/cookbooks/syslog_ng/badges/master/coverage.svg)](https://gitlab.bmhughes.co.uk/bmhughes-net-chef/cookbooks/syslog_ng/commits/master)
-
 Installs and configures syslog-ng for system and user defined logs.
 
 Current Version : **0.1.0**
@@ -98,7 +96,55 @@ All properties are optional as by default they will be sourced from node attribu
 | `path`        | Yes       | String | The path for the destination driver if it supports being specified one       |
 | `parameters`  | Yes       | Hash   | Driver parameters and options                                                |
 
+#### Example 1
+
+```ruby
+syslog_ng_destination 'd_test' do
+  driver 'file'
+  path '/var/log/test.log'
+  notifies :run, 'execute[syslog-ng-config-test]', :delayed
+  notifies :reload, 'service[syslog-ng]', :delayed
+  action :create
+end
+```
+
+Generates:
+
+```c
+destination d_test {
+    file("/var/log/test.log");
+};
+```
+
+#### Example 2
+
+```ruby
+syslog_ng_destination 'd_test_params' do
+  driver 'file'
+  path '/var/log/test/test_params.log'
+  parameters(
+    'flush_lines' => 10,
+    'create-dirs' => 'yes'
+  )
+  notifies :run, 'execute[syslog-ng-config-test]', :delayed
+  notifies :reload, 'service[syslog-ng]', :delayed
+  action :create
+end
+```
+
+Generates:
+
+```c
+destination d_test_params {
+    file("/var/log/test/test_params.log" flush_lines(10) create-dirs(yes));
+};
+```
+
 ### filter
+
+Generates a syslog-ng [filter](https://www.syslog-ng.com/technical-documents/doc/syslog-ng-open-source-edition/3.19/administration-guide/54#TOPIC-1094669) configuration statement, due to the large amount of
+possible combinations of boolean operators and containers to which they can be applied this resource has a resonable complex Hash structure. Despite trying to break this as much as possible t
+his library also most likely has some bugs in it.
 
 #### Actions
 
@@ -112,7 +158,86 @@ All properties are optional as by default they will be sourced from node attribu
 | `config_dir`  | Yes       | String | Directory to create config file, defaults to `/etc/syslog-ng/filter.d`       |
 | `cookbook`    | Yes       | String | Override cookbook to source the template file from                           |
 | `source`      | Yes       | String | Override the template source file                                            |
-| `parmameters` | No        | String | A syslog-ng filter directive modelled as a Hash **DOCUMENT THIS**            |
+| `parmameters` | No        | String | A syslog-ng filter directive modelled as a Hash                              |
+
+#### Example 1 - Contained OR'd common filters
+
+Hash:
+
+```ruby
+'container' => {
+  'operator' => 'or',
+  'facility' => %w(mail authpriv cron),
+}
+```
+
+Generates:
+
+```c
+filter f_test {
+  (facility(mail) or facility(authpriv) or facility(cron));
+};
+```
+
+#### Example 2 - Multiple contained groups with differing operators
+
+Hash:
+
+```ruby
+'container_outside' => {
+  'operator' => 'and',
+  'container_1' => {
+    'facility' => 'mail',
+  },
+  'container_2' => {
+    'operator' => 'or',
+    'facility' => %w(cron authpriv),
+  },
+}
+```
+
+Generates:
+
+```c
+filter f_test_contained {
+  ((facility(mail)) and (facility(cron) or facility(authpriv)));
+};
+```
+
+#### Example 3 - Multiple of the same filter given as an Array
+
+- syslog-ng implicitly takes multiple filters within a contained group without a boolean operator as being `and`'d so the library explicitly specify it if no other operator has been given.
+
+```ruby
+'container' => {
+  'facility' => %w(mail authpriv cron),
+}
+```
+
+Generates:
+
+```c
+filter f_test_array {
+  (facility(mail) and facility(authpriv) and facility(cron));
+};
+```
+
+- The same with an `or` operator specified
+
+```ruby
+'container' => {
+  'operator' => 'or',
+  'facility' => %w(mail authpriv cron),
+}
+```
+
+Generates:
+
+```c
+filter f_test_array_or {
+  (facility(mail) or facility(authpriv) or facility(cron));
+};
+```
 
 ### install
 
@@ -123,10 +248,10 @@ All properties are optional as by default they will be sourced from node attribu
 
 #### Properties
 
-| Property         | Optional? | Type   | Description                                                             |
-|------------------|-----------|--------|-------------------------------------------------------------------------|
-| `package_source` | No        | String | Package source selection choices are `package_distro` or `package_copr` |
-| `remove_rsyslog` | No        | String | Remove rsyslog package                                                  |
+| Property         | Optional? | Type   | Description                                                              |
+|------------------|-----------|--------|--------------------------------------------------------------------------|
+| `package_source` | No        | String | Package source selection choices are `package_distro` or `package_copr`  |
+| `remove_rsyslog` | No        | String | Remove rsyslog package during instalation, otherwise disable the service.|
 
 ### log
 
@@ -146,6 +271,29 @@ All properties are optional as by default they will be sourced from node attribu
 | `filter`          | Yes       | String, Array | The path for the source driver if it supports being specified one            |
 | `destination`     | Yes       | String, Array | Driver parameters and options                                                |
 
+#### Example
+
+```ruby
+syslog_ng_log 'l_test' do
+  source 's_test'
+  filter 'f_test'
+  destination 'd_test'
+  notifies :run, 'execute[syslog-ng-config-test]', :delayed
+  notifies :reload, 'service[syslog-ng]', :delayed
+  action :create
+end
+```
+
+Generates:
+
+```c
+log {
+    source(s_test);
+    filter(f_test);
+    destination(d_test);
+};
+```
+
 ### source
 
 #### Actions
@@ -162,6 +310,29 @@ All properties are optional as by default they will be sourced from node attribu
 | `source`      | Yes       | String | Override the template source file                                            |
 | `driver`      | No        | String | The source driver to use                                                     |
 | `parameters`  | Yes       | Hash   | Driver parameters and options                                                |
+
+#### Example
+
+```ruby
+syslog_ng_source 's_test' do
+  driver 'tcp'
+  parameters(
+    'ip' => '127.0.0.1',
+    'port' => '5514'
+  )
+  notifies :run, 'execute[syslog-ng-config-test]', :delayed
+  notifies :reload, 'service[syslog-ng]', :delayed
+  action :create
+end
+```
+
+Generates:
+
+```c
+source s_test {
+    tcp(ip(127.0.0.1) port("5514"));
+};
+```
 
 ## Libraries
 
