@@ -16,9 +16,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-property :config_dir, String, default: '/etc/syslog-ng/filters.d'
-property :source, String
+property :config_dir, String, default: '/etc/syslog-ng/filter.d'
 property :cookbook, String
+property :source, String
 property :parameters, Hash, default: {}
 
 action :create do

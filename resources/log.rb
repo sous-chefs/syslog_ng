@@ -16,9 +16,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-property :config_dir, String, default: '/etc/syslog-ng/logs.d'
-property :template_source, String
+property :config_dir, String, default: '/etc/syslog-ng/log.d'
 property :cookbook, String
+property :template_source, String
 property :source, [String, Array], default: []
 property :filter, [String, Array], default: []
 property :destination, [String, Array], default: []

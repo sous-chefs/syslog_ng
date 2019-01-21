@@ -16,10 +16,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-property :config_dir, String, default: '/etc/syslog-ng/sources.d'
-property :source, String
+property :config_dir, String, default: '/etc/syslog-ng/source.d'
 property :cookbook, String
-property :driver, String
+property :source, String
+property :driver, String, required: true
 property :parameters, Hash, default: {}
 
 action :create do

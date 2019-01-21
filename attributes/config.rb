@@ -12,10 +12,10 @@ default['syslog_ng']['config']['config_template_template'] = 'syslog-ng/syslog-n
 
 default['syslog_ng']['config']['config_dirs'] = [
   '/etc/syslog-ng/conf.d',
-  '/etc/syslog-ng/destinations.d',
-  '/etc/syslog-ng/filters.d',
-  '/etc/syslog-ng/logs.d',
-  '/etc/syslog-ng/sources.d',
+  '/etc/syslog-ng/destination.d',
+  '/etc/syslog-ng/filter.d',
+  '/etc/syslog-ng/log.d',
+  '/etc/syslog-ng/source.d',
 ]
 
 # Global Options
