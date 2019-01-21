@@ -67,7 +67,7 @@ action :install do
       raise 'COPR installation method selected but platform is not CentOS/Fedora!'
     end
 
-    repo_name = "syslog-ng#{node['syslog_ng']['install']['rhel']['copr_repo_version'].delete('.')}"
+    repo_name = "syslog-ng#{node['syslog_ng']['install']['copr_repo_version'].delete('.')}"
     repo_platform_name = (node['platform'] == 'fedora') ? 'fedora' : 'epel'
 
     yum_repository repo_name do
