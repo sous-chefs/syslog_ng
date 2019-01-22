@@ -3,7 +3,7 @@
 # Do NOT modify this file by hand, any changes will be overwritten.
 #
 
-# Source
+# Source - <%= @description %>
 <% unless (@source.nil? || @source.empty?) -%>
 <% @source.each do |name, config| -%>
 source <%= name -%> {

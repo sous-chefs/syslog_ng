@@ -7,7 +7,7 @@ This file is used to list changes made in each version of the syslog_ng cookbook
 ### Initial release
 
 - Installs syslog-ng from distro packages or COPR on CentOS/Fedora.
-- Generates global configation file from node attributes.
+- Generates global configuration file from node attributes.
 - Generates from node attributes:
   - Destinations
   - Filters

@@ -3,7 +3,7 @@
 # Do NOT modify this file by hand, any changes will be overwritten.
 #
 
-# Filter
+# Filter - <%= @description %>
 <% unless (@filter.nil? || @filter.empty?) -%>
 <% @filter.each do |name, config| -%>
 filter <%= name %> {

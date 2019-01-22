@@ -20,6 +20,7 @@ property :config_dir, String, default: '/etc/syslog-ng/filter.d'
 property :cookbook, String
 property :source, String
 property :parameters, Hash, default: {}
+property :description, String
 
 action :create do
   filter = {
@@ -34,6 +35,7 @@ action :create do
     mode '0755'
     sensitive new_resource.sensitive
     variables(
+      description: new_resource.description.nil? ? new_resource.name : new_resource.description,
       filter: filter
     )
     helpers(SyslogNg::ConfigHelpers)

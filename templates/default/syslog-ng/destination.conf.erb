@@ -3,7 +3,7 @@
 # Do NOT modify this file by hand, any changes will be overwritten.
 #
 
-# Destination
+# Destination - <%= @description %>
 <% unless (@destination.nil? || @destination.empty?) -%>
 <% @destination.each do |name, config| -%>
 destination <%= name -%> {

@@ -21,6 +21,7 @@ property :cookbook, String
 property :source, String
 property :driver, String, required: true
 property :parameters, Hash, default: {}
+property :description, String
 
 action :create do
   source = {
@@ -37,6 +38,7 @@ action :create do
     mode '0755'
     sensitive new_resource.sensitive
     variables(
+      description: new_resource.description.nil? ? new_resource.name : new_resource.description,
       source: source
     )
     helpers(SyslogNg::ConfigHelpers)
