@@ -23,3 +23,5 @@ Policyfile.lock.json
 
 # RSpec
 coverage/
+
+.vscode/spellright.dict
