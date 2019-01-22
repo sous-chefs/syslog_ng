@@ -2,7 +2,7 @@
 
  ![Release](https://img.shields.io/github/release/bmhughes/syslog_ng.svg) [![Build Status](https://travis-ci.org/bmhughes/syslog_ng.svg?branch=master)](https://travis-ci.org/bmhughes/syslog_ng) ![License](https://img.shields.io/github/license/bmhughes/syslog_ng.svg)
 
-Installs and configures syslog-ng for system and user defined logs.
+Provides a set of resources to install and configure syslog-ng.
 
 ## Change Log
 
@@ -103,10 +103,6 @@ See [usage](#destination-usage) for examples.
 | `parameters`  | Yes       | Hash   | Driver parameters and options                                                |
 
 ### filter
-
-Generates a syslog-ng [filter](https://www.syslog-ng.com/technical-documents/doc/syslog-ng-open-source-edition/3.19/administration-guide/54#TOPIC-1094669) configuration statement, due to the large amount of
-possible combinations of Boolean operators and containers to which they can be applied this resource has a reasonably complex Hash structure. Despite trying to break this as much as possible t
-his library also most likely has some bugs in it.
 
 See [usage](#filter-usage) for examples.
 
@@ -216,6 +212,12 @@ end
 
 #### destination Usage
 
+[Resource](#destination)
+
+Generates a syslog-ng [destination](https://www.syslog-ng.com/technical-documents/doc/syslog-ng-open-source-edition/3.19/administration-guide/29#TOPIC-1094570) configuration statement.
+
+Some destination drivers accept a non-named parameter which is generally a path (the file and pipe driver accept a path) so an additional path property is provided alongside the parameters.
+
 ##### Example 1
 
 ```ruby
@@ -262,15 +264,28 @@ destination d_test_params {
 
 #### filter Usage
 
+[Resource](#filter)
+
+Generates a syslog-ng [filter](https://www.syslog-ng.com/technical-documents/doc/syslog-ng-open-source-edition/3.19/administration-guide/54#TOPIC-1094669) configuration statement.
+
+Due to the large amount of possible combinations of Boolean operators and containers to which they can be applied this resource has a reasonably complex Hash structure and despite trying to break this as much as possible in testing, this library will very likely have some bugs in it.
+
+In the case of the library being unable to generate a filter there is the option of giving the correctly formatted filter as a String or as an Array of String, in this case it is up to the user to ensure that it is a correctly formatted filter.
+
 ##### Example 1 - Contained OR'd common filters
 
 Hash:
 
 ```ruby
-'container' => {
-  'operator' => 'or',
-  'facility' => %w(mail authpriv cron),
-}
+syslog_ng_filter 'f_test' do
+  parameters(
+    'container' => {
+      'operator' => 'or',
+      'facility' => %w(mail authpriv cron),
+    }
+  )
+  action :create
+end
 ```
 
 Generates:
@@ -286,16 +301,21 @@ filter f_test {
 Hash:
 
 ```ruby
-'container_outside' => {
-  'operator' => 'and',
-  'container_1' => {
-    'facility' => 'mail',
-  },
-  'container_2' => {
-    'operator' => 'or',
-    'facility' => %w(cron authpriv),
-  },
-}
+syslog_ng_filter 'f_test_contained' do
+  parameters(
+    'container_outside' => {
+      'operator' => 'and',
+      'container_1' => {
+        'facility' => 'mail',
+      },
+      'container_2' => {
+        'operator' => 'or',
+        'facility' => %w(cron authpriv),
+      },
+    }
+  )
+  action :create
+end
 ```
 
 Generates:
@@ -311,9 +331,14 @@ filter f_test_contained {
 - syslog-ng implicitly takes multiple filters within a contained group without a Boolean operator as being `and`'d so the library explicitly specify it if no other operator has been given.
 
 ```ruby
-'container' => {
-  'facility' => %w(mail authpriv cron),
-}
+syslog_ng_filter 'f_test_array_and' do
+  parameters(
+    'container' => {
+      'facility' => %w(mail authpriv cron),
+    }
+  )
+  action :create
+end
 ```
 
 Generates:
@@ -327,10 +352,15 @@ filter f_test_array {
 - The same with an `or` operator specified
 
 ```ruby
-'container' => {
-  'operator' => 'or',
-  'facility' => %w(mail authpriv cron),
-}
+syslog_ng_filter 'f_test_array_or' do
+  parameters(
+    'container' => {
+      'operator' => 'or',
+      'facility' => %w(mail authpriv cron),
+    }
+  )
+  action :create
+end
 ```
 
 Generates:
@@ -338,6 +368,40 @@ Generates:
 ```c
 filter f_test_array_or {
   (facility(mail) or facility(authpriv) or facility(cron));
+};
+```
+
+##### Example 4 - Pass a raw filter String or Array
+
+```ruby
+syslog_ng_filter 'f_test_raw_string' do
+  parameters 'host("example") and match("deny" value("MESSAGE"))'
+  action :create
+end
+```
+
+Generates:
+
+```c
+filter f_test_raw_string {
+    host("example") and match("deny" value("MESSAGE"));
+};
+```
+
+- An Array
+
+```ruby
+syslog_ng_filter 'f_test_raw_string_array' do
+  parameters ['host("example1")', 'or host("example2")', 'or (host("example3") and not match("test" value("NOT_ME_MESSAGE")))']
+  action :create
+end
+```
+
+Generates:
+
+```c
+filter f_test_raw_string_array {
+    host("example1") or host("example2") or (host("example3") and not match("test" value("NOT_ME_MESSAGE")));
 };
 ```
 
@@ -374,6 +438,8 @@ end
 
 #### log Usage
 
+Generates a syslog-ng [source](https://www.syslog-ng.com/technical-documents/doc/syslog-ng-open-source-edition/3.19/administration-guide/50#TOPIC-1094654) configuration statement.
+
 A log statement can be combined as the last part of a set of `source`, `filter` and `destination` resources to create a complete log configuration with syslog-ng or can contain the source, filter and destination driver statements directly if they are to only used once.
 
 Multiple source, filter and destination elements can be passed as a String Array.
@@ -403,7 +469,7 @@ log {
 
 #### source Usage
 
-
+Generates a syslog-ng [source](https://www.syslog-ng.com/technical-documents/doc/syslog-ng-open-source-edition/3.19/administration-guide/16#TOPIC-1094519) configuration statement.
 
 ##### Example
 
