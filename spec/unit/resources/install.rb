@@ -18,7 +18,7 @@
 
 require 'spec_helper'
 
-describe 'syslog_ng_test::destination' do
+describe 'syslog_ng_test::install' do
   platforms = {
     'CentOS' => '7.6.1804',
     'Fedora' => '29',
@@ -32,25 +32,21 @@ describe 'syslog_ng_test::destination' do
       let(:chef_run) do
         # for a complete list of available platforms and versions see:
         # https://github.com/customink/fauxhai/blob/master/PLATFORMS.md
-        runner = ChefSpec::ServerRunner.new(platform: 'centos', version: '7.6.1804')
-        runner.converge(described_recipe)
+        runner = ChefSpec::ServerRunner.new(platform: platform.dup.downcase!, version: version)
+        runner.converge('syslog_ng_test::package_distro')
       end
 
       it 'converges successfully' do
         expect { chef_run }.to_not raise_error
       end
 
-      it 'creates destinations' do
-        expect(chef_run).to create_syslog_ng_destination('d_test')
-        expect(chef_run).to create_syslog_ng_destination('d_test_params')
+      it 'installs syslog-ng' do
+        expect(chef_run).to install_syslog_ng_install('')
+        # config_test = chef_run.execute('syslog-ng-config-test')
+        # expect(config_test).to do_nothing
 
-        first_dest = chef_run.syslog_ng_destination('d_test')
-        expect(first_dest).to notify('execute[syslog-ng-config-test]').to(:run).delayed
-        expect(first_dest).to notify('service[syslog-ng]').to(:reload).delayed
-
-        second_dest = chef_run.syslog_ng_destination('d_test_params')
-        expect(second_dest).to notify('execute[syslog-ng-config-test]').to(:run).delayed
-        expect(second_dest).to notify('service[syslog-ng]').to(:reload).delayed
+        # service = chef_run.service('syslog-ng')
+        # expect(service).to do_nothing
       end
     end
   end

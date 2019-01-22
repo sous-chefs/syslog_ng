@@ -19,45 +19,36 @@
 require 'spec_helper'
 
 describe 'syslog_ng_test::filter' do
-  context 'With test recipe, on CentOS 7.6.1804' do
-    let(:chef_run) do
-      # for a complete list of available platforms and versions see:
-      # https://github.com/customink/fauxhai/blob/master/PLATFORMS.md
-      runner = ChefSpec::ServerRunner.new(platform: 'centos', version: '7.6.1804')
-      runner.converge(described_recipe)
-    end
+  platforms = {
+    'CentOS' => '7.6.1804',
+    'Fedora' => '29',
+    'Amazon' => '2',
+    'Debian' => '9.6',
+    'Ubuntu' => '18.04',
+  }
 
-    it 'converges successfully' do
-      expect { chef_run }.to_not raise_error
-    end
+  platforms.each do |platform,version|
+    context "With test recipe, on #{platform} #{version}" do
+      let(:chef_run) do
+        # for a complete list of available platforms and versions see:
+        # https://github.com/customink/fauxhai/blob/master/PLATFORMS.md
+        runner = ChefSpec::ServerRunner.new(platform: 'centos', version: '7.6.1804')
+        runner.converge(described_recipe)
+      end
 
-    it 'creates destinations' do
-      expect(chef_run).to create_syslog_ng_filter('f_test')
+      it 'converges successfully' do
+        expect { chef_run }.to_not raise_error
+      end
 
-      filter = chef_run.syslog_ng_filter('f_test')
-      expect(filter).to notify('execute[syslog-ng-config-test]').to(:run).delayed
-      expect(filter).to notify('service[syslog-ng]').to(:reload).delayed
-    end
-  end
+      %w(f_test f_test_contained f_test_array_and f_test_array_or).each do |testfilter|
+        it "creates #{testfilter} test filter" do
+          expect(chef_run).to create_syslog_ng_filter(testfilter)
 
-  context 'With test recipe, on Fedora 29' do
-    let(:chef_run) do
-      # for a complete list of available platforms and versions see:
-      # https://github.com/customink/fauxhai/blob/master/PLATFORMS.md
-      runner = ChefSpec::ServerRunner.new(platform: 'fedora', version: '29')
-      runner.converge(described_recipe)
-    end
-
-    it 'converges successfully' do
-      expect { chef_run }.to_not raise_error
-    end
-
-    it 'creates destinations' do
-      expect(chef_run).to create_syslog_ng_filter('f_test')
-
-      filter = chef_run.syslog_ng_filter('f_test')
-      expect(filter).to notify('execute[syslog-ng-config-test]').to(:run).delayed
-      expect(filter).to notify('service[syslog-ng]').to(:reload).delayed
+          filter = chef_run.syslog_ng_filter(testfilter)
+          expect(filter).to notify('execute[syslog-ng-config-test]').to(:run).delayed
+          expect(filter).to notify('service[syslog-ng]').to(:reload).delayed
+        end
+      end
     end
   end
 end

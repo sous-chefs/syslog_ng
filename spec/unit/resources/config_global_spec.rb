@@ -19,49 +19,36 @@
 require 'spec_helper'
 
 describe 'syslog_ng_test::config_global' do
-  context 'With test recipe, on CentOS 7.6.1804' do
-    let(:chef_run) do
-      # for a complete list of available platforms and versions see:
-      # https://github.com/customink/fauxhai/blob/master/PLATFORMS.md
-      runner = ChefSpec::ServerRunner.new(platform: 'centos', version: '7.6.1804')
-      runner.converge(described_recipe)
-    end
+  platforms = {
+    'CentOS' => '7.6.1804',
+    'Fedora' => '29',
+    'Amazon' => '2',
+    'Debian' => '9.6',
+    'Ubuntu' => '18.04',
+  }
 
-    it 'converges successfully' do
-      expect { chef_run }.to_not raise_error
-    end
+  platforms.each do |platform,version|
+    context "With test recipe, on #{platform} #{version}" do
+      let(:chef_run) do
+        # for a complete list of available platforms and versions see:
+        # https://github.com/customink/fauxhai/blob/master/PLATFORMS.md
+        runner = ChefSpec::ServerRunner.new(platform: platform.dup.downcase!, version: version)
+        runner.converge(described_recipe)
+      end
 
-    it 'creates destinations' do
-      expect(chef_run).to create_syslog_ng_config_global('/etc/syslog-ng/syslog-ng.conf')
-      # expect(chef_run).to run_execute('syslog-ng-config-test')
-      config_test = chef_run.execute('syslog-ng-config-test')
-      expect(config_test).to do_nothing
+      it 'converges successfully' do
+        expect { chef_run }.to_not raise_error
+      end
 
-      service = chef_run.service('syslog-ng')
-      expect(service).to do_nothing
-    end
-  end
+      it 'creates destinations' do
+        expect(chef_run).to create_syslog_ng_config_global('/etc/syslog-ng/syslog-ng.conf')
+        # expect(chef_run).to run_execute('syslog-ng-config-test')
+        config_test = chef_run.execute('syslog-ng-config-test')
+        expect(config_test).to do_nothing
 
-  context 'With test recipe, on Fedora 29' do
-    let(:chef_run) do
-      # for a complete list of available platforms and versions see:
-      # https://github.com/customink/fauxhai/blob/master/PLATFORMS.md
-      runner = ChefSpec::ServerRunner.new(platform: 'fedora', version: '29')
-      runner.converge(described_recipe)
-    end
-
-    it 'converges successfully' do
-      expect { chef_run }.to_not raise_error
-    end
-
-    it 'creates destinations' do
-      expect(chef_run).to create_syslog_ng_config_global('/etc/syslog-ng/syslog-ng.conf')
-      # expect(chef_run).to run_execute('syslog-ng-config-test')
-      config_test = chef_run.execute('syslog-ng-config-test')
-      expect(config_test).to do_nothing
-
-      service = chef_run.service('syslog-ng')
-      expect(service).to do_nothing
+        service = chef_run.service('syslog-ng')
+        expect(service).to do_nothing
+      end
     end
   end
 end
