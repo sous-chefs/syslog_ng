@@ -16,7 +16,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-property :package_source, String, equal_to: %w(package_distro package_copr)
+property :package_source, String, equal_to: %w(package_distro package_copr), default: 'package_distro'
 property :remove_rsyslog, [true, false], default: true
 
 action :install do
@@ -110,8 +110,18 @@ action :install do
 end
 
 action :remove do
+  ruby_block 'installed_get_packages' do
+    extend SyslogNg::InstallHelpers
+    block do
+      packages = installed_get_packages(platform: node['platform_family'])
+      log "Found #{packages.count} packages to remove"
+      Chef::Log.debug("Packages to remove are: #{packages.join(', ')}.")
+    end
+    action :run
+  end
+
   package 'syslog_ng' do
-    package_name 'syslog-ng'
+    package_name lazy { packages }
     action :remove
   end
 end

@@ -62,5 +62,29 @@ module SyslogNg
 
       packages
     end
+
+    def installed_get_packages(platform:)
+      raise ArgumentException, "Expected platform to be a String, got a #{platform.class}." unless platform.is_a?(String)
+
+      require 'mixlib/shellout'
+
+      case platform
+      when 'rhel', 'fedora', 'amazon'
+        command = "rpm -qa | grep -i 'syslog-ng' | awk '{print $1}' | grep -Po '(syslog-ng)((-[a-z]+)?)+' | uniq"
+        Chef::Log.debug("RHEL selected, command will be '#{command}'")
+      when 'debian'
+        command = "dpkg -l | grep -i 'syslog-ng' | awk '{print $2}' | grep -Po '(syslog-ng)((-[a-z]+)?)+' | uniq"
+        Chef::Log.debug("Debian selected, command will be '#{command}'")
+      else
+        raise "installed_get_packages: Unknown platform. Given platform: #{platform}."
+      end
+
+      package_search = Mixlib::ShellOut.new(command)
+      package_search.run_command
+      package_search.error!
+      packages = package_search.stdout.split(/\n+/)
+
+      packages
+    end
   end
 end
