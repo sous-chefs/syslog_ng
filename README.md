@@ -374,6 +374,10 @@ end
 
 #### log Usage
 
+A log statement can be combined as the last part of a set of `source`, `filter` and `destination` resources to create a complete log configuration with syslog-ng or can contain the source, filter and destination driver statements directly if they are to only used once.
+
+Multiple source, filter and destination elements can be passed as a String Array.
+
 ##### Example
 
 ```ruby
@@ -398,6 +402,8 @@ log {
 ```
 
 #### source Usage
+
+
 
 ##### Example
 
