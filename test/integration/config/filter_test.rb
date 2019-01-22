@@ -5,7 +5,7 @@
 # The Inspec reference, with examples and extensive documentation, can be
 # found at http://inspec.io/docs/reference/resources/
 
-describe file('/etc/syslog-ng/filters.d/f_test.conf') do
+describe file('/etc/syslog-ng/filter.d/f_test.conf') do
   it { should exist }
   its('type') { should cmp 'file' }
   it { should be_file }
