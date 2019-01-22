@@ -133,6 +133,16 @@ chefspec:
   variables:
     KITCHEN_NAME: config-amazonlinux-2
 
+.kitchen_suite_definition_config-copr-centos-7: &kitchen_suite_definition_config-copr-centos-7
+  stage: config-copr
+  variables:
+    KITCHEN_NAME: config-copr-centos-7
+
+.kitchen_suite_definition_config-copr-fedora-latest: &kitchen_suite_definition_config-copr-fedora-latest
+  stage: config-copr
+  variables:
+    KITCHEN_NAME: config-copr-fedora-latest
+
 .kitchen_test_definition: &kitchen_test_definition
   <<: *kitchen_tags_definition
   script:
@@ -230,6 +240,16 @@ kitchen_config-amazonlinux-2:
   <<: *kitchen_docker_definition
   <<: *kitchen_test_definition
   <<: *kitchen_suite_definition_config-amazonlinux-2
+
+kitchen_config-copr-centos-7:
+  <<: *kitchen_docker_definition
+  <<: *kitchen_test_definition
+  <<: *kitchen_suite_definition_config-copr-centos-7
+
+kitchen_config-copr-fedora-latest:
+  <<: *kitchen_docker_definition
+  <<: *kitchen_test_definition
+  <<: *kitchen_suite_definition_config-copr-fedora-latest
 
 berks_upload:
   stage: deploy

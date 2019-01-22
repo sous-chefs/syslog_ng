@@ -43,6 +43,8 @@ env:
     - INSTANCE=config-debian-8
     - INSTANCE=config-debian-9
     - INSTANCE=config-amazonlinux-2
+    - INSTANCE=config-copr-centos-7
+    - INSTANCE=config-copr-fedora-latest
 
 script: KITCHEN_LOCAL_YAML=.kitchen.dokken.yml kitchen test ${INSTANCE}
 

@@ -19,7 +19,7 @@
 property :config_dir, String, default: '/etc/syslog-ng/filter.d'
 property :cookbook, String
 property :source, String
-property :parameters, Hash, default: {}
+property :parameters, [Hash, String, Array], default: {}
 property :description, String
 
 action :create do
