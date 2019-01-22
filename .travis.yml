@@ -1,5 +1,6 @@
-# Use Travis's cointainer based infrastructure
-sudo: false
+sudo: required
+dist: trusty
+language: ruby
 
 addons:
   apt:
@@ -15,21 +16,41 @@ branches:
   only:
     - master
 
+services: docker
+
 # Ensure we make ChefDK's Ruby the default
 before_script:
   - eval "$(chef shell-init bash)"
 
 stages:
-  - test
-  - kitchen
+  - unit
 
+env:
+  matrix:
+    - INSTANCE=default-centos-7
+    - INSTANCE=default-fedora-latest
+    - INSTANCE=default-ubuntu-1804
+    - INSTANCE=default-ubuntu-1604
+    - INSTANCE=default-debian-8
+    - INSTANCE=default-debian-9
+    - INSTANCE=default-amazonlinux-2
+    - INSTANCE=copr-centos-7
+    - INSTANCE=copr-fedora-latest
+    - INSTANCE=config-centos-7
+    - INSTANCE=config-fedora-latest
+    - INSTANCE=config-ubuntu-1804
+    - INSTANCE=config-ubuntu-1604
+    - INSTANCE=config-debian-8
+    - INSTANCE=config-debian-9
+    - INSTANCE=config-amazonlinux-2
+
+script: KITCHEN_LOCAL_YAML=.kitchen.dokken.yml kitchen test ${INSTANCE}
 
 jobs:
   include:
-    - stage: test
-      name: "Unit Tests"
-      script:
-        - chef --version
-        - cookstyle --version
-        - foodcritic --version
-        - chef exec delivery local all
+    - stage: unit
+      name: "Unit Tests"   
+      script: chef --version
+      script: cookstyle --version
+      script: foodcritic --version
+      script: chef exec delivery local all   

@@ -27,7 +27,7 @@ describe 'syslog_ng_test::config_global' do
     'Ubuntu' => '18.04',
   }
 
-  platforms.each do |platform,version|
+  platforms.each do |platform, version|
     context "With test recipe, on #{platform} #{version}" do
       let(:chef_run) do
         # for a complete list of available platforms and versions see:

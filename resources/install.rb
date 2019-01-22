@@ -46,7 +46,7 @@ action :install do
     log 'Installing syslog-ng from distribution package repositories'
     copr = false
   when 'package_copr'
-    log "Installing syslog-ng #{node['syslog_ng']['install']['rhel']['copr_repo_version']} from COPR package repositories"
+    log "Installing syslog-ng #{node['syslog_ng']['install']['copr_repo_version']} from COPR package repositories"
     copr = true
 
     case node['platform_family']
