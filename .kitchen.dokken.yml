@@ -1,0 +1,78 @@
+---
+driver:
+  name: dokken
+  privileged: true
+  chef_version: <%= ENV['CHEF_VERSION'] || 'current' %>
+
+transport:
+  name: dokken
+
+provisioner:
+  name: dokken
+  deprecations_as_errors: true
+
+platforms:
+- name: centos-7
+  driver:
+    image: dokken/centos-7
+    pid_one_command: /usr/lib/systemd/systemd
+    intermediate_instructions:
+       - RUN /usr/bin/yum makecache -y -q
+       - RUN /usr/bin/yum install rsync -y
+    volumes:
+      - /tmp/gitlab-runner-artifacts:/var/gitlab-runner-artifacts   
+- name: fedora-latest
+  driver:
+    image: dokken/fedora-latest
+    pid_one_command: /usr/lib/systemd/systemd
+    intermediate_instructions:
+       - RUN /usr/bin/yum makecache -y -q
+       - RUN /usr/bin/yum install rsync -y
+    volumes:
+      - /tmp/gitlab-runner-artifacts:/var/gitlab-runner-artifacts
+- name: ubuntu-16.04
+  driver:
+    image: dokken/ubuntu-16.04
+    pid_one_command: /bin/systemd
+    intermediate_instructions:
+      - RUN /usr/bin/apt-get update
+      - RUN /usr/bin/apt-get install rsync -y -q
+    volumes:
+      - /tmp/gitlab-runner-artifacts:/var/gitlab-runner-artifacts
+- name: ubuntu-18.04
+  driver:
+    image: dokken/ubuntu-18.04
+    pid_one_command: /bin/systemd
+    intermediate_instructions:
+       - RUN /usr/bin/apt-get update
+       - RUN /usr/bin/apt-get install rsync -y -q
+    volumes:
+      - /tmp/gitlab-runner-artifacts:/var/gitlab-runner-artifacts
+- name: debian-8
+  driver:
+    image: dokken/debian-8
+    pid_one_command: /bin/systemd
+    intermediate_instructions:
+       - RUN /usr/bin/apt-get update
+       - RUN /usr/bin/apt-get install rsync -y -q
+    volumes:
+      - /tmp/gitlab-runner-artifacts:/var/gitlab-runner-artifacts
+- name: debian-9
+  driver:
+    image: dokken/debian-9
+    pid_one_command: /bin/systemd
+    intermediate_instructions:
+       - RUN /usr/bin/apt-get update
+       - RUN /usr/bin/apt-get install rsync -y -q
+    volumes:
+      - /tmp/gitlab-runner-artifacts:/var/gitlab-runner-artifacts
+- name: amazonlinux-2
+  driver:
+    image: dokken/amazonlinux-2
+    pid_one_command: /usr/lib/systemd/systemd
+    intermediate_instructions:
+       - RUN /usr/bin/yum makecache -y -q
+       - RUN /usr/bin/yum install rsync -y
+    volumes:
+      - /tmp/gitlab-runner-artifacts:/var/gitlab-runner-artifacts
+...

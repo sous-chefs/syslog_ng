@@ -1,11 +1,15 @@
-# syslog-ng CHANGELOG
+# syslog_ng CHANGELOG
 
-This file is used to list changes made in each version of the syslog-ng cookbook.
+This file is used to list changes made in each version of the syslog_ng cookbook.
 
-# 0.1.0
+## 0.1.0
 
-Initial release.
+### Initial release
 
-- change 0
-- change 1
-
+- Installs syslog-ng from distro packages or COPR on CentOS/Fedora.
+- Generates global configuration file from node attributes.
+- Generates from node attributes:
+  - Destinations
+  - Filters
+  - Sources
+  - Logs

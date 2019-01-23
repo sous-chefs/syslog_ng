@@ -1,26 +1,76 @@
 ---
 driver:
   name: vagrant
+  chef_version: <%= ENV['CHEF_VERSION'] || 'current' %>
 
 provisioner:
   name: chef_zero
-  # You may wish to disable always updating cookbooks in CI or other testing environments.
-  # For example:
-  #   always_update_cookbooks: <%= !ENV['CI'] %>
   always_update_cookbooks: true
+  deprecations_as_errors: true
 
 verifier:
   name: inspec
 
 platforms:
-  - name: ubuntu-16.04
   - name: centos-7
+  - name: fedora-29
+  - name: ubuntu-18.04
+  - name: ubuntu-16.04
+  - name: debian-8
+  - name: debian-9
+  - name: amazonlinux-2
+    driver_config:
+      box: ywatase/amzn2
 
 suites:
   - name: default
-    run_list:
-      - recipe[syslog-ng::default]
+    run_list:           
+      - recipe[syslog_ng_test::package_distro]
+      - recipe[syslog_ng_test::config_global]
     verifier:
       inspec_tests:
         - test/integration/default
-    attributes:
+  - name: copr
+    excludes:
+      - ubuntu-18.04
+      - ubuntu-16.04
+      - debian-8
+      - debian-9
+      - amazonlinux
+      - amazonlinux-2
+    run_list:           
+      - recipe[syslog_ng_test::package_copr]
+      - recipe[syslog_ng_test::config_global]
+    verifier:
+      inspec_tests:
+        - test/integration/copr
+  - name: config
+    run_list:
+      - recipe[syslog_ng_test::package_distro]
+      - recipe[syslog_ng_test::config_global]
+      - recipe[syslog_ng_test::destination]
+      - recipe[syslog_ng_test::source]
+      - recipe[syslog_ng_test::filter]
+      - recipe[syslog_ng_test::log]
+    verifier:
+      inspec_tests:
+        - test/integration/config
+  - name: config_copr
+    excludes:
+      - ubuntu-18.04
+      - ubuntu-16.04
+      - debian-8
+      - debian-9
+      - amazonlinux
+      - amazonlinux-2
+    run_list:
+      - recipe[syslog_ng_test::package_copr]
+      - recipe[syslog_ng_test::config_global]
+      - recipe[syslog_ng_test::destination]
+      - recipe[syslog_ng_test::source]
+      - recipe[syslog_ng_test::filter]
+      - recipe[syslog_ng_test::log]
+    verifier:
+      inspec_tests:
+        - test/integration/config
+...

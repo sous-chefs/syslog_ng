@@ -1,8 +1,8 @@
 #
-# Cookbook:: syslog-ng
-# Recipe:: default
+# Cookbook:: test
+# Recipe:: package_distro
 #
-# Copyright:: 2018, Ben Hughes
+# Copyright:: 2018, Ben Hughes <bmhughes@bmhughes.co.uk>
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,3 +15,8 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
+syslog_ng_install '' do
+  package_source 'package_distro'
+  action :install
+end

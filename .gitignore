@@ -20,3 +20,8 @@ bin/*
 Berksfile.lock
 .zero-knife.rb
 Policyfile.lock.json
+
+# RSpec
+coverage/
+
+.vscode/spellright.dict
