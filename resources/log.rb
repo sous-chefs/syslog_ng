@@ -22,6 +22,7 @@ property :template_source, String
 property :source, [String, Array], default: []
 property :filter, [String, Array], default: []
 property :destination, [String, Array], default: []
+property :flags, [String, Array], default: []
 property :description, String
 
 action :create do
@@ -36,7 +37,8 @@ action :create do
       description: new_resource.description.nil? ? new_resource.name : new_resource.description,
       source: new_resource.source,
       filter: new_resource.filter,
-      destination: new_resource.destination
+      destination: new_resource.destination,
+      flags: new_resource.flags
     )
     action :create
   end

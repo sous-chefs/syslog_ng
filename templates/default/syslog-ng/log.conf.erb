@@ -26,4 +26,11 @@ log {
     <% else -%>
     destination(<%= @destination %>);
     <% end -%>
+    <% if @flags.is_a?(Array) -%>
+    <% @flags.each do |flags| -%>
+    flags(<%= flags %>);
+    <% end -%>
+    <% else -%>
+    flags(<%= @flags %>);
+    <% end -%>
 };
