@@ -40,17 +40,14 @@ describe 'syslog_ng_test::destination' do
         expect { chef_run }.to_not raise_error
       end
 
-      it 'creates destinations' do
-        expect(chef_run).to create_syslog_ng_destination('d_test')
-        expect(chef_run).to create_syslog_ng_destination('d_test_params')
+      %w(d_test d_test_file_params d_test_http_params).each do |testdestination|
+        it "creates destination #{testdestination}" do
+          expect(chef_run).to create_syslog_ng_destination(testdestination)
 
-        first_dest = chef_run.syslog_ng_destination('d_test')
-        expect(first_dest).to notify('execute[syslog-ng-config-test]').to(:run).delayed
-        expect(first_dest).to notify('service[syslog-ng]').to(:reload).delayed
-
-        second_dest = chef_run.syslog_ng_destination('d_test_params')
-        expect(second_dest).to notify('execute[syslog-ng-config-test]').to(:run).delayed
-        expect(second_dest).to notify('service[syslog-ng]').to(:reload).delayed
+          dest = chef_run.syslog_ng_destination(testdestination)
+          expect(dest).to notify('execute[syslog-ng-config-test]').to(:run).delayed
+          expect(dest).to notify('service[syslog-ng]').to(:reload).delayed
+        end
       end
     end
   end

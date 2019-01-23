@@ -40,8 +40,8 @@ describe 'syslog_ng_test::filter' do
         expect { chef_run }.to_not raise_error
       end
 
-      %w(f_test f_test_contained f_test_array_and f_test_array_or).each do |testfilter|
-        it "creates #{testfilter} test filter" do
+      %w(f_test f_test_contained f_test_array_and f_test_array_or f_test_raw_string f_test_raw_string_array).each do |testfilter|
+        it "creates test filter #{testfilter}" do
           expect(chef_run).to create_syslog_ng_filter(testfilter)
 
           filter = chef_run.syslog_ng_filter(testfilter)

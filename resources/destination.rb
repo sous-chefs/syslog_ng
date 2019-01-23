@@ -34,6 +34,9 @@ action :create do
     },
   }
 
+  # Remove the path pair if it is nil
+  destination[new_resource.name][new_resource.driver].compact!
+
   template "#{new_resource.config_dir}/#{new_resource.name}.conf" do
     source new_resource.source ? new_resource.source : 'syslog-ng/destination.conf.erb'
     cookbook new_resource.cookbook ? new_resource.cookbook : node['syslog_ng']['config']['config_template_cookbook']

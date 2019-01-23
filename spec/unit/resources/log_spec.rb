@@ -39,12 +39,14 @@ describe 'syslog_ng_test::log' do
         expect { chef_run }.to_not raise_error
       end
 
-      it 'creates logs' do
-        expect(chef_run).to create_syslog_ng_log('l_test')
+      %w(l_test).each do |testlog|
+        it 'creates log' do
+          expect(chef_run).to create_syslog_ng_log(testlog)
 
-        filter = chef_run.syslog_ng_log('l_test')
-        expect(filter).to notify('execute[syslog-ng-config-test]').to(:run).delayed
-        expect(filter).to notify('service[syslog-ng]').to(:reload).delayed
+          log = chef_run.syslog_ng_log(testlog)
+          expect(log).to notify('execute[syslog-ng-config-test]').to(:run).delayed
+          expect(log).to notify('service[syslog-ng]').to(:reload).delayed
+        end
       end
     end
   end

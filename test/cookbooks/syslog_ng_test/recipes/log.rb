@@ -34,3 +34,4 @@ syslog_ng_log 'l_test' do
   notifies :reload, 'service[syslog-ng]', :delayed
   action :create
 end
+

@@ -34,12 +34,28 @@ syslog_ng_destination 'd_test' do
   action :create
 end
 
-syslog_ng_destination 'd_test_params' do
+syslog_ng_destination 'd_test_file_params' do
   driver 'file'
   path '/var/log/test/test_params.log'
   parameters(
     'flush_lines' => 10,
     'create-dirs' => 'yes'
+  )
+  notifies :run, 'execute[syslog-ng-config-test]', :delayed
+  notifies :reload, 'service[syslog-ng]', :delayed
+  action :create
+end
+
+syslog_ng_destination 'd_test_http_params' do
+  driver 'http'
+  parameters(
+    'url' => 'http://127.0.0.1:8000',
+    'method' => 'PUT',
+    'user-agent' => 'syslog-ng User Agent',
+    'user' => 'user',
+    'password' => 'password',
+    'headers' => '"HEADER1: header1", "HEADER2: header2"',
+    'body' => '"${ISODATE} ${MESSAGE}"',
   )
   notifies :run, 'execute[syslog-ng-config-test]', :delayed
   notifies :reload, 'service[syslog-ng]', :delayed

@@ -40,9 +40,9 @@ describe 'syslog_ng_test::config_global' do
         expect { chef_run }.to_not raise_error
       end
 
-      it 'creates destinations' do
+      it 'creates global config file' do
         expect(chef_run).to create_syslog_ng_config_global('/etc/syslog-ng/syslog-ng.conf')
-        # expect(chef_run).to run_execute('syslog-ng-config-test')
+
         config_test = chef_run.execute('syslog-ng-config-test')
         expect(config_test).to do_nothing
 

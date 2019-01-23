@@ -9,9 +9,11 @@ describe service('syslog-ng') do
   it { should be_running }
 end
 
-describe file('/etc/syslog-ng/destination.d/d_test.conf') do
-  it { should exist }
-  its('type') { should cmp 'file' }
-  it { should be_file }
-  it { should_not be_directory }
+%w(d_test d_test_file_params d_test_http_params).each do |file|
+  describe file("/etc/syslog-ng/destination.d/#{file}.conf") do
+    it { should exist }
+    its('type') { should cmp 'file' }
+    it { should be_file }
+    it { should_not be_directory }
+  end
 end

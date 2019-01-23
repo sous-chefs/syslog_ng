@@ -40,12 +40,14 @@ describe 'syslog_ng_test::source' do
         expect { chef_run }.to_not raise_error
       end
 
-      it 'creates sources' do
-        expect(chef_run).to create_syslog_ng_source('s_test')
+      %w(s_test_tcp s_test_wildcard_file).each do |testsource|
+        it "creates source #{testsource}" do
+          expect(chef_run).to create_syslog_ng_source(testsource)
 
-        filter = chef_run.syslog_ng_source('s_test')
-        expect(filter).to notify('execute[syslog-ng-config-test]').to(:run).delayed
-        expect(filter).to notify('service[syslog-ng]').to(:reload).delayed
+          source = chef_run.syslog_ng_source(testsource)
+          expect(source).to notify('execute[syslog-ng-config-test]').to(:run).delayed
+          expect(source).to notify('service[syslog-ng]').to(:reload).delayed
+        end
       end
     end
   end

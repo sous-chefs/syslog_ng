@@ -8,6 +8,7 @@ addons:
       - chef-current-trusty
     packages:
       - chefdk
+  artifacts: true
 
 # Run bundle install to add simplecov
 install: chef exec bundle install
@@ -21,6 +22,10 @@ services: docker
 # Ensure we make ChefDK's Ruby the default
 before_script:
   - eval "$(chef shell-init bash)"
+  - curl -sL https://raw.githubusercontent.com/travis-ci/artifacts/master/install | bash
+
+after_script:
+  - artifacts upload
 
 stages:
   - unit
