@@ -5,6 +5,7 @@ stages:
   - default
   - copr
   - config
+  - config-copr
   - deploy
   - cleanup
   - cleanup_manual
