@@ -33,7 +33,7 @@ options {
 <% @source.each do |name, config| -%>
 source <%= name -%> {
     <% config.each do |driver, parameters| -%>
-    <%= config_source_driver_map(driver, parameters) %>
+    <%= config_srcdst_driver_map(driver, parameters) %>
     <% end -%>
 };
 <% end -%>
@@ -44,7 +44,7 @@ source <%= name -%> {
 <% @destination.each do |name, config| -%>
 destination <%= name -%> {
     <% config.each do |driver, parameters| -%>
-    <%= config_destination_driver_map(driver, parameters) %>
+    <%= config_srcdst_driver_map(driver, parameters) %>
     <% end -%>
 };
 <% end -%>

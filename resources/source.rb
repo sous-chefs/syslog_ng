@@ -20,15 +20,22 @@ property :config_dir, String, default: '/etc/syslog-ng/source.d'
 property :cookbook, String
 property :source, String
 property :driver, String, required: true
+property :path, String
 property :parameters, Hash, default: {}
 property :description, String
 
 action :create do
   source = {
     new_resource.name => {
-      new_resource.driver => new_resource.parameters,
+      new_resource.driver => {
+        'path' => new_resource.path,
+        'parameters' => new_resource.parameters,
+      },
     },
   }
+
+  # Remove the path pair if it is nil
+  source[new_resource.name][new_resource.driver].compact!
 
   template "#{new_resource.config_dir}/#{new_resource.name}.conf" do
     source new_resource.source ? new_resource.source : 'syslog-ng/source.conf.erb'

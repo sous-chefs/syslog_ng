@@ -24,21 +24,9 @@ module SyslogNg
     SYSLOG_NG_BOOLEAN_OPERATORS ||= %w(and or and_not or_not container).freeze
     SYSLOG_NG_FILTER_FUNCTIONS ||= %w(facility filter host inlist level priority match message netmask netmask6 program source tags operator).freeze
 
-    def config_source_driver_map(driver, parameters)
-      raise ArgumentError, "config_source_driver_map: Expected syslog-ng source driver name to be a String, got a #{driver.class}." unless driver.is_a?(String)
-      raise ArgumentError, "config_source_driver_map: Expected syslog-ng source driver configuration attribute block to be a Hash, got a #{parameters.class}." unless parameters.is_a?(Hash) || parameters.is_a?(Array) || parameters.is_a?(String)
-
-      config_string = ''
-      config_string.concat(driver + '(')
-      config_string.concat(config_build_parameter_string(parameters)) unless parameters.nil? || parameters.empty?
-      config_string.concat(');')
-
-      config_string
-    end
-
-    def config_destination_driver_map(driver, parameters)
-      raise ArgumentError, "config_destination_driver_map: Expected syslog-ng destination driver name to be a String, got a #{driver.class}." unless driver.is_a?(String)
-      raise ArgumentError, "config_destination_driver_map: Expected syslog-ng destination driver configuration attribute block to be a Hash, got a #{parameters.class}." unless parameters.is_a?(Hash)
+    def config_srcdst_driver_map(driver, parameters)
+      raise ArgumentError, "config_srcdst_driver_map: Expected syslog-ng destination driver name to be a String, got a #{driver.class}." unless driver.is_a?(String)
+      raise ArgumentError, "config_srcdst_driver_map: Expected syslog-ng destination driver configuration attribute block to be a Hash, got a #{parameters.class}." unless parameters.is_a?(Hash)
 
       config_string = ''
       config_string.concat(driver + '(')
