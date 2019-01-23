@@ -55,6 +55,15 @@ Used to generate the global configuration file, can be used extend to the global
 
 ## Resources
 
+The following resources are provided:
+
+- [config_global](#config_global)
+- [destination](#destination)
+- [filter](#filter)
+- [install](#install)
+- [log](#log)
+- [source](#source)
+
 ### config_global
 
 Generates the `syslog-ng.conf` file from node attributes containing the global configuration.
@@ -152,9 +161,10 @@ See [usage](#log-usage) for examples.
 | `config_dir`      | Yes       | String        | Directory to create config file, defaults to `/etc/syslog-ng/log.d`          |
 | `cookbook`        | Yes       | String        | Override cookbook to source the template file from                           |
 | `template_source` | Yes       | String        | Override the template source file                                            |
-| `source`          | No        | String, Array | The source driver to use                                                     |
-| `filter`          | Yes       | String, Array | The path for the source driver if it supports being specified one            |
-| `destination`     | Yes       | String, Array | Driver parameters and options                                                |
+| `source`          | No        | String, Array | The source directive(s) to reference                                         |
+| `filter`          | Yes       | String, Array | The filter directive(s) to reference                                         |
+| `destination`     | Yes       | String, Array | The destination directive(s) to reference                                    |
+| `flags`           | Yes       | String, Array | The log path flags to use                                                    |
 
 ### source
 
@@ -415,6 +425,8 @@ filter f_test_raw_string_array {
 
 #### install Usage
 
+[Resource](#install)
+
 There are two installation methods available `package_distro` and `package_copr`. The COPR installation method is only available to current Redhat and Fedora (7+ and 28+) distributions but does provide up-to-date versions that aren't in the distribution repositories.
 
 By default the resource will remove rsyslog which is the default syslog daemon on the supported distros, if this is set to `false` then the rsyslog service will just be disabled instead. Some package managers will remove rsyslog anyway when installing syslog-ng so even if this set to `false` rsyslog can still be removed.
@@ -520,6 +532,7 @@ syslog_ng_source 's_test_wildcard_file' do
 end
 
 ```
+
 Generates:
 
 ```c

@@ -55,7 +55,7 @@ syslog_ng_destination 'd_test_http_params' do
     'user' => 'user',
     'password' => 'password',
     'headers' => '"HEADER1: header1", "HEADER2: header2"',
-    'body' => '"${ISODATE} ${MESSAGE}"',
+    'body' => '"${ISODATE} ${MESSAGE}"'
   )
   notifies :run, 'execute[syslog-ng-config-test]', :delayed
   notifies :reload, 'service[syslog-ng]', :delayed
