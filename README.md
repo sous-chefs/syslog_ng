@@ -59,7 +59,7 @@ Used to generate the global configuration file, can be used extend to the global
 
 Generates the `syslog-ng.conf` file from node attributes containing the global configuration.
 
-See [usage](#configglobal-usage) for examples.
+See [usage](#config_global-usage) for examples.
 
 #### Actions
 
@@ -68,7 +68,7 @@ See [usage](#configglobal-usage) for examples.
 
 #### Properties
 
-All properties are optional as by default they will be sourced from node attributes, see the attribute file `config.rb` for hash formats.
+All properties are optional as by default they will be sourced from node attributes, see the attribute file [config.rb](/attributes/config.rb) for hash format.
 
 | Property      | Optional? | Type   | Description                                                                |
 |---------------|-----------|--------|----------------------------------------------------------------------------|
@@ -88,8 +88,8 @@ See [usage](#destination-usage) for examples.
 
 #### Actions
 
-- `create` - Create the syslog-ng destination configuration file
-- `disable` - Remove the syslog-ng destination configuration file
+- `create` - Create a syslog-ng destination configuration file
+- `disable` - Remove a syslog-ng destination configuration file
 
 #### Properties
 
@@ -99,7 +99,7 @@ See [usage](#destination-usage) for examples.
 | `cookbook`    | Yes       | String | Override cookbook to source the template file from                           |
 | `source`      | Yes       | String | Override the template source file                                            |
 | `driver`      | No        | String | The destination driver to use                                                |
-| `path`        | Yes       | String | The path for the destination driver if it supports being specified one       |
+| `path`        | Yes       | String | The path for the destination driver (if it supports being specified one)     |
 | `parameters`  | Yes       | Hash   | Driver parameters and options                                                |
 
 ### filter
@@ -108,8 +108,8 @@ See [usage](#filter-usage) for examples.
 
 #### Actions
 
-- `create` - Create the syslog-ng filter configuration file
-- `disable` - Remove the syslog-ng filter configuration file
+- `create` - Create a syslog-ng filter configuration file
+- `disable` - Remove a syslog-ng filter configuration file
 
 #### Properties
 
@@ -142,8 +142,8 @@ See [usage](#log-usage) for examples.
 
 #### Actions
 
-- `create` - Create the syslog-ng log configuration file
-- `disable` - Remove the syslog-ng log configuration file
+- `create` - Create a syslog-ng log configuration file
+- `disable` - Remove a syslog-ng log configuration file
 
 #### Properties
 
@@ -162,8 +162,8 @@ See [usage](#source-usage) for examples.
 
 #### Actions
 
-- `create` - Create the syslog-ng source configuration file
-- `disable` - Remove the syslog-ng source configuration file
+- `create` - Create a syslog-ng source configuration file
+- `disable` - Remove a syslog-ng source configuration file
 
 #### Properties
 
@@ -186,21 +186,29 @@ heavy lifting is done by the `SyslogNg::ConfigHelpers` library.
 
 #### `SyslogNg::InstallHelpers.installed_version_get`
 
-Retrieves the current installed version as a float to be used for the version directive in the global configuration file.
+Returns the current installed version as a float to be used for the version directive in the global configuration file.
 
 #### `SyslogNg::InstallHelpers.repo_get_packages`
 
-Retrieves an array of the packages to install from the relevant package manager.
+Returns an array of the packages to install from the relevant package manager.
+
+#### `SyslogNg::InstallHelpers.installed_get_packages`
+
+Returns an array of install syslog-ng packages to remove as part of an uninstall.
 
 ## Usage
 
-This cookbook contains no recipes and only provides resources to install and configure syslog-ng which can be directly used or wrapped in a wrapper cookbook.
+This cookbook contains no recipes and only provides resources to be directly used or wrapped in a wrapper cookbook.
 
 ### Resources
 
 #### config_global Usage
 
+[Resource](#config_global)
+
 All properties are optional and by default the settings in the generated global configuration will be retrieved from node attributes, any properties can be overridden by changing the attributes, specifying a different attribute or providing a value to the relevant resource property.
+
+The default node attributes for the global configuration generate a Redhat-style default syslog setup.
 
 ##### Example 1 - Using node attributes
 
@@ -268,9 +276,9 @@ destination d_test_params {
 
 Generates a syslog-ng [filter](https://www.syslog-ng.com/technical-documents/doc/syslog-ng-open-source-edition/3.19/administration-guide/54#TOPIC-1094669) configuration statement.
 
-Due to the large amount of possible combinations of Boolean operators and containers to which they can be applied this resource has a reasonably complex Hash structure and despite trying to break this as much as possible in testing, this library will very likely have some bugs in it.
+Due to the large amount of possible combinations of Boolean operators and containers to which can be applied in a filter, this resource has a reasonably complex Hash structure and despite trying to break this as much as possible in testing, this library will very likely have some bugs in it.
 
-In the case of the library being unable to generate a filter there is the option of giving the correctly formatted filter as a String or as an Array of String, in this case it is up to the user to ensure that it is a correctly formatted filter.
+In the case of the library being unable to generate a filter there is the option of giving the correctly formatted filter as a String or as an Array of String, in this case it is up to the implementer to ensure that it is a correctly formatted filter statement for syslog-ng.
 
 ##### Example 1 - Contained OR'd common filters
 
@@ -328,7 +336,7 @@ filter f_test_contained {
 
 ##### Example 3 - Multiple of the same filter given as an Array
 
-- syslog-ng implicitly takes multiple filters within a contained group without a Boolean operator as being `and`'d so the library explicitly specify it if no other operator has been given.
+- syslog-ng implicitly takes multiple filters within a contained group **without** a Boolean operator as being `and`'d so the library explicitly specifies it if no other operator has been given.
 
 ```ruby
 syslog_ng_filter 'f_test_array_and' do
@@ -407,9 +415,11 @@ filter f_test_raw_string_array {
 
 #### install Usage
 
-There are two installation methods available `package_distro` and `package_copr`, although the COPR installation method is only available to current Redhat and Fedora (7+ and 28+) distributions but does provide up-to-date versions that aren't in the distribution repositories.
+There are two installation methods available `package_distro` and `package_copr`. The COPR installation method is only available to current Redhat and Fedora (7+ and 28+) distributions but does provide up-to-date versions that aren't in the distribution repositories.
 
 By default the resource will remove rsyslog which is the default syslog daemon on the supported distros, if this is set to `false` then the rsyslog service will just be disabled instead. Some package managers will remove rsyslog anyway when installing syslog-ng so even if this set to `false` rsyslog can still be removed.
+
+The `syslog_ng_install` resource does not require a name property.
 
 ##### Distribution repository package installation
 
@@ -440,9 +450,9 @@ end
 
 Generates a syslog-ng [source](https://www.syslog-ng.com/technical-documents/doc/syslog-ng-open-source-edition/3.19/administration-guide/50#TOPIC-1094654) configuration statement.
 
-A log statement can be combined as the last part of a set of `source`, `filter` and `destination` resources to create a complete log configuration with syslog-ng or can contain the source, filter and destination driver statements directly if they are to only used once.
+A log statement is the last part of a combination of `source`, `filter` and `destination` resources to create a completed log configuration with syslog-ng. Multiple source, filter and destination elements can be passed to the resource as a String Array.
 
-Multiple source, filter and destination elements can be passed as a String Array.
+*The resource does not presently support embedded log statements, this will be added as a future development.*
 
 ##### Example
 
@@ -471,7 +481,7 @@ log {
 
 Generates a syslog-ng [source](https://www.syslog-ng.com/technical-documents/doc/syslog-ng-open-source-edition/3.19/administration-guide/16#TOPIC-1094519) configuration statement.
 
-##### Example
+##### Example 1 - TCP source
 
 ```ruby
 syslog_ng_source 's_test' do
@@ -492,4 +502,49 @@ Generates:
 source s_test {
     tcp(ip(127.0.0.1) port("5514"));
 };
+```
+
+##### Example 2 - Wildcard source
+
+```ruby
+syslog_ng_source 's_test_wildcard_file' do
+  driver 'wildcard-file'
+  parameters(
+    'base-dir' => '/var/log',
+    'filename-pattern' => '*.log',
+    'recursive' => 'no',
+    'follow-freq' => 1
+  )
+  description 'Follow all files in the /var/log directory'
+  action :create
+end
+
+```
+Generates:
+
+```c
+# Source - Follow all files in the /var/log directory
+source s_test_wildcard_file {
+    wildcard-file(base-dir("/var/log") filename-pattern("*.log") recursive(no) follow-freq(1));
+};
+```
+
+## Authors
+
+- Ben Hughes (<https://github.com/bmhughes>)
+
+## License
+
+```text
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
 ```
