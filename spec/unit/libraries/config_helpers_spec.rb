@@ -20,97 +20,105 @@ require 'spec_helper'
 
 describe 'SyslogNg::ConfigHelpers' do
   let(:dummy_class) { Class.new { include SyslogNg::ConfigHelpers } }
-  describe '.config_source_driver_map' do
+  describe '.config_srcdst_driver_map sources' do
     context('given driver with no parameters') do
       it 'returns config string' do
-        expect(dummy_class.new.config_source_driver_map('system', {})).to be_a(String)
-        expect(dummy_class.new.config_source_driver_map('system', {})).to eql('system();')
+        expect(dummy_class.new.config_srcdst_driver_map('system', {})).to be_a(String)
+        expect(dummy_class.new.config_srcdst_driver_map('system', {})).to eql('system();')
       end
     end
 
     context('given driver with parameters') do
       it 'returns config string' do
-        expect(dummy_class.new.config_source_driver_map('system', {})).to be_a(String)
-        expect(dummy_class.new.config_source_driver_map('udp', 'ip' => '0.0.0.0', 'port' => 514)).to eql('udp(ip(0.0.0.0) port(514));')
+        expect(dummy_class.new.config_srcdst_driver_map('system', {})).to be_a(String)
+        expect(dummy_class.new.config_srcdst_driver_map('udp', 'parameters' => { 'ip' => '0.0.0.0', 'port' => 514 })).to eql('udp(ip(0.0.0.0) port(514));')
       end
     end
 
     context('given driver with parameters as an array as string') do
       it 'returns config string' do
-        expect(dummy_class.new.config_source_driver_map('network', {})).to be_a(String)
-        expect(dummy_class.new.config_source_driver_map('network', ['ip("127.0.0.1")', 'port(5514)'])).to eql('network(ip("127.0.0.1") port(5514));')
+        expect(dummy_class.new.config_srcdst_driver_map('network', {})).to be_a(String)
+        expect(dummy_class.new.config_srcdst_driver_map('network', 'parameters' => ['ip("127.0.0.1")', 'port(5514)'])).to eql('network(ip("127.0.0.1") port(5514));')
       end
     end
 
     context('given driver with parameters as an array with non-string') do
       param = {
-        'ip' => [
-          '127.0.0.1',
-        ],
-        'port' => [
-          5614,
-        ],
+        'parameters' => {
+          'ip' => [
+            '127.0.0.1',
+          ],
+          'port' => [
+            5614,
+          ],
+        },
       }
 
       it 'returns config string' do
-        expect(dummy_class.new.config_source_driver_map('network', {})).to be_a(String)
-        expect(dummy_class.new.config_source_driver_map('network', param)).to eql('network(ip(127.0.0.1) port(5614));')
+        expect(dummy_class.new.config_srcdst_driver_map('network', {})).to be_a(String)
+        expect(dummy_class.new.config_srcdst_driver_map('network', param)).to eql('network(ip(127.0.0.1) port(5614));')
       end
     end
 
     context('given driver with parameter as an array with multiple non-string') do # There is no valid config I can see that would use this but it validates a code path.
       param = {
-        'ip' => [
-          '127.0.0.1',
-        ],
-        'port' => [
-          5614,
-          5714,
-        ],
+        'parameters' => {
+          'ip' => [
+            '127.0.0.1',
+          ],
+          'port' => [
+            5614,
+            5714,
+          ],
+        },
       }
 
       it 'returns config string' do
-        expect(dummy_class.new.config_source_driver_map('network', {})).to be_a(String)
-        expect(dummy_class.new.config_source_driver_map('network', param)).to eql('network(ip(127.0.0.1) port("5614 5714"));')
+        expect(dummy_class.new.config_srcdst_driver_map('network', {})).to be_a(String)
+        expect(dummy_class.new.config_srcdst_driver_map('network', param)).to eql('network(ip(127.0.0.1) port("5614 5714"));')
       end
     end
 
     context('given driver with parameters as a hash containing an array') do
       param = {
-        'program-override' => 'testing',
-        'use_fqdn' => 'yes',
-        'tags' => %w(test_tag_01 test_tag_02),
+        'parameters' => {
+          'program-override' => 'testing',
+          'use_fqdn' => 'yes',
+          'tags' => %w(test_tag_01 test_tag_02),
+        },
       }
 
       it 'returns config string' do
-        expect(dummy_class.new.config_source_driver_map('internal', {})).to be_a(String)
-        expect(dummy_class.new.config_source_driver_map('internal', param)).to eql('internal(program-override("testing") use_fqdn(yes) tags("test_tag_01", "test_tag_02"));')
+        expect(dummy_class.new.config_srcdst_driver_map('internal', {})).to be_a(String)
+        expect(dummy_class.new.config_srcdst_driver_map('internal', param)).to eql('internal(program-override("testing") use_fqdn(yes) tags("test_tag_01", "test_tag_02"));')
       end
     end
 
     context('given nested source driver config') do
       param = {
-        'transport' => 'tls',
-        'ip' => '127.0.0.1',
-        'port' => 9999,
-        'tls' => {
-          'peer-verify' => 'required-trusted',
-          'key-file' => '/etc/syslog-ng/tls/syslog-ng.key',
-          'cert-file' => '/etc/syslog-ng/tls/syslog-ng.crt',
+        'parameters' => {
+          'transport' => 'tls',
+          'ip' => '127.0.0.1',
+          'port' => 9999,
+          'tls' => {
+            'peer-verify' => 'required-trusted',
+            'key-file' => '/etc/syslog-ng/tls/syslog-ng.key',
+            'cert-file' => '/etc/syslog-ng/tls/syslog-ng.crt',
+          },
         },
       }
       it 'returns config string' do
-        expect(dummy_class.new.config_source_driver_map('network', param)).to be_a(String)
-        expect(dummy_class.new.config_source_driver_map('network', param)).to eql('network(transport("tls") ip(127.0.0.1) port(9999) tls(peer-verify("required-trusted") key-file("/etc/syslog-ng/tls/syslog-ng.key") cert-file("/etc/syslog-ng/tls/syslog-ng.crt")));')
+        expect(dummy_class.new.config_srcdst_driver_map('network', param)).to be_a(String)
+        expect(dummy_class.new.config_srcdst_driver_map('network', param)).to eql('network(transport("tls") ip(127.0.0.1) port(9999) tls(peer-verify("required-trusted") key-file("/etc/syslog-ng/tls/syslog-ng.key") cert-file("/etc/syslog-ng/tls/syslog-ng.crt")));')
       end
     end
   end
 
-  describe '.config_destination_driver_map' do
+  describe '.config_srcdst_driver_map destinations' do
     context('given driver with no parameters and a path') do
       it 'returns valid config string' do
-        expect(dummy_class.new.config_destination_driver_map('file', 'path' => '/dev/console')).to be_a(String)
-        expect(dummy_class.new.config_destination_driver_map('file', 'path' => '/dev/console')).to eql('file("/dev/console");')
+        expect(dummy_class.new.config_srcdst_driver_map('file', 'path' => '/dev/console')).to be_a(String)
+        expect(dummy_class.new.config_srcdst_driver_map('file', 'path' => '/dev/console')).to eql('file("/dev/console");')
       end
     end
 
@@ -123,8 +131,8 @@ describe 'SyslogNg::ConfigHelpers' do
       }
 
       it 'returns valid config string' do
-        expect(dummy_class.new.config_destination_driver_map('file', param)).to be_a(String)
-        expect(dummy_class.new.config_destination_driver_map('file', param)).to eql('file("/var/log/maillog" flush_lines(10));')
+        expect(dummy_class.new.config_srcdst_driver_map('file', param)).to be_a(String)
+        expect(dummy_class.new.config_srcdst_driver_map('file', param)).to eql('file("/var/log/maillog" flush_lines(10));')
       end
     end
 
@@ -135,8 +143,8 @@ describe 'SyslogNg::ConfigHelpers' do
       }
 
       it 'returns valid config string' do
-        expect(dummy_class.new.config_destination_driver_map('file', param)).to be_a(String)
-        expect(dummy_class.new.config_destination_driver_map('file', param)).to eql('file("/var/log/maillog" flush_lines(10));')
+        expect(dummy_class.new.config_srcdst_driver_map('file', param)).to be_a(String)
+        expect(dummy_class.new.config_srcdst_driver_map('file', param)).to eql('file("/var/log/maillog" flush_lines(10));')
       end
     end
   end

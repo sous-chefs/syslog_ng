@@ -26,7 +26,7 @@ with_run_context :root do
   end
 end
 
-syslog_ng_destination 'd_test' do
+syslog_ng_destination 'd_test_file' do
   driver 'file'
   path '/var/log/test.log'
   notifies :run, 'execute[syslog-ng-config-test]', :delayed
@@ -46,16 +46,15 @@ syslog_ng_destination 'd_test_file_params' do
   action :create
 end
 
-syslog_ng_destination 'd_test_http_params' do
-  driver 'http'
+syslog_ng_destination 'd_test_mongo_params' do
+  driver 'mongodb'
   parameters(
-    'url' => 'http://127.0.0.1:8000',
-    'method' => 'PUT',
-    'user-agent' => 'syslog-ng User Agent',
-    'user' => 'user',
-    'password' => 'password',
-    'headers' => '"HEADER1: header1", "HEADER2: header2"',
-    'body' => '"${ISODATE} ${MESSAGE}"'
+    'servers' => '127.0.0.1:27017',
+    'database' => 'syslog',
+    'collection' => 'messages',
+    'value-pairs' => {
+      'scope' => %w(selected-macros nv-pairs sdata),
+    }
   )
   notifies :run, 'execute[syslog-ng-config-test]', :delayed
   notifies :reload, 'service[syslog-ng]', :delayed

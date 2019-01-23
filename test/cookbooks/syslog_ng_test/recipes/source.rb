@@ -37,15 +37,13 @@ syslog_ng_source 's_test_tcp' do
   action :create
 end
 
-syslog_ng_source 's_test_wildcard_file' do
-  driver 'wildcard-file'
+syslog_ng_source 's_test_pipe' do
+  driver 'pipe'
+  path '/dev/pipe'
   parameters(
-    'base-dir' => '/var/log',
-    'filename-pattern' => '*.log',
-    'recursive' => 'no',
-    'follow-freq' => 1
+    'pad-size' => 2048
   )
-  description 'Follow all files in the /var/log directory'
+  description 'pipe source testing'
   notifies :run, 'execute[syslog-ng-config-test]', :delayed
   notifies :reload, 'service[syslog-ng]', :delayed
   action :create
