@@ -32,7 +32,7 @@ describe 'syslog_ng_test::config_global' do
       let(:chef_run) do
         # for a complete list of available platforms and versions see:
         # https://github.com/customink/fauxhai/blob/master/PLATFORMS.md
-        runner = ChefSpec::ServerRunner.new(platform: platform.dup.downcase!, version: version)
+        runner = ChefSpec::SoloRunner.new(platform: platform.dup.downcase!, version: version)
         runner.converge(described_recipe)
       end
 

@@ -31,7 +31,7 @@ describe 'syslog_ng_test::log' do
       let(:chef_run) do
         # for a complete list of available platforms and versions see:
         # https://github.com/customink/fauxhai/blob/master/PLATFORMS.md
-        runner = ChefSpec::ServerRunner.new(platform: 'centos', version: '7.6.1804')
+        runner = ChefSpec::SoloRunner.new(platform: 'centos', version: '7.6.1804')
         runner.converge(described_recipe)
       end
 

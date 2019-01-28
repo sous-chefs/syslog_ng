@@ -27,6 +27,9 @@ foodcritic:
     - foodcritic .
   tags:
     - chef
+  except:
+    variables:
+      - $MANUAL_CLEANUP
 
 cookstyle:
   stage: lint
@@ -34,6 +37,9 @@ cookstyle:
     - cookstyle .
   tags:
     - chef
+  except:
+    variables:
+      - $MANUAL_CLEANUP
 
 chefspec:
   stage: chefspec
@@ -154,6 +160,10 @@ chefspec:
     - mkdir -p etc
     - cp -Rfvp /tmp/gitlab-runner-artifacts/$CI_JOB_NAME-$CI_COMMIT_SHA/* etc/
     - kitchen destroy $KITCHEN_NAME
+  retry: 1
+  except:
+    variables:
+      - $MANUAL_CLEANUP
   artifacts:
     name: "$CI_JOB_NAME-$CI_COMMIT_SHA"
     when: always
@@ -263,6 +273,9 @@ berks_upload:
     name: production
   only:
     - production
+  except:
+    variables:
+      - $MANUAL_CLEANUP
   tags:
     - chef
     - chef-berks-upload
@@ -274,6 +287,9 @@ cleanup_job:
     - kitchen destroy all
     - sudo rm -Rf /tmp/gitlab-runner-artifacts/*
   when: always
+  except:
+    variables:
+      - $MANUAL_CLEANUP
   tags:
       - chef
       - kitchen
