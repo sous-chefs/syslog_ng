@@ -37,10 +37,6 @@ default['syslog_ng']['config']['source'] = {
   's_sys': {
     'system': {},
     'internal': {},
-    'udp': {
-      'ip': '0.0.0.0',
-      'port': 514,
-    },
   },
 }
 
