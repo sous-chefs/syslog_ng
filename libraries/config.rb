@@ -31,7 +31,7 @@ module SyslogNg
       config_string = ''
       config_string.concat(driver + '(')
       config_string.concat(config_format_string_value(parameters['path']) + ' ') if parameters.key?('path') # Certain drivers have an unnamed 'path' parameter (eg File)
-      config_string.concat(config_build_parameter_string(parameters['parameters'])) if parameters.key?('parameters')
+      config_string.concat(config_build_parameter_string(parameters: parameters['parameters'])) if parameters.key?('parameters')
       config_string.rstrip!
       config_string.concat(');')
 
@@ -76,6 +76,25 @@ module SyslogNg
       config_string
     end
 
+    SYSLOG_NG_REWRITE_OPERATORS ||= %w(subst set unset groupset groupunset set-tag clear-tag credit-card-mask credit-card-hash).freeze
+    SYSLOG_NG_REWRITE_PARAMETERS_UNNAMED ||= %w(match replacement field tags additional_options).freeze
+
+    def config_rewrite_map(parameters)
+      raise ArgumentError, "config_rewrite_map: Expected syslog-ng rewrite configuration attribute block to be a Hash, got a #{parameters.class}." unless parameters.is_a?(Hash)
+      raise ArgumentError, "config_rewrite_map: Invalid rewrite operator specified, got #{parameters['function']} which is not a valid syslog-ng rewrite operation." unless SYSLOG_NG_REWRITE_OPERATORS.include?(parameters['function'])
+
+      int_parameters = parameters.dup
+      config_string = ''
+      config_string.concat(int_parameters.delete('function') + '(')
+      config_string.concat(config_build_parameter_string(parameters: int_parameters, unnamed_parameters: SYSLOG_NG_REWRITE_PARAMETERS_UNNAMED))
+
+      config_string.rstrip!
+      config_string = config_string.slice(0, (config_string.length - 1)) if config_string[(config_string.length - 1)].eql?(',')
+      config_string.concat(')')
+
+      config_string
+    end
+
     private
 
     def config_format_string_value(string)
@@ -91,12 +110,19 @@ module SyslogNg
       param_string
     end
 
-    def config_format_parameter_pair(parameter, value)
+    def config_format_parameter_pair(parameter:, value:, named: true)
       raise ArgumentError, "config_format_parameter_pair: Type error, got #{parameter.class} and #{value.class}. Expected String and String/Integer." unless parameter.is_a?(String) && (value.is_a?(String) || value.is_a?(Integer))
 
       parameter_value = value.is_a?(String) && !value.match?('"') ? config_format_string_value(value) : value.to_s # TODO: Don't like this matching for already quoted strings
       parameter_string = ''
-      parameter_string.concat(parameter + '(' + parameter_value + ') ')
+      parameter_string.concat(parameter) if named
+
+      if named
+        parameter_string.concat('(' + parameter_value + ') ')
+      else
+        parameter_string.concat(parameter_value + ', ')
+      end
+
       Chef::Log.debug("config_format_parameter_pair: Generated parameter: #{parameter_string}.")
 
       parameter_string
@@ -132,17 +158,20 @@ module SyslogNg
       parameter_string
     end
 
-    def config_build_parameter_string(parameters)
+    def config_build_parameter_string(parameters:, unnamed_parameters: [])
       raise ArgumentError, "config_build_parameter_string: Expected configuration parameters to be passed as a Hash, Array or String. Got a #{parameters.class}." unless parameters.is_a?(Hash) || parameters.is_a?(Array) || parameters.is_a?(String)
 
       param_string = ''
       return param_string if parameters.empty?
       if parameters.is_a?(Hash)
         parameters.each do |parameter, value|
-          if value.is_a?(Hash) || value.is_a?(Array)
-            param_string.concat(config_format_parameter_pair(parameter, config_build_parameter_string(value)))
+          if value.nil?
+            next
+          elsif value.is_a?(Hash) || value.is_a?(Array)
+            next if value.empty?
+            param_string.concat(config_format_parameter_pair(parameter: parameter, value: config_build_parameter_string(parameters: value), named: !unnamed_parameters.include?(parameter)))
           else
-            param_string.concat(config_format_parameter_pair(parameter, value))
+            param_string.concat(config_format_parameter_pair(parameter: parameter, value: value, named: !unnamed_parameters.include?(parameter)))
           end
         end
       elsif parameters.is_a?(Array)
@@ -177,20 +206,21 @@ module SyslogNg
       end
 
       local_hash.each do |filter, value|
-        if value.is_a?(String)
+        case value
+        when String
           config_string.concat(config_contained_group_append(config_string, boolean_operator, filter, value))
-        elsif value.is_a?(Array)
+        when Array
           value.each do |val|
             config_string.concat(config_contained_group_append(config_string, boolean_operator, filter, val))
           end
-        elsif value.is_a?(Hash)
+        when Hash
           if config_string.include?(')')
             config_string.concat(boolean_operator.tr('_', ' ') + ' ' + config_contained_group(value))
           else
             config_string.concat(config_contained_group(value) + ' ')
           end
         else
-          raise "Invalid value found. Got a #{value.class}."
+          raise "Invalid value class found, support String, Array and Hash. Got a #{value.class}."
         end
       end
       config_string.rstrip!
@@ -213,5 +243,13 @@ module SyslogNg
     rescue IPAddr::InvalidAddressError
       false
     end
+
+    # def parameter_defined?(parameter)
+    #   if parameter.nil? || parameter.empty?
+    #     false
+    #   else
+    #     true
+    #   end
+    # end
   end
 end

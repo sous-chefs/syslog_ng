@@ -2,7 +2,7 @@
 # Cookbook:: syslog_ng
 # Attribute:: config
 #
-# Copyright:: 2018, Ben Hughes <bmhughes@bmhughes.co.uk>
+# Copyright:: 2019, Ben Hughes <bmhughes@bmhughes.co.uk>
 #
 
 default['syslog_ng']['config']['config_dir'] = '/etc/syslog-ng'
@@ -10,12 +10,17 @@ default['syslog_ng']['config']['config_file'] = 'syslog-ng.conf'
 default['syslog_ng']['config']['config_template_cookbook'] = 'syslog_ng'
 default['syslog_ng']['config']['config_template_template'] = 'syslog-ng/syslog-ng.conf.erb'
 
+# Configuration directories
+
 default['syslog_ng']['config']['config_dirs'] = [
   '/etc/syslog-ng/conf.d',
   '/etc/syslog-ng/destination.d',
   '/etc/syslog-ng/filter.d',
   '/etc/syslog-ng/log.d',
+  '/etc/syslog-ng/parser.d',
+  '/etc/syslog-ng/rewrite.d',
   '/etc/syslog-ng/source.d',
+  '/etc/syslog-ng/template.d',
 ]
 
 # Global Options

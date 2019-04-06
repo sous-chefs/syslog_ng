@@ -280,4 +280,131 @@ describe 'SyslogNg::ConfigHelpers' do
       end
     end
   end
+
+  describe '.config_rewrite_map' do
+    context('given subst rewrite') do
+      param = {
+        'function' => 'subst',
+        'match' => 'IP',
+        'replacement' => 'IP-Address',
+        'value' => 'MESSAGE',
+        'flags' => nil,
+        'condition' => nil,
+        'additional_options' => {},
+      }
+
+      it 'returns valid config string' do
+        expect(dummy_class.new.config_rewrite_map(param)).to be_a(String)
+        expect(dummy_class.new.config_rewrite_map(param)).to eql('subst("IP", "IP-Address", value("MESSAGE"))')
+      end
+    end
+
+    context('given set rewrite') do
+      param = {
+        'function' => 'set',
+        'match' => 'myhost',
+        'value' => 'HOST',
+      }
+
+      it 'returns valid config string' do
+        expect(dummy_class.new.config_rewrite_map(param)).to be_a(String)
+        expect(dummy_class.new.config_rewrite_map(param)).to eql('set("myhost", value("HOST"))')
+      end
+    end
+
+    context('given set rewrite with condition') do
+      param = {
+        'function' => 'set',
+        'match' => 'myhost',
+        'value' => 'HOST',
+        'condition' => 'program("myapplication")',
+      }
+
+      it 'returns valid config string' do
+        expect(dummy_class.new.config_rewrite_map(param)).to be_a(String)
+        expect(dummy_class.new.config_rewrite_map(param)).to eql('set("myhost", value("HOST") condition(program("myapplication")))')
+      end
+    end
+
+    context('given unset rewrite') do
+      param = {
+        'function' => 'unset',
+        'value' => 'HOST',
+      }
+
+      it 'returns valid config string' do
+        expect(dummy_class.new.config_rewrite_map(param)).to be_a(String)
+        expect(dummy_class.new.config_rewrite_map(param)).to eql('unset(value("HOST"))')
+      end
+    end
+
+    context('given groupunset rewrite') do
+      param = {
+        'function' => 'groupunset',
+        'values' => '.SDATA.*',
+      }
+
+      it 'returns valid config string' do
+        expect(dummy_class.new.config_rewrite_map(param)).to be_a(String)
+        expect(dummy_class.new.config_rewrite_map(param)).to eql('groupunset(values(".SDATA.*"))')
+      end
+    end
+
+    context('given groupset rewrite') do
+      param = {
+        'function' => 'groupset',
+        'match' => 'myhost',
+        'values' => [
+          'HOST',
+          'FULLHOST',
+        ],
+      }
+
+      it 'returns valid config string' do
+        expect(dummy_class.new.config_rewrite_map(param)).to be_a(String)
+        expect(dummy_class.new.config_rewrite_map(param)).to eql('groupset("myhost", values("HOST", "FULLHOST"))')
+      end
+    end
+
+    context('given set-tag rewrite') do
+      param = {
+        'function' => 'set-tag',
+        'tags' => [
+          'test-tag-01',
+          'test-tag-02',
+        ],
+      }
+
+      it 'returns valid config string' do
+        expect(dummy_class.new.config_rewrite_map(param)).to be_a(String)
+        expect(dummy_class.new.config_rewrite_map(param)).to eql('set-tag("test-tag-01", "test-tag-02")')
+      end
+    end
+
+    context('given clear-tag rewrite') do
+      param = {
+        'function' => 'clear-tag',
+        'tags' => [
+          'test-tag-01',
+        ],
+      }
+
+      it 'returns valid config string' do
+        expect(dummy_class.new.config_rewrite_map(param)).to be_a(String)
+        expect(dummy_class.new.config_rewrite_map(param)).to eql('clear-tag("test-tag-01")')
+      end
+    end
+
+    context('given credit-card-mask rewrite') do
+      param = {
+        'function' => 'credit-card-mask',
+        'value' => 'cc_field',
+      }
+
+      it 'returns valid config string' do
+        expect(dummy_class.new.config_rewrite_map(param)).to be_a(String)
+        expect(dummy_class.new.config_rewrite_map(param)).to eql('credit-card-mask(value("cc_field"))')
+      end
+    end
+  end
 end

@@ -52,6 +52,9 @@ suites:
       - recipe[syslog_ng_test::source]
       - recipe[syslog_ng_test::filter]
       - recipe[syslog_ng_test::log]
+      - recipe[syslog_ng_test::template]
+      - recipe[syslog_ng_test::parser]
+      - recipe[syslog_ng_test::rewrite]
     verifier:
       inspec_tests:
         - test/integration/config
