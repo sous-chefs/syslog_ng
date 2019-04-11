@@ -16,17 +16,35 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-property :config_dir, String, default: '/etc/syslog-ng/rewrite.d'
+property :config_dir, String, default: '/etc/syslog-ng/parser.d'
 property :cookbook, String
 property :source, String
-property :function, String, required: true, equal_to: ['subst', 'set', 'unset', 'groupset', 'groupunset', 'credit-card-mask', 'set-tag', 'clear-tag']
-property :match, String
-property :replacement, String
-property :field, String
-property :value, String
-property :values, [String, Array]
-property :flags, [String, Array]
-property :tags, String
-property :condition, String
+property :parser, String, required: true
+property :parser_options, Hash, default: {}
 property :additional_options, Hash, default: {}
 property :description, String
+
+action :create do
+  template "#{new_resource.config_dir}/#{new_resource.name}.conf" do
+    source new_resource.source ? new_resource.source : 'syslog-ng/parser.conf.erb'
+    cookbook new_resource.cookbook ? new_resource.cookbook : node['syslog_ng']['config']['config_template_cookbook']
+    owner 'root'
+    group 'root'
+    mode '0755'
+    sensitive new_resource.sensitive
+    variables(
+      name: new_resource.name,
+      description: new_resource.description.nil? ? new_resource.name : new_resource.description,
+      parser: new_resource.parser,
+      parser_options: new_resource.parser_options,
+      additional_options: new_resource.additional_options,
+    )
+    action :create
+  end
+end
+
+action :delete do
+  file "#{new_resource.config_dir}/#{new_resource.name}.conf" do
+    action :delete
+  end
+end

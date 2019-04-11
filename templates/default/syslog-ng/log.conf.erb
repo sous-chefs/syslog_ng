@@ -33,4 +33,11 @@ log {
     <% else -%>
     flags(<%= @flags %>);
     <% end -%>
+    <% if @parser.is_a?(Array) -%>
+    <% @parser.each do |parser| -%>
+    parser(<%= parser %>);
+    <% end -%>
+    <% else -%>
+    parser(<%= @parser %>);
+    <% end -%>
 };
