@@ -2,7 +2,7 @@
 # Cookbook:: test
 # Recipe:: package_copr
 #
-# Copyright:: 2018, Ben Hughes <bmhughes@bmhughes.co.uk>
+# Copyright:: 2019, Ben Hughes <bmhughes@bmhughes.co.uk>
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,7 +16,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-syslog_ng_install '' do
-  package_source 'package_copr'
-  action :install
+if platform_family?('rhel')
+  syslog_ng_install '' do
+    package_source 'package_copr'
+    action :install
+  end
+else
+  include_recipe '::package_distro'
 end

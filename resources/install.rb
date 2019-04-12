@@ -90,7 +90,8 @@ action :install do
   ruby_block 'repo_get_packages' do
     extend SyslogNg::InstallHelpers
     block do
-      packages = repo_get_packages(platform: node['platform_family'], copr: copr)
+      packages = repo_get_packages(platform: node['platform_family'], copr: copr, copr_version: node['syslog_ng']['install']['copr_repo_version'])
+      raise 'No packages found to install' if packages.empty?
       log "Found #{packages.count} packages to install"
       Chef::Log.debug("Packages to install are: #{packages.join(', ')}.")
     end

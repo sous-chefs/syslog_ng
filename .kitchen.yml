@@ -46,7 +46,7 @@ suites:
         - test/integration/copr
   - name: config
     run_list:
-      - recipe[syslog_ng_test::package_distro]
+      - recipe[syslog_ng_test::package_copr]
       - recipe[syslog_ng_test::config_global]
       - recipe[syslog_ng_test::destination]
       - recipe[syslog_ng_test::source]

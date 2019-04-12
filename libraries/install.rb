@@ -28,22 +28,24 @@ module SyslogNg
       syslog_ng_version_cmd.stdout.to_f
     end
 
-    def repo_get_packages(platform:, copr: false)
+    def repo_get_packages(platform:, copr: false, copr_version: '0.0')
       raise ArgumentException, "Expected platform to be a String, got a #{platform.class}." unless platform.is_a?(String)
 
       require 'mixlib/shellout'
 
+      version = copr_version.delete('.')
+
       case platform
       when 'rhel', 'amazon'
         command = if copr
-                    "yum -q --disablerepo=* --enablerepo=syslog-ng319 search syslog-ng | grep -i 'syslog-ng' | awk '{print $1}' | grep -Po '(syslog-ng)((-[a-z]+)?)+' | uniq"
+                    "yum -q --disablerepo=* --enablerepo=syslog-ng#{version} search syslog-ng | grep -i 'syslog-ng' | awk '{print $1}' | grep -Po '(syslog-ng)((-[a-z]+)?)+' | uniq"
                   else
                     "yum -q search syslog-ng | grep -i 'syslog-ng' | awk '{print $1}' | grep -Po '(syslog-ng)((-[a-z]+)?)+' | uniq"
                   end
         Chef::Log.debug("RHEL selected, command will be '#{command}'")
       when 'fedora'
         command = if copr
-                    "dnf -q --disablerepo=* --enablerepo=syslog-ng319 search syslog-ng | grep -i 'syslog-ng' | awk '{print $1}' | grep -Po '(syslog-ng)((-[a-z]+)?)+' | uniq"
+                    "dnf -q --disablerepo=* --enablerepo=syslog-ng#{version} search syslog-ng | grep -i 'syslog-ng' | awk '{print $1}' | grep -Po '(syslog-ng)((-[a-z]+)?)+' | uniq"
                   else
                     "dnf -q search syslog-ng | grep -i 'syslog-ng' | awk '{print $1}' | grep -Po '(syslog-ng)((-[a-z]+)?)+' | uniq"
                   end
