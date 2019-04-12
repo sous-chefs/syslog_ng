@@ -16,8 +16,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-include_recipe '::selinux'
-
 syslog_ng_config_global '/etc/syslog-ng/syslog-ng.conf' do
   notifies :run, 'execute[syslog-ng-config-test]', :delayed
   notifies :restart, 'service[syslog-ng]', :delayed

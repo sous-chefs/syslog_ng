@@ -24,7 +24,8 @@ platforms:
 
 suites:
   - name: default
-    run_list:           
+    run_list:   
+      - recipe[syslog_ng_test::selinux]        
       - recipe[syslog_ng_test::package_distro]
       - recipe[syslog_ng_test::config_global]
     verifier:
@@ -38,7 +39,8 @@ suites:
       - debian-9
       - amazonlinux
       - amazonlinux-2
-    run_list:           
+    run_list:
+      - recipe[syslog_ng_test::selinux]
       - recipe[syslog_ng_test::package_copr]
       - recipe[syslog_ng_test::config_global]
     verifier:
@@ -46,6 +48,7 @@ suites:
         - test/integration/copr
   - name: config
     run_list:
+      - recipe[syslog_ng_test::selinux]
       - recipe[syslog_ng_test::package_copr]
       - recipe[syslog_ng_test::config_global]
       - recipe[syslog_ng_test::destination]
@@ -67,6 +70,7 @@ suites:
       - amazonlinux
       - amazonlinux-2
     run_list:
+      - recipe[syslog_ng_test::selinux]
       - recipe[syslog_ng_test::package_copr]
       - recipe[syslog_ng_test::config_global]
       - recipe[syslog_ng_test::destination]
