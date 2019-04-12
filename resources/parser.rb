@@ -37,7 +37,7 @@ action :create do
       description: new_resource.description.nil? ? new_resource.name : new_resource.description,
       parser: new_resource.parser,
       parser_options: new_resource.parser_options,
-      additional_options: new_resource.additional_options,
+      additional_options: new_resource.additional_options
     )
     action :create
   end

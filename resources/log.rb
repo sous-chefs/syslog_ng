@@ -40,7 +40,7 @@ action :create do
       filter: new_resource.filter,
       destination: new_resource.destination,
       flags: new_resource.flags,
-      parser: new_resource.parser,
+      parser: new_resource.parser
     )
     action :create
   end

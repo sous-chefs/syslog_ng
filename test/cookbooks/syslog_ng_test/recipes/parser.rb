@@ -28,7 +28,7 @@ end
 
 syslog_ng_parser 'p_csv_parser' do
   parser 'csv-parser'
-  parser_options 'columns' => '"HOSTNAME.NAME", "HOSTNAME.ID"', 'delimiters' => '"-"', 'flags' => 'escape-none', 'template' => '"${HOST}"'  
+  parser_options 'columns' => '"HOSTNAME.NAME", "HOSTNAME.ID"', 'delimiters' => '"-"', 'flags' => 'escape-none', 'template' => '"${HOST}"'
   notifies :run, 'execute[syslog-ng-config-test]', :delayed
   notifies :reload, 'service[syslog-ng]', :delayed
   action :create

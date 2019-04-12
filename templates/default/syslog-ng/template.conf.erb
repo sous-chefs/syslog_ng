@@ -7,7 +7,7 @@
 <% unless (@template.nil? || @template.empty?) -%>
 <% @template.each do |name, config| -%>
 template <%= name -%> {
-    template(<%= config['template'] -%>) template-escape(<%= config['template-escape'] -%>);
+    template("<%= config['template'] -%>"); template-escape(<%= config['template_escape'] -%>);
 };
 <% end -%>
 <% end -%>

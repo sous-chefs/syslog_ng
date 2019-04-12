@@ -354,10 +354,7 @@ describe 'SyslogNg::ConfigHelpers' do
       param = {
         'function' => 'groupset',
         'match' => 'myhost',
-        'values' => [
-          'HOST',
-          'FULLHOST',
-        ],
+        'values' => %w(HOST FULLHOST),
       }
 
       it 'returns valid config string' do

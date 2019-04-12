@@ -27,15 +27,10 @@ action :create do
   template = {
     new_resource.name => {
       'template' => new_resource.template,
-      'template_escape' => '',
     },
   }
 
-  template['template_escape'] = if new_resource.template_escape
-                                  'yes'
-                                else
-                                  'no'
-                                end
+  template[new_resource.name]['template_escape'] = new_resource.template_escape ? 'yes' : 'no'
 
   template "#{new_resource.config_dir}/#{new_resource.name}.conf" do
     source new_resource.source ? new_resource.source : 'syslog-ng/template.conf.erb'
