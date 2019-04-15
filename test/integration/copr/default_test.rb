@@ -5,13 +5,13 @@
 # The Inspec reference, with examples and extensive documentation, can be
 # found at http://inspec.io/docs/reference/resources/
 
-describe file('/etc/yum.repos.d/syslog-ng319.repo') do
+describe file('/etc/yum.repos.d/syslog-ng320.repo') do
   it { should exist }
   it { should be_file }
   it { should_not be_directory }
   its('type') { should cmp 'file' }
-  its('content') { should match /name=Copr repo for syslog-ng319 owned by czanik/ }
-  its('content') { should match %r{baseurl=https:\/\/copr-be.cloud.fedoraproject.org\/results\/czanik\/syslog-ng319\/(epel|fedora)-\$releasever-\$basearch\/} }
+  its('content') { should match /name=Copr repo for syslog-ng320 owned by czanik/ }
+  its('content') { should match %r{baseurl=https:\/\/copr-be.cloud.fedoraproject.org\/results\/czanik\/syslog-ng320\/(epel|fedora)-\$releasever-\$basearch\/} }
 end
 
 describe package('syslog-ng') do

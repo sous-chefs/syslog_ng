@@ -31,3 +31,7 @@ end
     it { should exist }
   end
 end
+
+describe file('/etc/yum.repos.d/syslog-ng312.repo') do
+  it { should_not exist }
+end

@@ -18,6 +18,7 @@
 
 property :package_source, String, equal_to: %w(package_distro package_copr), default: 'package_distro'
 property :remove_rsyslog, [true, false], default: true
+property :repo_cleanup, [true, false], default: true
 
 action :install do
   extend SyslogNg::InstallHelpers
@@ -84,6 +85,19 @@ action :install do
         'type' => 'rpm-md'
       )
       action :create
+    end
+
+    if new_resource.repo_cleanup
+      log 'Performing superceeded repository cleanup'
+      configured_yum_repos = Dir.entries('/etc/yum.repos.d')
+
+      configured_yum_repos.each do |repo|
+        next if repo == '.' || repo == '..' || !repo.include?('syslog-ng') || repo.sub('.repo', '').eql?(repo_name)
+        log "Removing superceeded repository #{repo}"
+        file "/etc/yum.repos.d/#{repo}" do
+          action :delete
+        end
+      end
     end
   end
 

@@ -16,11 +16,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-if platform_family?('rhel')
+if platform_family?('rhel', 'fedora')
   syslog_ng_install '' do
     package_source 'package_copr'
     action :install
   end
 else
+  log 'Not RHEL/Fedora, falling back to distro packages'
   include_recipe '::package_distro'
 end
