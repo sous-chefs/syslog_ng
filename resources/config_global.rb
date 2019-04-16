@@ -63,7 +63,9 @@ action :create do
         }
       end
     )
-    helpers(SyslogNg::ConfigHelpers)
+    helpers(SyslogNg::SourceHelpers)
+    helpers(SyslogNg::DestinationHelpers)
+    helpers(SyslogNg::FilterHelpers)
     action :create
   end
 

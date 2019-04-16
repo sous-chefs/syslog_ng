@@ -7,7 +7,7 @@
 <% unless (@filter.nil? || @filter.empty?) -%>
 <% @filter.each do |name, config| -%>
 filter <%= name %> {
-    <%= config_filter_map(config) %>;
+    <%= filter_builder(config) %>;
 };
 <% end -%>
 <% end -%>

@@ -48,7 +48,7 @@ action :create do
       description: new_resource.description.nil? ? new_resource.name : new_resource.description,
       source: source
     )
-    helpers(SyslogNg::ConfigHelpers)
+    helpers(SyslogNg::SourceHelpers)
     action :create
   end
 end

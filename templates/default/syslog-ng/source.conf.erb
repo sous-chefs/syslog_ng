@@ -8,7 +8,7 @@
 <% @source.each do |name, config| -%>
 source <%= name -%> {
     <% config.each do |driver, parameters| -%>
-    <%= config_srcdst_driver_map(driver, parameters) %>
+    <%= source_builder(driver: driver, parameters: parameters) %>
     <% end -%>
 };
 <% end -%>

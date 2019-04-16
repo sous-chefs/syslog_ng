@@ -7,7 +7,7 @@
 <% unless (@rewrite.nil? || @rewrite.empty?) -%>
 <% @rewrite.each do |name, config| -%>
 rewrite <%= name -%> {
-    <%= config_rewrite_map(config) %>;
+    <%= rewrite_builder(config) %>;
 };
 <% end -%>
 <% end -%>
