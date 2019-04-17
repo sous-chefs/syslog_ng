@@ -31,8 +31,8 @@ describe 'SyslogNg::InstallHelpers' do
         allow(shellout).to receive(:error!).and_return(nil)
         allow(shellout).to receive(:stdout).and_return('3.18\n1')
 
-        expect(dummy_class.new.installed_version_get).to be_a(Float)
-        expect(dummy_class.new.installed_version_get).to eq(3.18)
+        expect(dummy_class.new.installed_version_get).to be_a(String)
+        expect(dummy_class.new.installed_version_get).to eq('3.18')
       end
     end
   end
