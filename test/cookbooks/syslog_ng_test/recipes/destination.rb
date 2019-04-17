@@ -16,16 +16,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-with_run_context :root do
-  find_resource(:execute, 'syslog-ng-config-test') do
-    command '/sbin/syslog-ng -s'
-    action :nothing
-  end
-  find_resource(:service, 'syslog-ng') do
-    action :nothing
-  end
-end
-
 syslog_ng_destination 'd_test_file' do
   driver 'file'
   path '/var/log/test.log'
@@ -55,6 +45,34 @@ syslog_ng_destination 'd_test_mongo_params' do
     'value-pairs' => {
       'scope' => %w(selected-macros nv-pairs sdata),
     }
+  )
+  notifies :run, 'execute[syslog-ng-config-test]', :delayed
+  notifies :reload, 'service[syslog-ng]', :delayed
+  action :create
+end
+
+syslog_ng_destination 'd_test_multi_file' do
+  configuration(
+    [
+      {
+        'file' => {
+          'path' => '/var/log/test_file_1.log',
+          'parameters' => {
+            'flush_lines' => 10,
+            'create-dirs' => 'yes',
+          },
+        },
+      },
+      {
+        'file' => {
+          'path' => '/var/log/test_file_2.log',
+          'parameters' => {
+            'flush_lines' => 20,
+            'create-dirs' => 'yes',
+          },
+        },
+      },
+    ]
   )
   notifies :run, 'execute[syslog-ng-config-test]', :delayed
   notifies :reload, 'service[syslog-ng]', :delayed

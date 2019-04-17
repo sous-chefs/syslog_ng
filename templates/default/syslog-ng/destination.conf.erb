@@ -5,11 +5,11 @@
 
 # Destination - <%= @description %>
 <% unless (@destination.nil? || @destination.empty?) -%>
-<% @destination.each do |name, config| -%>
-destination <%= name -%> {
+destination <%= @name -%> {
+    <% @destination.each do |config| -%>
     <% config.each do |driver, parameters| -%>
     <%= destination_builder(driver: driver, parameters: parameters) %>
     <% end -%>
+    <% end -%>
 };
-<% end -%>
 <% end -%>

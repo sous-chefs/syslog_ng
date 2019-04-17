@@ -17,3 +17,12 @@ end
     it { should_not be_directory }
   end
 end
+
+describe file('/etc/syslog-ng/destination.d/d_test_multi_file.conf') do
+  it { should exist }
+  it { should be_file }
+  it { should_not be_directory }
+  its('type') { should cmp 'file' }
+  its('content') { should match %r{file\("/var/log/test_file_1.log" flush_lines\(10\) create-dirs\(yes\)\);} }
+  its('content') { should match %r{file\("/var/log/test_file_2.log" flush_lines\(20\) create-dirs\(yes\)\);} }
+end

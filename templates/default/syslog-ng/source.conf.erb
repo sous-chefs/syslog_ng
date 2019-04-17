@@ -5,11 +5,12 @@
 
 # Source - <%= @description %>
 <% unless (@source.nil? || @source.empty?) -%>
-<% @source.each do |name, config| -%>
-source <%= name -%> {
+
+source <%= @name -%> {
+    <% @source.each do |config| -%>
     <% config.each do |driver, parameters| -%>
     <%= source_builder(driver: driver, parameters: parameters) %>
     <% end -%>
+    <% end -%>
 };
-<% end -%>
 <% end -%>

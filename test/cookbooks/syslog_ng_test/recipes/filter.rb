@@ -16,16 +16,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-with_run_context :root do
-  find_resource(:execute, 'syslog-ng-config-test') do
-    command '/sbin/syslog-ng -s'
-    action :nothing
-  end
-  find_resource(:service, 'syslog-ng') do
-    action :nothing
-  end
-end
-
 syslog_ng_filter 'f_test' do
   parameters(
     'container' => {
