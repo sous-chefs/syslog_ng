@@ -22,7 +22,7 @@ module SyslogNg
   module FilterHelpers
     include SyslogNg::CommonHelpers
     def filter_builder(parameters)
-      raise ArgumentError, "config_filter_map: Expected syslog-ng filter definition to be passed as a Hash, Array or String. Got a #{parameters.class}." unless parameters.is_a?(Hash) || parameters.is_a?(Array) || parameters.is_a?(String)
+      raise ArgumentError, "filter_builder: Expected syslog-ng filter definition to be passed as a Hash, Array or String. Got a #{parameters.class}." unless parameters.is_a?(Hash) || parameters.is_a?(Array) || parameters.is_a?(String)
 
       config_string = ''
       if parameters.is_a?(Hash)
@@ -43,7 +43,7 @@ module SyslogNg
               config_string.rstrip!
             end
           else
-            raise ArgumentError, "config_filter_map: Invalid operator '#{filter}' specified in filter configuration. Object type #{parameter.class}."
+            raise ArgumentError, "filter_builder: Invalid operator '#{filter}' specified in filter configuration. Object type #{parameter.class}."
           end
         end
         config_string.rstrip!

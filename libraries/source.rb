@@ -22,8 +22,8 @@ module SyslogNg
   module SourceHelpers
     include SyslogNg::CommonHelpers
     def source_builder(driver:, parameters:, multiline: false)
-      raise ArgumentError, "config_srcdst_driver_map: Expected syslog-ng destination driver name to be a String, got a #{driver.class}." unless driver.is_a?(String)
-      raise ArgumentError, "config_srcdst_driver_map: Expected syslog-ng destination driver configuration attribute block to be a Hash, got a #{parameters.class}." unless parameters.is_a?(Hash)
+      raise ArgumentError, "source_builder: Expected syslog-ng destination driver name to be a String, got a #{driver.class}." unless driver.is_a?(String)
+      raise ArgumentError, "source_builder: Expected syslog-ng destination driver configuration attribute block to be a Hash, got a #{parameters.class}." unless parameters.is_a?(Hash)
 
       config = []
 
