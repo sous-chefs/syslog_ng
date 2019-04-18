@@ -25,7 +25,7 @@ module SyslogNg
       syslog_ng_version_cmd.run_command
       syslog_ng_version_cmd.error!
 
-      /[0-9]+.[0-9]{2}/.match(syslog_ng_version_cmd.stdout).to_s
+      /[0-9]+.[0-9]+/.match(syslog_ng_version_cmd.stdout).to_s
     end
 
     def repo_get_packages(platform:, copr: false, copr_version: '0.0')
