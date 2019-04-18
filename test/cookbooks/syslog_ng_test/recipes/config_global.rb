@@ -36,5 +36,5 @@ else
 end
 
 service 'syslog-ng' do
-  action :nothing
+  action [:enable, :start]
 end

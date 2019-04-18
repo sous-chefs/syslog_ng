@@ -7,21 +7,42 @@
 log {
     <% if @source.is_a?(Array) -%>
     <% @source.each do |source| -%>
+    <% if source.is_a?(Hash) -%>
+    <% source.each do |driver, parameters| -%>
+    source { <%= source_builder(driver: driver, parameters: parameters) %> };
+    <% end -%>
+    <% else -%>
     source(<%= source %>);
+    <% end -%>
     <% end -%>
     <% else -%>
     source(<%= @source %>);
     <% end -%>
-    <% if @filter.is_a?(Array) -%>
+    <% if @filter.is_a?(Hash) -%>
+    filter { <%= filter_builder(@filter) %> }; 
+    <% elsif @filter.is_a?(Array) -%>
     <% @filter.each do |filter| -%>
     filter(<%= filter %>);
-    <% end -%>
+    <% end -%>    
     <% else -%>
     filter(<%= @filter %>);
     <% end -%>
+    <% if @parser.is_a?(Array) -%>
+    <% @parser.each do |parser| -%>
+    parser(<%= parser %>);
+    <% end -%>
+    <% else -%>
+    parser(<%= @parser %>);
+    <% end -%>
     <% if @destination.is_a?(Array) -%>
     <% @destination.each do |destination| -%>
+    <% if destination.is_a?(Hash) -%>
+    <% destination.each do |driver, parameters| -%>
+    destination { <%= destination_builder(driver: driver, parameters: parameters) %> };
+    <% end -%>
+    <% else -%>
     destination(<%= destination %>);
+    <% end -%>
     <% end -%>
     <% else -%>
     destination(<%= @destination %>);
@@ -32,12 +53,5 @@ log {
     <% end -%>
     <% else -%>
     flags(<%= @flags %>);
-    <% end -%>
-    <% if @parser.is_a?(Array) -%>
-    <% @parser.each do |parser| -%>
-    parser(<%= parser %>);
-    <% end -%>
-    <% else -%>
-    parser(<%= @parser %>);
     <% end -%>
 };

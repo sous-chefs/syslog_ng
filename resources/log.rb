@@ -19,8 +19,8 @@
 property :config_dir, String, default: '/etc/syslog-ng/log.d'
 property :cookbook, String
 property :template_source, String
-property :source, [String, Array], default: []
-property :filter, [String, Array], default: []
+property :source, [String, Array, Hash], default: []
+property :filter, [String, Array, Hash], default: []
 property :destination, [String, Array], default: []
 property :flags, [String, Array], default: []
 property :parser, [String, Array], default: []
@@ -42,6 +42,9 @@ action :create do
       flags: new_resource.flags,
       parser: new_resource.parser
     )
+    helpers(SyslogNg::DestinationHelpers)
+    helpers(SyslogNg::SourceHelpers)
+    helpers(SyslogNg::FilterHelpers)
     action :create
   end
 end

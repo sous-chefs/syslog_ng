@@ -5,9 +5,7 @@
 
 # Filter - <%= @description %>
 <% unless (@filter.nil? || @filter.empty?) -%>
-<% @filter.each do |name, config| -%>
-filter <%= name %> {
-    <%= filter_builder(config) %>;
+filter <%= @name %> {
+    <%= filter_builder(@filter) %>;
 };
-<% end -%>
 <% end -%>

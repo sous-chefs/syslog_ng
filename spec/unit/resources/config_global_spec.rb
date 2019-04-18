@@ -46,8 +46,8 @@ describe 'syslog_ng_test::config_global' do
         config_test = chef_run.execute('syslog-ng-config-test')
         expect(config_test).to do_nothing
 
-        service = chef_run.service('syslog-ng')
-        expect(service).to do_nothing
+        expect(chef_run).to start_service('syslog-ng')
+        expect(chef_run).to enable_service('syslog-ng')
       end
     end
   end
