@@ -39,7 +39,7 @@ platforms:
     intermediate_instructions:
       - RUN /usr/bin/apt-get update
       - RUN /usr/bin/apt-get install rsync -y -q
-      - RUN /usr/bin/yum install libselinux-utils -y
+      - RUN /usr/bin/apt-get install selinux-utils -y
     volumes:
       - /tmp/gitlab-runner-artifacts:/var/gitlab-runner-artifacts
 - name: ubuntu-18.04
@@ -49,7 +49,7 @@ platforms:
     intermediate_instructions:
        - RUN /usr/bin/apt-get update
        - RUN /usr/bin/apt-get install rsync -y -q
-       - RUN /usr/bin/yum install libselinux-utils -y
+       - RUN /usr/bin/apt-get install selinux-utils -y
     volumes:
       - /tmp/gitlab-runner-artifacts:/var/gitlab-runner-artifacts
 - name: debian-8
@@ -59,7 +59,7 @@ platforms:
     intermediate_instructions:
        - RUN /usr/bin/apt-get update
        - RUN /usr/bin/apt-get install rsync -y -q
-       - RUN /usr/bin/yum install libselinux-utils -y
+       - RUN /usr/bin/apt-get install selinux-utils -y
     volumes:
       - /tmp/gitlab-runner-artifacts:/var/gitlab-runner-artifacts
 - name: debian-9
@@ -69,7 +69,7 @@ platforms:
     intermediate_instructions:
        - RUN /usr/bin/apt-get update
        - RUN /usr/bin/apt-get install rsync -y -q
-       - RUN /usr/bin/yum install libselinux-utils -y
+       - RUN /usr/bin/apt-get install selinux-utils -y
     volumes:
       - /tmp/gitlab-runner-artifacts:/var/gitlab-runner-artifacts
 - name: amazonlinux-2
