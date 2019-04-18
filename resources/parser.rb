@@ -39,6 +39,7 @@ action :create do
       parser_options: new_resource.parser_options,
       additional_options: new_resource.additional_options
     )
+    helpers(SyslogNg::CommonHelpers)
     action :create
   end
 end

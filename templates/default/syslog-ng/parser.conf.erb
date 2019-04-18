@@ -4,7 +4,7 @@
 #
 
 # Parser - <%= @description %>
-<% unless (@parser.nil? || @parser.empty?) -%>
+<% if parameter_defined?(@parser) -%>
 parser <%= @name -%> {
     <%= @parser -%>(
         <% @parser_options.each do |name, config| -%>

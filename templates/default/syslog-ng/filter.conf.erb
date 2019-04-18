@@ -4,7 +4,7 @@
 #
 
 # Filter - <%= @description %>
-<% unless (@filter.nil? || @filter.empty?) -%>
+<% if parameter_defined?(@filter) -%>
 filter <%= @name %> {
     <%= filter_builder(@filter) %>;
 };
