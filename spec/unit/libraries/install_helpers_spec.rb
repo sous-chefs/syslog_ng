@@ -61,7 +61,6 @@ describe 'SyslogNg::InstallHelpers' do
       end
     end
 
-    platforms.delete('debian')
     platforms.each do |platform, packages|
       context("when called with #{platform} platform for COPR") do
         let(:shellout) do
@@ -73,8 +72,8 @@ describe 'SyslogNg::InstallHelpers' do
           allow(shellout).to receive(:error!).and_return(nil)
           allow(shellout).to receive(:stdout).and_return(packages)
 
-          expect(dummy_class.new.repo_get_packages(platform: platform, copr: true)).to be_a(Array)
-          expect(dummy_class.new.repo_get_packages(platform: platform, copr: true)).to eq(packages.split(/\n+/))
+          expect(dummy_class.new.repo_get_packages(platform: platform, latest: true)).to be_a(Array)
+          expect(dummy_class.new.repo_get_packages(platform: platform, latest: true)).to eq(packages.split(/\n+/))
         end
       end
     end

@@ -1,6 +1,6 @@
 #
 # Cookbook:: test
-# Recipe:: package_copr
+# Recipe:: package_latest
 #
 # Copyright:: 2019, Ben Hughes <bmhughes@bmhughes.co.uk>
 #
@@ -16,12 +16,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-if platform_family?('rhel', 'fedora')
-  syslog_ng_install '' do
-    package_source 'package_copr'
-    action :install
-  end
-else
-  log 'Not RHEL/Fedora, falling back to distro packages'
-  include_recipe '::package_distro'
+syslog_ng_install '' do
+  package_source 'latest'
+  action :install
 end

@@ -3,9 +3,8 @@ stages:
   - lint  
   - chefspec
   - default
-  - copr
+  - latest
   - config
-  - config-copr
   - deploy
   - cleanup
   - cleanup_manual
@@ -73,96 +72,6 @@ chefspec:
     paths:
       - artifacts/
 
-.kitchen_suite_definition_default-centos-7: &kitchen_suite_definition_default-centos-7
-  stage: default
-  variables:
-    KITCHEN_NAME: default-centos-7
-
-.kitchen_suite_definition_default-fedora-latest: &kitchen_suite_definition_default-fedora-latest
-  stage: default
-  variables:
-    KITCHEN_NAME: default-fedora-latest
-
-.kitchen_suite_definition_default-ubuntu-1604: &kitchen_suite_definition_default-ubuntu-1604
-  stage: default
-  variables:
-    KITCHEN_NAME: default-ubuntu-1604
-
-.kitchen_suite_definition_default-ubuntu-1804: &kitchen_suite_definition_default-ubuntu-1804
-  stage: default
-  variables:
-    KITCHEN_NAME: default-ubuntu-1804
-
-.kitchen_suite_definition_default-debian-8: &kitchen_suite_definition_default-debian-8
-  stage: default
-  variables:
-    KITCHEN_NAME: default-debian-8
-
-.kitchen_suite_definition_default-debian-9: &kitchen_suite_definition_default-debian-9
-  stage: default
-  variables:
-    KITCHEN_NAME: default-debian-9
-
-.kitchen_suite_definition_default-amazonlinux-2: &kitchen_suite_definition_default-amazonlinux-2
-  stage: default
-  variables:
-    KITCHEN_NAME: default-amazonlinux-2
-
-.kitchen_suite_definition_copr-centos-7: &kitchen_suite_definition_copr-centos-7
-  stage: copr
-  variables:
-    KITCHEN_NAME: copr-centos-7
-
-.kitchen_suite_definition_copr-fedora-latest: &kitchen_suite_definition_copr-fedora-latest
-  stage: copr
-  variables:
-    KITCHEN_NAME: copr-fedora-latest
-
-.kitchen_suite_definition_config-centos-7: &kitchen_suite_definition_config-centos-7
-  stage: config
-  variables:
-    KITCHEN_NAME: config-centos-7
-
-.kitchen_suite_definition_config-fedora-latest: &kitchen_suite_definition_config-fedora-latest
-  stage: config
-  variables:
-    KITCHEN_NAME: config-fedora-latest
-
-.kitchen_suite_definition_config-ubuntu-1604: &kitchen_suite_definition_config-ubuntu-1604
-  stage: config
-  variables:
-    KITCHEN_NAME: config-ubuntu-1604
-
-.kitchen_suite_definition_config-ubuntu-1804: &kitchen_suite_definition_config-ubuntu-1804
-  stage: config
-  variables:
-    KITCHEN_NAME: config-ubuntu-1804
-
-.kitchen_suite_definition_config-debian-8: &kitchen_suite_definition_config-debian-8
-  stage: config
-  variables:
-    KITCHEN_NAME: config-debian-8
-
-.kitchen_suite_definition_config-debian-9: &kitchen_suite_definition_config-debian-9
-  stage: config
-  variables:
-    KITCHEN_NAME: config-debian-9
-
-.kitchen_suite_definition_config-amazonlinux-2: &kitchen_suite_definition_config-amazonlinux-2
-  stage: config
-  variables:
-    KITCHEN_NAME: config-amazonlinux-2
-
-.kitchen_suite_definition_config-copr-centos-7: &kitchen_suite_definition_config-copr-centos-7
-  stage: config-copr
-  variables:
-    KITCHEN_NAME: config-copr-centos-7
-
-.kitchen_suite_definition_config-copr-fedora-latest: &kitchen_suite_definition_config-copr-fedora-latest
-  stage: config-copr
-  variables:
-    KITCHEN_NAME: config-copr-fedora-latest
-
 .kitchen_test_definition: &kitchen_test_definition
   script:
     - kitchen converge $KITCHEN_NAME
@@ -171,6 +80,9 @@ chefspec:
     - mkdir -p etc
     - kitchen exec $KITCHEN_NAME -c "rsync -a --no-links /etc/syslog-ng /var/gitlab-runner-artifacts/${CI_JOB_NAME}-${CI_COMMIT_SHA}/"
     - cp -Rfvp /tmp/gitlab-runner-artifacts/$CI_JOB_NAME-$CI_COMMIT_SHA/* etc/
+  after_script:
+    - export KITCHEN_YAML=.kitchen.yml
+    - export KITCHEN_LOCAL_YAML=.kitchen.dokken.yml
     - kitchen destroy $KITCHEN_NAME
   retry: 1
   except:
@@ -189,92 +101,107 @@ chefspec:
 kitchen_default-centos-7:
   <<: *kitchen_docker_template
   <<: *kitchen_test_definition
-  <<: *kitchen_suite_definition_default-centos-7
+  stage: default
+  variables:
+    KITCHEN_NAME: default-centos-7
 
 kitchen_default-fedora-latest:
   <<: *kitchen_docker_template
   <<: *kitchen_test_definition
-  <<: *kitchen_suite_definition_default-fedora-latest
+  stage: default
+  variables:
+    KITCHEN_NAME: default-fedora-latest
 
 kitchen_default-ubuntu-1604:
   <<: *kitchen_docker_template
   <<: *kitchen_test_definition
-  <<: *kitchen_suite_definition_default-ubuntu-1604
+  stage: default
+  variables:
+    KITCHEN_NAME: default-ubuntu-1604
 
 kitchen_default-ubuntu-1804:
   <<: *kitchen_docker_template
   <<: *kitchen_test_definition
-  <<: *kitchen_suite_definition_default-ubuntu-1804
+  stage: default
+  variables:
+    KITCHEN_NAME: default-ubuntu-1804
     
 kitchen_default-debian-8:
   <<: *kitchen_docker_template
   <<: *kitchen_test_definition
-  <<: *kitchen_suite_definition_default-debian-8
+  stage: default
+  variables:
+    KITCHEN_NAME: default-debian-8
 
 kitchen_default-debian-9:
   <<: *kitchen_docker_template
   <<: *kitchen_test_definition
-  <<: *kitchen_suite_definition_default-debian-9
+  stage: default
+  variables:
+    KITCHEN_NAME: default-debian-9
 
 kitchen_default-amazonlinux-2:
   <<: *kitchen_docker_template
   <<: *kitchen_test_definition
-  <<: *kitchen_suite_definition_default-amazonlinux-2
+  stage: default
+  variables:
+    KITCHEN_NAME: default-amazonlinux-2
 
-kitchen_copr-centos-7:
+kitchen_latest-centos-7:
   <<: *kitchen_docker_template
   <<: *kitchen_test_definition
-  <<: *kitchen_suite_definition_copr-centos-7
+  stage: latest
+  variables:
+    KITCHEN_NAME: latest-centos-7
 
-kitchen_copr-fedora-latest:
+kitchen_latest-fedora-latest:
   <<: *kitchen_docker_template
   <<: *kitchen_test_definition
-  <<: *kitchen_suite_definition_copr-fedora-latest
+  stage: latest
+  variables:
+    KITCHEN_NAME: latest-fedora-latest
+
+kitchen_latest-ubuntu-1604:
+  <<: *kitchen_docker_template
+  <<: *kitchen_test_definition
+  stage: latest
+  variables:
+    KITCHEN_NAME: latest-ubuntu-1604
+
+kitchen_latest-ubuntu-1804:
+  <<: *kitchen_docker_template
+  <<: *kitchen_test_definition
+  stage: latest
+  variables:
+    KITCHEN_NAME: latest-ubuntu-1804
 
 kitchen_config-centos-7:
   <<: *kitchen_docker_template
   <<: *kitchen_test_definition
-  <<: *kitchen_suite_definition_config-centos-7
+  stage: config
+  variables:
+    KITCHEN_NAME: config-centos-7
 
 kitchen_config-fedora-latest:
   <<: *kitchen_docker_template
   <<: *kitchen_test_definition
-  <<: *kitchen_suite_definition_config-fedora-latest
+  stage: config
+  variables:
+    KITCHEN_NAME: config-fedora-latest
 
 kitchen_config-ubuntu-1604:
   <<: *kitchen_docker_template
   <<: *kitchen_test_definition
-  <<: *kitchen_suite_definition_config-ubuntu-1604
+  stage: config
+  variables:
+    KITCHEN_NAME: config-ubuntu-1604
 
 kitchen_config-ubuntu-1804:
   <<: *kitchen_docker_template
   <<: *kitchen_test_definition
-  <<: *kitchen_suite_definition_config-ubuntu-1804
-
-kitchen_config-debian-8:
-  <<: *kitchen_docker_template
-  <<: *kitchen_test_definition
-  <<: *kitchen_suite_definition_config-debian-8
-
-kitchen_config-debian-9:
-  <<: *kitchen_docker_template
-  <<: *kitchen_test_definition
-  <<: *kitchen_suite_definition_config-debian-9
-
-kitchen_config-amazonlinux-2:
-  <<: *kitchen_docker_template
-  <<: *kitchen_test_definition
-  <<: *kitchen_suite_definition_config-amazonlinux-2
-
-kitchen_config-copr-centos-7:
-  <<: *kitchen_docker_template
-  <<: *kitchen_test_definition
-  <<: *kitchen_suite_definition_config-copr-centos-7
-
-kitchen_config-copr-fedora-latest:
-  <<: *kitchen_docker_template
-  <<: *kitchen_test_definition
-  <<: *kitchen_suite_definition_config-copr-fedora-latest
+  stage: config
+  variables:
+    KITCHEN_NAME: config-ubuntu-1804
 
 berks_upload:
   stage: deploy

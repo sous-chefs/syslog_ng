@@ -27,7 +27,7 @@ describe 'syslog_ng_test::install' do
       'Debian' => '9.6',
       'Ubuntu' => '18.04',
     },
-    'syslog_ng_test::package_copr' => {
+    'syslog_ng_test::package_latest' => {
       'CentOS' => '7.6.1804',
       'Fedora' => '29',
     },
