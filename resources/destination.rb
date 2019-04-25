@@ -24,6 +24,7 @@ property :path, String
 property :parameters, Hash, default: {}
 property :configuration, Array
 property :description, String
+property :multiline, [true, false], default: false
 
 action :create do
   extend SyslogNg::CommonHelpers
@@ -56,7 +57,8 @@ action :create do
     variables(
       name: new_resource.name,
       description: new_resource.description.nil? ? new_resource.name : new_resource.description,
-      destination: destination
+      destination: destination,
+      multiline: new_resource.multiline
     )
     helpers(SyslogNg::DestinationHelpers)
     action :create

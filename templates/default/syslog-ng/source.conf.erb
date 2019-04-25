@@ -8,7 +8,14 @@
 source <%= @name -%> {
     <% @source.each do |config| -%>
     <% config.each do |driver, parameters| -%>
-    <%= source_builder(driver: driver, parameters: parameters) %>
+    <% result = source_builder(driver: driver, parameters: parameters, multiline: @multiline) -%>
+    <% if result.is_a?(String) -%>
+    <%= result %>
+    <% elsif result.is_a?(Array) -%>
+    <% result.each do |line| -%>
+    <%= line %>
+    <% end -%>
+    <% end -%>
     <% end -%>
     <% end -%>
 };

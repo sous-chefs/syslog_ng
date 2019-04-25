@@ -113,5 +113,12 @@ describe 'SyslogNg::SourceHelpers' do
         expect(dummy_class.new.source_builder(driver: 'network', parameters: param)).to eql('network(transport("tls") ip(127.0.0.1) port(9999) tls(peer-verify("required-trusted") key-file("/etc/syslog-ng/tls/syslog-ng.key") cert-file("/etc/syslog-ng/tls/syslog-ng.crt")));')
       end
     end
+
+    context('given driver with parameters and multiline set') do
+      it 'returns config string' do
+        expect(dummy_class.new.source_builder(driver: 'system', parameters: {}, multiline: true)).to be_a(Array)
+        expect(dummy_class.new.source_builder(driver: 'udp', parameters: { 'parameters' => { 'ip' => '0.0.0.0', 'port' => 514 } }, multiline: true)).to eql(["udp(", "  ip(0.0.0.0)", "  port(514)", ");"])
+      end
+    end
   end
 end

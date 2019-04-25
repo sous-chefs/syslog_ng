@@ -29,7 +29,13 @@ module SyslogNg
 
       config.push(driver.dup.concat('('))
       config.push(format_string_value(parameters['path'])) if parameters.key?('path') # Certain drivers have an unnamed 'path' parameter (eg File)
-      config.push(build_parameter_string(parameters: parameters['parameters'])) if parameters.key?('parameters')
+      if parameters.key?('parameters')
+        if multiline
+          build_parameter_string(parameters: parameters['parameters']).split.each { |string| config.push(string.prepend('  ')) }
+        else
+          config.push(build_parameter_string(parameters: parameters['parameters']))
+        end
+      end
       config.push(');')
 
       if multiline
