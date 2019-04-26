@@ -40,7 +40,7 @@ describe 'syslog_ng_test::source' do
         expect { chef_run }.to_not raise_error
       end
 
-      %w(s_test_tcp s_test_pipe s_test_tcpudp s_test_network_multiline).each do |testsource|
+      %w(s_test_tcp s_test_pipe s_test_tcpudp s_test_network_multiline s_test_network_multiple).each do |testsource|
         it "creates source #{testsource}" do
           expect(chef_run).to create_syslog_ng_source(testsource)
 

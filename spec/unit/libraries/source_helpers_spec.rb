@@ -117,7 +117,7 @@ describe 'SyslogNg::SourceHelpers' do
     context('given driver with parameters and multiline set') do
       it 'returns config string' do
         expect(dummy_class.new.source_builder(driver: 'system', parameters: {}, multiline: true)).to be_a(Array)
-        expect(dummy_class.new.source_builder(driver: 'udp', parameters: { 'parameters' => { 'ip' => '0.0.0.0', 'port' => 514 } }, multiline: true)).to eql(["udp(", "  ip(0.0.0.0)", "  port(514)", ");"])
+        expect(dummy_class.new.source_builder(driver: 'udp', parameters: { 'parameters' => { 'ip' => '0.0.0.0', 'port' => 514 } }, multiline: true)).to eql(['udp(', '  ip(0.0.0.0)', '  port(514)', ');'])
       end
     end
   end

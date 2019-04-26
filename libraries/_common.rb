@@ -78,6 +78,55 @@ module SyslogNg
       config_string.gsub(/(\( )|( \))/, '( ' => '(', ' )' => ')').strip
     end
 
+    def parameter_builder(driver: nil, path: nil, parameters: nil, configuration: nil)
+      if parameter_defined?(configuration) && configuration.is_a?(Array)
+        configuration
+      elsif parameter_defined?(driver) && driver.is_a?(Array)
+        source_config = []
+        if !path.nil? && !parameters.nil?
+          driver.zip(path, parameters).each do |drv, pth, param|
+            hash = {}
+            hash[drv] = {}
+            hash[drv]['path'] = pth unless pth.nil?
+            hash[drv]['parameters'] = param unless param.nil?
+            source_config.push(hash)
+          end
+        elsif path.nil? && !parameters.nil?
+          driver.zip(parameters).each do |drv, param|
+            hash = {}
+            hash[drv] = {}
+            hash[drv]['parameters'] = param unless param.nil?
+            source_config.push(hash)
+          end
+        elsif !path.nil? && parameters.nil?
+          driver.zip(path).each do |drv, pth|
+            hash = {}
+            hash[drv] = {}
+            hash[drv]['path'] = pth unless pth.nil?
+            source_config.push(hash)
+          end
+        else
+          driver.zip(driver).each do |drv|
+            hash = {}
+            hash[drv] = {}
+            source_config.push(hash)
+          end
+        end
+        source_config
+      elsif parameter_defined?(driver) && driver.is_a?(String)
+        [
+          driver => {
+            'path' => path,
+            'parameters' => parameters,
+          },
+        ]
+      else
+        raise ArgumentError, "parameter_builder: Invalid argument set given. driver: #{driver.class} | path: #{path.class} | parameters: #{parameters.class} | configuration: #{configuration.class}"
+      end
+    end
+
+    private
+
     def parameter_defined?(parameter)
       if parameter.nil? || parameter.empty?
         false
@@ -85,8 +134,6 @@ module SyslogNg
         true
       end
     end
-
-    private
 
     def format_parameter_pair(parameter:, value:, named: true)
       raise ArgumentError, "format_parameter_pair: Type error, got #{parameter.class} and #{value.class}. Expected String and String/Integer." unless parameter.is_a?(String) && (value.is_a?(String) || value.is_a?(Integer))

@@ -19,9 +19,9 @@
 property :config_dir, String, default: '/etc/syslog-ng/destination.d'
 property :cookbook, String
 property :source, String
-property :driver, String, required: true
-property :path, String
-property :parameters, Hash, default: {}
+property :driver, [String, Array]
+property :path, [String, Array]
+property :parameters, [Hash, Array]
 property :configuration, Array
 property :description, String
 property :multiline, [true, false], default: false
@@ -29,18 +29,7 @@ property :multiline, [true, false], default: false
 action :create do
   extend SyslogNg::CommonHelpers
 
-  destination = if parameter_defined?(new_resource.configuration)
-                  new_resource.configuration
-                else
-                  [
-                    new_resource.driver => {
-                      'path' => new_resource.path,
-                      'parameters' => new_resource.parameters,
-                    },
-                  ]
-                end
-
-  destination.each do |config|
+  destination = parameter_builder(driver: new_resource.driver, path: new_resource.path, parameters: new_resource.parameters, configuration: new_resource.configuration).each do |config|
     raise "destination: Expected driver configuration to be a Hash, got #{config.class}" unless config.is_a?(Hash)
     config.each do |_, b|
       b.compact!

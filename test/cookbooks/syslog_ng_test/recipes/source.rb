@@ -99,3 +99,25 @@ syslog_ng_source 's_test_network_multiline' do
   notifies :reload, 'service[syslog-ng]', :delayed
   action :create
 end
+
+syslog_ng_source 's_test_network_multiple' do
+  driver %w(network network)
+  parameters(
+    [
+      {
+        'transport' => 'tcp',
+        'ip' => '127.0.0.1',
+        'port' => '5518',
+      },
+      {
+        'transport' => 'udp',
+        'ip' => '127.0.0.1',
+        'port' => '5518',
+      },
+    ]
+  )
+  multiline true
+  notifies :run, 'execute[syslog-ng-config-test]', :delayed
+  notifies :reload, 'service[syslog-ng]', :delayed
+  action :create
+end

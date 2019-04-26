@@ -20,23 +20,58 @@ require 'spec_helper'
 
 describe 'SyslogNg::CommonHelpers' do
   let(:dummy_class) { Class.new { include SyslogNg::CommonHelpers } }
-  describe '.parameter_defined?' do
-    context('given parameter string') do
-      it 'returns true' do
-        expect(dummy_class.new.parameter_defined?('parameter')).to be_a(TrueClass)
+  describe '.parameter_builder' do
+    context('given string driver with no path or parameters') do
+      it 'returns array' do
+        expect(dummy_class.new.parameter_builder(driver: 'file')).to be_a(Array)
       end
     end
 
-    context('given nil') do
-      it 'returns false' do
-        expect(dummy_class.new.parameter_defined?(nil)).to be_a(FalseClass)
+    context('given string driver with path and no parameters') do
+      it 'returns array' do
+        expect(dummy_class.new.parameter_builder(driver: 'file', path: '/file.log')).to be_a(Array)
       end
     end
 
-    context('given empty array or hash') do
-      it 'returns false' do
-        expect(dummy_class.new.parameter_defined?([])).to be_a(FalseClass)
-        expect(dummy_class.new.parameter_defined?({})).to be_a(FalseClass)
+    context('given string driver with path and parameters') do
+      it 'returns array' do
+        expect(dummy_class.new.parameter_builder(driver: 'file', path: '/file.log', parameters: { 'flush_lines' => 10, 'create-dirs' => 'yes' })).to be_a(Array)
+      end
+    end
+
+    context('given array of drivers with no path or parameters') do
+      it 'returns array' do
+        expect(dummy_class.new.parameter_builder(driver: %w(file file))).to be_a(Array)
+      end
+    end
+
+    context('given array of drivers with paths and no parameters') do
+      it 'returns array' do
+        expect(dummy_class.new.parameter_builder(driver: %w(file file), path: ['file1.log', 'file2.log'])).to be_a(Array)
+      end
+    end
+
+    context('given array of drivers with no path and parameters') do
+      it 'returns array' do
+        expect(dummy_class.new.parameter_builder(driver: %w(network network), parameters: [ { 'ip' => '127.0.0.1', 'port' => '5514' }, { 'ip' => '127.0.0.1', 'port' => '5514' } ])).to be_a(Array)
+      end
+    end
+
+    context('given array of drivers with paths and parameters') do
+      it 'returns array' do
+        expect(dummy_class.new.parameter_builder(driver: %w(file file), path: ['file1.log', 'file2.log'], parameters: [ { 'flush_lines' => 10, 'create-dirs' => 'yes' }, { 'flush_lines' => 20, 'create-dirs' => 'yes' } ])).to be_a(Array)
+      end
+    end
+
+    context('given raw configuration') do
+      it 'returns array' do
+        expect(dummy_class.new.parameter_builder(configuration: [ { 'tcp' => { 'parameters' => { 'ip' => '127.0.0.1', 'port' => '5514' } } }, { 'udp' => { 'parameters' => { 'ip' => '127.0.0.1', 'port' => '5514' } } } ])).to be_a(Array)
+      end
+    end
+
+    context('given invalid argument set') do
+      it 'raises ArgumentError' do
+        expect { dummy_class.new.parameter_builder() }.to raise_error(ArgumentError)
       end
     end
   end

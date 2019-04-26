@@ -117,3 +117,23 @@ syslog_ng_destination 'd_test_multi_file_multiline' do
   notifies :reload, 'service[syslog-ng]', :delayed
   action :create
 end
+
+syslog_ng_destination 'd_test_multi_file_alternative' do
+  driver %w(file file)
+  path ['/var/log/test_file_1.log', '/var/log/test_file_2.log']
+  parameters(
+    [
+      {
+        'flush_lines' => 10,
+        'create-dirs' => 'yes',
+      },
+      {
+        'flush_lines' => 20,
+        'create-dirs' => 'yes',
+      },
+    ]
+  )
+  notifies :run, 'execute[syslog-ng-config-test]', :delayed
+  notifies :reload, 'service[syslog-ng]', :delayed
+  action :create
+end
