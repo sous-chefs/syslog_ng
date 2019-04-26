@@ -12,7 +12,7 @@ Provides a set of resources to install and configure syslog-ng.
 
 ### Cookbooks
 
-- `yum-epel` for RHEL/CentOS
+- `yum-epel` for RHEL/CentOS/Amazon
 
 ### Platforms
 
@@ -51,7 +51,7 @@ Used to generate the global configuration file, can be used extend to the global
 ### syslog_ng::install
 
 - `node['syslog_ng']['install']['remove_rsyslog']` - When set `true` rsyslog will be explicitly removed, otherwise it will be disabled
-- `node['syslog_ng']['install']['copr_repo_version']` - Version to install from COPR as a float, set to current latest version which is `3.19`. See [czanik COPR](https://copr.fedorainfracloud.org/coprs/czanik/) for versions available to install.
+- `node['syslog_ng']['install']['copr_repo_version']` - Version to install from COPR as a float, set to current latest version which is `3.20`. See [czanik COPR](https://copr.fedorainfracloud.org/coprs/czanik/) for versions available to install.
 
 ## Resources
 
@@ -62,7 +62,10 @@ The following resources are provided:
 - [filter](#filter)
 - [install](#install)
 - [log](#log)
+- [parser](#parser)
+- [rewrite](#rewrite)
 - [source](#source)
+- [template](#template)
 
 ### config_global
 
@@ -73,7 +76,7 @@ See [usage](#config_global-usage) for examples.
 #### Actions
 
 - `create` - Create the syslog-ng global configuration file
-- `disable` - Remove the syslog-ng global configuration file
+- `delete` - Remove the syslog-ng global configuration file
 
 #### Properties
 
@@ -98,18 +101,20 @@ See [usage](#destination-usage) for examples.
 #### Actions
 
 - `create` - Create a syslog-ng destination configuration file
-- `disable` - Remove a syslog-ng destination configuration file
+- `delete` - Remove a syslog-ng destination configuration file
 
 #### Properties
 
-| Property      | Optional? | Type   | Description                                                                  |
-|---------------|-----------|--------|------------------------------------------------------------------------------|
-| `config_dir`  | Yes       | String | Directory to create config file, defaults to `/etc/syslog-ng/destination.d`  |
-| `cookbook`    | Yes       | String | Override cookbook to source the template file from                           |
-| `source`      | Yes       | String | Override the template source file                                            |
-| `driver`      | No        | String | The destination driver to use                                                |
-| `path`        | Yes       | String | The path for the destination driver (if it supports being specified one)     |
-| `parameters`  | Yes       | Hash   | Driver parameters and options                                                |
+| Property        | Optional? | Type          | Description                                                                  |
+|-----------------|-----------|---------------|------------------------------------------------------------------------------|
+| `config_dir`    | Yes       | String        | Directory to create config file, defaults to `/etc/syslog-ng/destination.d`  |
+| `cookbook`      | Yes       | String        | Override cookbook to source the template file from                           |
+| `source`        | Yes       | String        | Override the template source file                                            |
+| `driver`        | No        | String, Array | The destination driver to use                                                |
+| `path`          | Yes       | String, Array | The path for the destination driver (if it supports being specified one)     |
+| `parameters`    | Yes       | Hash, Array   | Driver parameters and options                                                |
+| `configuration` | Yes       | Hash, Array   | Raw configuration Hash                                                       |
+| `multiline`     | Yes       | True, False   | Use multiline formatting, default is false                                   |
 
 ### filter
 
@@ -118,7 +123,7 @@ See [usage](#filter-usage) for examples.
 #### Actions
 
 - `create` - Create a syslog-ng filter configuration file
-- `disable` - Remove a syslog-ng filter configuration file
+- `delete` - Remove a syslog-ng filter configuration file
 
 #### Properties
 
@@ -140,10 +145,11 @@ See [usage](#install-usage) for examples.
 
 #### Properties
 
-| Property         | Optional? | Type   | Description                                                              |
-|------------------|-----------|--------|--------------------------------------------------------------------------|
-| `package_source` | No        | String | Package source selection choices are `package_distro` or `package_copr`  |
-| `remove_rsyslog` | No        | String | Remove rsyslog package during installation, otherwise disable the service.|
+| Property         | Optional? | Type        | Description                                                                  |
+|------------------|-----------|-------------|------------------------------------------------------------------------------|
+| `package_source` | Yes       | String      | Package source selection choices are `distro` or `latest`                    |
+| `remove_rsyslog` | Yes       | True, False | Remove rsyslog package during installation, otherwise disable the service    |
+| `repo_cleanup`   | Yes       | True, False | Clean up superseded repository configuration files                           |
 
 ### log
 
@@ -152,19 +158,70 @@ See [usage](#log-usage) for examples.
 #### Actions
 
 - `create` - Create a syslog-ng log configuration file
-- `disable` - Remove a syslog-ng log configuration file
+- `delete` - Remove a syslog-ng log configuration file
 
 #### Properties
 
-| Property          | Optional? | Type          | Description                                                                  |
-|-------------------|-----------|---------------|------------------------------------------------------------------------------|
-| `config_dir`      | Yes       | String        | Directory to create config file, defaults to `/etc/syslog-ng/log.d`          |
-| `cookbook`        | Yes       | String        | Override cookbook to source the template file from                           |
-| `template_source` | Yes       | String        | Override the template source file                                            |
-| `source`          | No        | String, Array | The source directive(s) to reference                                         |
-| `filter`          | Yes       | String, Array | The filter directive(s) to reference                                         |
-| `destination`     | Yes       | String, Array | The destination directive(s) to reference                                    |
-| `flags`           | Yes       | String, Array | The log path flags to use                                                    |
+| Property          | Optional? | Type                | Description                                                                  |
+|-------------------|-----------|---------------------|------------------------------------------------------------------------------|
+| `config_dir`      | Yes       | String              | Directory to create config file, defaults to `/etc/syslog-ng/log.d`          |
+| `cookbook`        | Yes       | String              | Override cookbook to source the template file from                           |
+| `template_source` | Yes       | String              | Override the template source file                                            |
+| `source`          | Yes       | String, Array, Hash | The source directive(s) to reference                                         |
+| `filter`          | Yes       | String, Array, Hash | The filter directive(s) to reference                                         |
+| `destination`     | Yes       | String, Array, Hash | The destination directive(s) to reference                                    |
+| `flags`           | Yes       | String, Array       | The log path flags to use                                                    |
+| `parser`          | Yes       | String, Array       | The log parser to use                                                        |  
+| `description`     | Yes       | String              | Log statement description                                                    |
+
+### parser
+
+See [usage](#parser-usage) for examples.
+
+#### Actions
+
+- `create` - Create a syslog-ng parser configuration file
+- `delete` - Remove a syslog-ng parser configuration file
+
+#### Properties
+
+| Property             | Optional? | Type                | Description                                                                  |
+|----------------------|-----------|---------------------|------------------------------------------------------------------------------|
+| `config_dir`         | Yes       | String              | Directory to create config file, defaults to `/etc/syslog-ng/log.d`          |
+| `cookbook`           | Yes       | String              | Override cookbook to source the template file from                           |
+| `template_source`    | Yes       | String              | Override the template source file                                            |
+| `parser`             | Yes       | String, Array, Hash | The parser type to use                                                       |
+| `parser_options`     | Yes       | String, Array, Hash | Parser type configuration options                                            |
+| `additional_options` | Yes       | Hash                | Additional parser options                                                    |
+| `description`        | Yes       | String              | Parser statement description                                                 |
+
+### rewrite
+
+See [usage](#rewrite-usage) for examples.
+
+#### Actions
+
+- `create` - Create a syslog-ng rewrite configuration file
+- `delete` - Remove a syslog-ng rewrite configuration file
+
+#### Properties
+
+| Property             | Optional? | Type          | Description                                                                  |
+|----------------------|-----------|---------------|------------------------------------------------------------------------------|
+| `config_dir`         | Yes       | String        | Directory to create config file, defaults to `/etc/syslog-ng/rewrite.d`      |
+| `cookbook`           | Yes       | String        | Override cookbook to source the template file from                           |
+| `template_source`    | Yes       | String        | Override the template source file                                            |
+| `function`           | No        | String        | Rewrite function                                                             |
+| `match`              | Yes       | String        | String or regular expression to find                                         |
+| `replacement`        | Yes       | String        | Replacement string                                                           |
+| `field`              | Yes       | String        | Field to match against---                                                    |
+| `value`              | Yes       | String        | Value to apply rewrite action to (Field name)                                |
+| `values`             | Yes       | String, Array | Values to apply rewrite action to (Field name or Glob pattern)               |
+| `flags`              | Yes       | String, Array | Flag(s) to apply                                                             |
+| `tags`               | Yes       | String        | Tags to apply                                                                |
+| `condition`          | Yes       | String        | Condition which must be satisfied for the rewrite to be applied              |
+| `additional_options` | Yes       | Hash          | Additional options for template function                                     |
+| `description`        | Yes       | String        | Rewrite statement description                                                |
 
 ### source
 
@@ -173,24 +230,47 @@ See [usage](#source-usage) for examples.
 #### Actions
 
 - `create` - Create a syslog-ng source configuration file
-- `disable` - Remove a syslog-ng source configuration file
+- `delete` - Remove a syslog-ng source configuration file
 
 #### Properties
 
-| Property      | Optional? | Type   | Description                                                                  |
-|---------------|-----------|--------|------------------------------------------------------------------------------|
-| `config_dir`  | Yes       | String | Directory to create config file, defaults to `/etc/syslog-ng/source.d`       |
-| `cookbook`    | Yes       | String | Override cookbook to source the template file from                           |
-| `source`      | Yes       | String | Override the template source file                                            |
-| `driver`      | No        | String | The source driver to use                                                     |
-| `parameters`  | Yes       | Hash   | Driver parameters and options                                                |
+| Property        | Optional? | Type           | Description                                                                  |
+|-----------------|-----------|---------------|------------------------------------------------------------------------------|
+| `config_dir`    | Yes       | String        | Directory to create config file, defaults to `/etc/syslog-ng/source.d`       |
+| `cookbook`      | Yes       | String        | Override cookbook to source the template file from                           |
+| `source`        | Yes       | String, Array | Override the template source file                                            |
+| `driver`        | No        | String, Array | The source driver to use                                                     |
+| `parameters`    | Yes       | Hash, Array   | Driver parameters and options                                                |
+| `configuration` | Yes       | Array         | Raw driver(s) configuration                                                  |
+| `description`   | Yes       | String        | Source statement description                                                 |
+| `multiline`     | Yes       | True, False   | Use multiline formatting, default is false                                   |
+
+### template
+
+See [usage](#template-usage) for examples.
+
+#### Actions
+
+- `create` - Create a syslog-ng template configuration file
+- `delete` - Remove a syslog-ng template configuration file
+
+#### Properties
+
+| Property             | Optional? | Type        | Description                                                         |
+|----------------------|-----------|-------------|---------------------------------------------------------------------|
+| `config_dir`         | Yes       | String      | Directory to create config file, defaults to `/etc/syslog-ng/log.d` |
+| `cookbook`           | Yes       | String      | Override cookbook to source the template file from                  |
+| `template_source`    | Yes       | String      | Override the template source file                                   |
+| `template`           | No        | String      | Template expression                                                 |
+| `template_escape`    | Yes       | True, False | Escape the `'`, `"`, and `\` characters from the messages           |
+| `description`        | Yes       | String      | Template statement description                                      |
 
 ## Libraries
 
-### config
+### _common | destination | filter | rewrite | source
 
 Provides a set of helper methods to generate syslog-ng configuration stanzas, due to the variety and format they can be complex to construct so most of the
-heavy lifting is done by the `SyslogNg::ConfigHelpers` library.
+heavy lifting is done by the libraries.
 
 ### install
 
@@ -232,7 +312,7 @@ end
 
 [Resource](#destination)
 
-Generates a syslog-ng [destination](https://www.syslog-ng.com/technical-documents/doc/syslog-ng-open-source-edition/3.19/administration-guide/29#TOPIC-1094570) configuration statement.
+Generates a syslog-ng [destination](https://www.syslog-ng.com/technical-documents/doc/syslog-ng-open-source-edition/3.20/administration-guide/29#TOPIC-1121880) configuration statement.
 
 Some destination drivers accept a non-named parameter which is generally a path (the file and pipe driver accept a path) so an additional path property is provided alongside the parameters.
 
@@ -284,7 +364,7 @@ destination d_test_params {
 
 [Resource](#filter)
 
-Generates a syslog-ng [filter](https://www.syslog-ng.com/technical-documents/doc/syslog-ng-open-source-edition/3.19/administration-guide/54#TOPIC-1094669) configuration statement.
+Generates a syslog-ng [filter](https://www.syslog-ng.com/technical-documents/doc/syslog-ng-open-source-edition/3.20/administration-guide/54#TOPIC-1094669) configuration statement.
 
 Due to the large amount of possible combinations of Boolean operators and containers to which can be applied in a filter, this resource has a reasonably complex Hash structure and despite trying to break this as much as possible in testing, this library will very likely have some bugs in it.
 
@@ -460,7 +540,9 @@ end
 
 #### log Usage
 
-Generates a syslog-ng [source](https://www.syslog-ng.com/technical-documents/doc/syslog-ng-open-source-edition/3.19/administration-guide/50#TOPIC-1094654) configuration statement.
+[Resource](#log)
+
+Generates a syslog-ng [log](https://www.syslog-ng.com/technical-documents/doc/syslog-ng-open-source-edition/3.20/administration-guide/50#TOPIC-1094654) configuration statement.
 
 A log statement is the last part of a combination of `source`, `filter` and `destination` resources to create a completed log configuration with syslog-ng. Multiple source, filter and destination elements can be passed to the resource as a String Array.
 
@@ -489,9 +571,181 @@ log {
 };
 ```
 
+#### parser Usage
+
+[Resource](#parser)
+
+Generates a syslog-ng [parser](https://www.syslog-ng.com/technical-documents/doc/syslog-ng-open-source-edition/3.20/administration-guide/64#TOPIC-1122025) configuration statement.
+
+##### Example 1 - CSV Parser
+
+```ruby
+syslog_ng_parser 'p_csv_parser' do
+  parser 'csv-parser'
+  parser_options 'columns' => '"HOSTNAME.NAME", "HOSTNAME.ID"', 'delimiters' => '"-"', 'flags' => 'escape-none', 'template' => '"${HOST}"'
+  notifies :run, 'execute[syslog-ng-config-test]', :delayed
+  notifies :reload, 'service[syslog-ng]', :delayed
+  action :create
+end
+```
+
+Generates:
+
+```c
+# Parser - p_csv_parser
+parser p_csv_parser {
+    csv-parser(
+        columns("HOSTNAME.NAME", "HOSTNAME.ID")
+        delimiters("-")
+        flags(escape-none)
+        template("${HOST}")
+    );
+};
+```
+
+##### Example 2 - iptables Parser
+
+```ruby
+syslog_ng_parser 'p_iptables_parser' do
+  parser 'iptables-parser'
+  notifies :run, 'execute[syslog-ng-config-test]', :delayed
+  notifies :reload, 'service[syslog-ng]', :delayed
+  action :create
+end
+```
+
+Generates:
+
+```c
+# Parser - p_iptables_parser
+parser p_iptables_parser {
+    iptables-parser(
+    );
+};
+```
+
+##### Example 3 - JSON Parser
+
+```ruby
+syslog_ng_parser 'p_json_parser' do
+  parser 'json-parser'
+  parser_options 'prefix' => '".json."', 'marker' => '"@json:"'
+  notifies :run, 'execute[syslog-ng-config-test]', :delayed
+  notifies :reload, 'service[syslog-ng]', :delayed
+  action :create
+end
+```
+
+Generates:
+
+```c
+# Parser - p_json_parser
+parser p_json_parser {
+    json-parser(
+        prefix(".json.")
+        marker("@json:")
+    );
+};
+```
+
+#### rewrite Usage
+
+[Resource](#rewrite)
+
+Generates a syslog-ng [parser](https://www.syslog-ng.com/technical-documents/doc/syslog-ng-open-source-edition/3.20/administration-guide/61#TOPIC-1122013) configuration statement.
+
+##### Example 1 - Substitute string `IP` with `IP-Address` in MESSAGE field
+
+```ruby
+syslog_ng_rewrite 'r_test_ip' do
+  function 'subst'
+  match 'IP'
+  replacement 'IP-Address'
+  value 'MESSAGE'
+  notifies :run, 'execute[syslog-ng-config-test]', :delayed
+  notifies :reload, 'service[syslog-ng]', :delayed
+  action :create
+end
+```
+
+Generates:
+
+```c
+# Rewrite - r_test_ip
+rewrite r_test_ip {
+    subst("IP", "IP-Address", value("MESSAGE"));
+};
+```
+
+##### Example 2 - Set the HOST field to `myhost`
+
+```ruby
+syslog_ng_rewrite 'r_test_set' do
+  function 'set'
+  replacement 'myhost'
+  value 'HOST'
+  notifies :run, 'execute[syslog-ng-config-test]', :delayed
+  notifies :reload, 'service[syslog-ng]', :delayed
+  action :create
+end
+```
+
+Generates:
+
+```c
+# Rewrite - r_test_set
+rewrite r_test_set {
+    set("myhost", value("HOST"));
+};
+```
+
+##### Example 3 - Set the HOST field to `$MESSAGE suffix` with additional options
+
+```ruby
+syslog_ng_rewrite 'r_test_set_additional' do
+  function 'set'
+  replacement '$MESSAGE suffix'
+  value 'HOST'
+  additional_options 'on-error' => 'fallback-to-string'
+  notifies :run, 'execute[syslog-ng-config-test]', :delayed
+  notifies :reload, 'service[syslog-ng]', :delayed
+  action :create
+end
+```
+
+Generates:
+
+```c
+# Rewrite - r_test_set_additional
+rewrite r_test_set_additional {
+    set("$MESSAGE suffix", value("HOST") on-error("fallback-to-string"));
+};
+```
+
+##### Example 4 - Set tags
+
+```ruby
+syslog_ng_rewrite 'r_test_set_tag' do
+  function 'set-tag'
+  tags 'tag-to-add-1'
+  notifies :run, 'execute[syslog-ng-config-test]', :delayed
+  notifies :reload, 'service[syslog-ng]', :delayed
+  action :create
+end
+```
+
+Generates:
+
+```c
+# Rewrite - r_test_set_tag
+rewrite r_test_set_tag {
+    set-tag("tag-to-add-1");
+};
+```
+
 #### source Usage
 
-Generates a syslog-ng [source](https://www.syslog-ng.com/technical-documents/doc/syslog-ng-open-source-edition/3.19/administration-guide/16#TOPIC-1094519) configuration statement.
+Generates a syslog-ng [source](https://www.syslog-ng.com/technical-documents/doc/syslog-ng-open-source-edition/3.20/administration-guide/16#TOPIC-1094519) configuration statement.
 
 ##### Example 1 - TCP source
 
@@ -539,6 +793,52 @@ Generates:
 # Source - Follow all files in the /var/log directory
 source s_test_wildcard_file {
     wildcard-file(base-dir("/var/log") filename-pattern("*.log") recursive(no) follow-freq(1));
+};
+```
+
+#### template Usage
+
+[Resource](#template)
+
+Generates a syslog-ng [template](https://www.syslog-ng.com/technical-documents/doc/syslog-ng-open-source-edition/3.20/administration-guide/59#TOPIC-1122005) configuration statement.
+
+##### Example 1
+
+```ruby
+syslog_ng_template 't_first_template' do
+  template 'sample-text'
+  notifies :run, 'execute[syslog-ng-config-test]', :delayed
+  notifies :reload, 'service[syslog-ng]', :delayed
+  action :create
+end
+```
+
+Generates:
+
+```c
+# Template - t_first_template
+template t_first_template {
+    template("sample-text"); template-escape(no);
+};
+```
+
+##### Example 2
+
+```ruby
+syslog_ng_template 't_second_template' do
+  template 'The result of the first-template is: $(template t_first_template)'
+  notifies :run, 'execute[syslog-ng-config-test]', :delayed
+  notifies :reload, 'service[syslog-ng]', :delayed
+  action :create
+end
+```
+
+Generates:
+
+```c
+# Template - t_second_template
+template t_second_template {
+    template("The result of the first-template is: $(template t_first_template)"); template-escape(no);
 };
 ```
 

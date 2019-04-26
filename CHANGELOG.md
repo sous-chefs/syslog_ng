@@ -4,7 +4,19 @@ This file is used to list changes made in each version of the syslog_ng cookbook
 
 ## 0.2.0
 
-- WIP
+- Default COPR repository updated to v3.20
+- Added resources to create:
+  - Template
+  - Rewrite
+  - Parser
+- Added multiline generation for source and destinations
+- Added multiple driver support for source and destinations
+- Added embedded source/destination/filter statement support to the log resource
+- Added latest version repo support for deb based distributions
+- The `copr` install resource option has changed to `latest` to reflect addition of apt support
+- Added `cleanup` option to the install resource to remove superseded COPR `.repo` files on update
+- Helper libraries refactored
+- Various bug fixes
 
 ## 0.1.0
 
