@@ -4,12 +4,19 @@
 #
 
 # Source - <%= @description %>
-<% unless (@source.nil? || @source.empty?) -%>
-<% @source.each do |name, config| -%>
-source <%= name -%> {
+<% if parameter_defined?(@source) -%>
+source <%= @name -%> {
+    <% @source.each do |config| -%>
     <% config.each do |driver, parameters| -%>
-    <%= config_srcdst_driver_map(driver, parameters) %>
+    <% result = source_builder(driver: driver, parameters: parameters, multiline: @multiline) -%>
+    <% if result.is_a?(String) -%>
+    <%= result %>
+    <% elsif result.is_a?(Array) -%>
+    <% result.each do |line| -%>
+    <%= line %>
+    <% end -%>
+    <% end -%>
+    <% end -%>
     <% end -%>
 };
-<% end -%>
 <% end -%>

@@ -25,31 +25,37 @@ module SyslogNg
       syslog_ng_version_cmd.run_command
       syslog_ng_version_cmd.error!
 
-      syslog_ng_version_cmd.stdout.to_f
+      /[0-9]+.[0-9]+/.match(syslog_ng_version_cmd.stdout).to_s
     end
 
-    def repo_get_packages(platform:, copr: false)
+    def repo_get_packages(platform:, latest: false, copr_version: '0.0')
       raise ArgumentException, "Expected platform to be a String, got a #{platform.class}." unless platform.is_a?(String)
 
       require 'mixlib/shellout'
 
+      version = copr_version.delete('.')
+
       case platform
       when 'rhel', 'amazon'
-        command = if copr
-                    "yum -q --disablerepo=* --enablerepo=syslog-ng319 search syslog-ng | grep -i 'syslog-ng' | awk '{print $1}' | grep -Po '(syslog-ng)((-[a-z]+)?)+' | uniq"
+        command = if latest
+                    "yum -q --disablerepo=* --enablerepo=syslog-ng#{version} search syslog-ng | grep -i 'syslog-ng' | awk '{print $1}' | grep -Po '(syslog-ng)((-[a-zA-Z0-9]+)?)+' | sort -u"
                   else
-                    "yum -q search syslog-ng | grep -i 'syslog-ng' | awk '{print $1}' | grep -Po '(syslog-ng)((-[a-z]+)?)+' | uniq"
+                    "yum -q search syslog-ng | grep -i 'syslog-ng' | awk '{print $1}' | grep -Po '(syslog-ng)((-[a-zA-Z0-9]+)?)+' | sort -u"
                   end
         Chef::Log.debug("RHEL selected, command will be '#{command}'")
       when 'fedora'
-        command = if copr
-                    "dnf -q --disablerepo=* --enablerepo=syslog-ng319 search syslog-ng | grep -i 'syslog-ng' | awk '{print $1}' | grep -Po '(syslog-ng)((-[a-z]+)?)+' | uniq"
+        command = if latest
+                    "dnf -q --disablerepo=* --enablerepo=syslog-ng#{version} search syslog-ng | grep -i 'syslog-ng' | awk '{print $1}' | grep -Po '(syslog-ng)((-[a-zA-Z0-9]+)?)+' | sort -u"
                   else
-                    "dnf -q search syslog-ng | grep -i 'syslog-ng' | awk '{print $1}' | grep -Po '(syslog-ng)((-[a-z]+)?)+' | uniq"
+                    "dnf -q search syslog-ng | grep -i 'syslog-ng' | awk '{print $1}' | grep -Po '(syslog-ng)((-[a-zA-Z0-9]+)?)+' | sort -u"
                   end
         Chef::Log.debug("Fedora selected, command will be '#{command}'")
       when 'debian'
-        command = "apt-cache search syslog-ng | grep -i 'syslog-ng' | awk '{print $1}' | grep -Po '(syslog-ng)((-[a-z]+)?)+' | uniq"
+        command = if latest
+                    'apt-cache search syslog-ng | grep -i "syslog-ng" | awk "{print $1}" | grep -Po "(syslog-ng)" | sort -u'
+                  else
+                    "apt-cache search syslog-ng | grep -i 'syslog-ng' | awk '{print $1}' | grep -Po '(syslog-ng)((-[a-zA-Z0-9]+)?)+' | sort -u"
+                  end
         Chef::Log.debug("Debian selected, command will be '#{command}'")
       else
         raise "repo_get_packages: Unknown platform. Given platform: #{platform}."
@@ -70,10 +76,10 @@ module SyslogNg
 
       case platform
       when 'rhel', 'fedora', 'amazon'
-        command = "rpm -qa | grep -i 'syslog-ng' | awk '{print $1}' | grep -Po '(syslog-ng)((-[a-z]+)?)+' | uniq"
+        command = "rpm -qa | grep -i 'syslog-ng' | awk '{print $1}' | grep -Po '(syslog-ng)((-[a-z]+)?)+' | sort -u"
         Chef::Log.debug("RHEL selected, command will be '#{command}'")
       when 'debian'
-        command = "dpkg -l | grep -i 'syslog-ng' | awk '{print $2}' | grep -Po '(syslog-ng)((-[a-z]+)?)+' | uniq"
+        command = "dpkg -l | grep -i 'syslog-ng' | awk '{print $2}' | grep -Po '(syslog-ng)((-[a-z]+)?)+' | sort -u"
         Chef::Log.debug("Debian selected, command will be '#{command}'")
       else
         raise "installed_get_packages: Unknown platform. Given platform: #{platform}."

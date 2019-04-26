@@ -4,10 +4,8 @@
 #
 
 # Filter - <%= @description %>
-<% unless (@filter.nil? || @filter.empty?) -%>
-<% @filter.each do |name, config| -%>
-filter <%= name %> {
-    <%= config_filter_map(config) %>;
+<% if parameter_defined?(@filter) -%>
+filter <%= @name %> {
+    <%= filter_builder(@filter) %>;
 };
-<% end -%>
 <% end -%>

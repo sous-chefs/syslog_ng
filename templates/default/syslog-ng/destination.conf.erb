@@ -4,12 +4,19 @@
 #
 
 # Destination - <%= @description %>
-<% unless (@destination.nil? || @destination.empty?) -%>
-<% @destination.each do |name, config| -%>
-destination <%= name -%> {
+<% if parameter_defined?(@destination) -%>
+destination <%= @name -%> {
+    <% @destination.each do |config| -%>
     <% config.each do |driver, parameters| -%>
-    <%= config_srcdst_driver_map(driver, parameters) %>
+    <% result = destination_builder(driver: driver, parameters: parameters, multiline: @multiline) -%>
+    <% if result.is_a?(String) -%>
+    <%= result %>
+    <% elsif result.is_a?(Array) -%>
+    <% result.each do |line| -%>
+    <%= line %>
+    <% end -%>
+    <% end -%>
+    <% end -%>
     <% end -%>
 };
-<% end -%>
 <% end -%>

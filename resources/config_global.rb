@@ -57,13 +57,15 @@ action :create do
           destination: new_resource.destination.nil? ? node['syslog_ng']['config']['destination'] : new_resource.destination,
           filter: new_resource.filter.nil? ? node['syslog_ng']['config']['filter'] : new_resource.filter,
           log: new_resource.log.nil? ? node['syslog_ng']['config']['log'] : new_resource.log,
-          preinclude: new_resource.preinclude.nil? ? node['syslog_ng']['config']['preinclude'] : new_resource.include,
+          preinclude: new_resource.preinclude.nil? ? node['syslog_ng']['config']['preinclude'] : new_resource.preinclude,
           include: include_dirs,
           console_logging: new_resource.console_logging.nil? ? node['syslog_ng']['config']['console_logging'] : new_resource.console_logging,
         }
       end
     )
-    helpers(SyslogNg::ConfigHelpers)
+    helpers(SyslogNg::SourceHelpers)
+    helpers(SyslogNg::DestinationHelpers)
+    helpers(SyslogNg::FilterHelpers)
     action :create
   end
 

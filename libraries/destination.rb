@@ -1,8 +1,8 @@
 #
-# Cookbook:: test
-# Recipe:: package_copr
+# Cookbook:: syslog_ng
+# Library:: config
 #
-# Copyright:: 2018, Ben Hughes <bmhughes@bmhughes.co.uk>
+# Copyright:: 2018, Ben Hughes <bmhughes@bmhughes.co.uk>, All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,7 +16,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-syslog_ng_install '' do
-  package_source 'package_copr'
-  action :install
+require_relative 'source'
+
+module SyslogNg
+  module DestinationHelpers
+    include SyslogNg::SourceHelpers
+  end
 end

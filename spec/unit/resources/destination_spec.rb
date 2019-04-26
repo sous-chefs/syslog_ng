@@ -40,7 +40,7 @@ describe 'syslog_ng_test::destination' do
         expect { chef_run }.to_not raise_error
       end
 
-      %w(d_test_file d_test_file_params d_test_mongo_params).each do |testdestination|
+      %w(d_test_file d_test_file_params d_test_mongo_params d_test_multi_file d_test_multi_file_multiline d_test_multi_file_alternative).each do |testdestination|
         it "creates destination #{testdestination}" do
           expect(chef_run).to create_syslog_ng_destination(testdestination)
 

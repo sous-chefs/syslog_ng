@@ -19,16 +19,17 @@
 property :config_dir, String, default: '/etc/syslog-ng/log.d'
 property :cookbook, String
 property :template_source, String
-property :source, [String, Array], default: []
-property :filter, [String, Array], default: []
+property :source, [String, Array, Hash], default: []
+property :filter, [String, Array, Hash], default: []
 property :destination, [String, Array], default: []
 property :flags, [String, Array], default: []
+property :parser, [String, Array], default: []
 property :description, String
 
 action :create do
   template "#{new_resource.config_dir}/#{new_resource.name}.conf" do
-    source new_resource.template_source ? new_resource.template_source : 'syslog-ng/log.conf.erb'
-    cookbook new_resource.cookbook ? new_resource.cookbook : node['syslog_ng']['config']['config_template_cookbook']
+    source new_resource.template_source || 'syslog-ng/log.conf.erb'
+    cookbook new_resource.cookbook || node['syslog_ng']['config']['config_template_cookbook']
     owner 'root'
     group 'root'
     mode '0755'
@@ -38,8 +39,12 @@ action :create do
       source: new_resource.source,
       filter: new_resource.filter,
       destination: new_resource.destination,
-      flags: new_resource.flags
+      flags: new_resource.flags,
+      parser: new_resource.parser
     )
+    helpers(SyslogNg::DestinationHelpers)
+    helpers(SyslogNg::SourceHelpers)
+    helpers(SyslogNg::FilterHelpers)
     action :create
   end
 end

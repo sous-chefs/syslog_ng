@@ -1,5 +1,5 @@
 @version:<%= @version %>
-<% unless (@preinclude.nil? || @preinclude.empty?) -%>
+<% if parameter_defined?(@preinclude) -%>
 <% @preinclude.each do |file| -%>
 @include "<%= file %>"
 <% end -%>
@@ -20,7 +20,7 @@
 # Note: it also sources additional configuration files (*.conf)
 #       located in /etc/syslog_ng/conf.d/
 
-<% unless (@options.nil? || @options.empty?) -%>
+<% if parameter_defined?(@options) -%>
 options {
     <% @options.each do |key, value| -%>
     <%= key %> (<%= value %>);
@@ -29,38 +29,38 @@ options {
 <% end -%>
 
 # Sources
-<% unless (@source.nil? || @source.empty?) -%>
+<% if parameter_defined?(@source) -%>
 <% @source.each do |name, config| -%>
 source <%= name -%> {
     <% config.each do |driver, parameters| -%>
-    <%= config_srcdst_driver_map(driver, parameters) %>
+    <%= source_builder(driver: driver, parameters: parameters) %>
     <% end -%>
 };
 <% end -%>
 <% end -%>
 
 # Destinations
-<% unless (@destination.nil? || @destination.empty?) -%>
+<% if parameter_defined?(@destination) -%>
 <% @destination.each do |name, config| -%>
 destination <%= name -%> {
     <% config.each do |driver, parameters| -%>
-    <%= config_srcdst_driver_map(driver, parameters) %>
+    <%= destination_builder(driver: driver, parameters: parameters) %>
     <% end -%>
 };
 <% end -%>
 <% end -%>
 
 # Filters
-<% unless (@filter.nil? || @filter.empty?) -%>
+<% if parameter_defined?(@filter) -%>
 <% @filter.each do |name, config| -%>
 filter <%= name %> {
-    <%= config_filter_map(config) %>;
+    <%= filter_builder(config) %>;
 };
 <% end -%>
 <% end -%>
 
 # Logs
-<% unless (@log.nil? || @log.empty?) -%>
+<% if parameter_defined?(@log) -%>
 <% @log.each do |name, config| -%>
 log {
     <% config.each do |element, values| -%>
@@ -73,7 +73,7 @@ log {
 <% end -%>
 
 # Source additional configuration files (.conf extension only)
-<% unless @include.nil? || @include.empty? -%>
+<% if parameter_defined?(@include) -%>
 <% @include.each do |file| -%>
 @include "<%= file %>"
 <% end -%>

@@ -23,22 +23,19 @@ property :parameters, [Hash, String, Array], default: {}
 property :description, String
 
 action :create do
-  filter = {
-    new_resource.name => new_resource.parameters,
-  }
-
   template "#{new_resource.config_dir}/#{new_resource.name}.conf" do
-    source new_resource.source ? new_resource.source : 'syslog-ng/filter.conf.erb'
-    cookbook new_resource.cookbook ? new_resource.cookbook : node['syslog_ng']['config']['config_template_cookbook']
+    source new_resource.source || 'syslog-ng/filter.conf.erb'
+    cookbook new_resource.cookbook || node['syslog_ng']['config']['config_template_cookbook']
     owner 'root'
     group 'root'
     mode '0755'
     sensitive new_resource.sensitive
     variables(
+      name: new_resource.name,
       description: new_resource.description.nil? ? new_resource.name : new_resource.description,
-      filter: filter
+      filter: new_resource.parameters
     )
-    helpers(SyslogNg::ConfigHelpers)
+    helpers(SyslogNg::FilterHelpers)
     action :create
   end
 end

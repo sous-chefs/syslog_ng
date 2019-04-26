@@ -19,36 +19,41 @@
 property :config_dir, String, default: '/etc/syslog-ng/source.d'
 property :cookbook, String
 property :source, String
-property :driver, String, required: true
-property :path, String
-property :parameters, Hash, default: {}
+property :driver, [String, Array]
+property :path, [String, Array]
+property :parameters, [Hash, Array]
+property :configuration, Array
 property :description, String
+property :multiline, [true, false], default: false
 
 action :create do
-  source = {
-    new_resource.name => {
-      new_resource.driver => {
-        'path' => new_resource.path,
-        'parameters' => new_resource.parameters,
-      },
-    },
-  }
+  extend SyslogNg::CommonHelpers
 
-  # Remove the path pair if it is nil
-  source[new_resource.name][new_resource.driver].compact!
+  source = parameter_builder(driver: new_resource.driver, path: new_resource.path, parameters: new_resource.parameters, configuration: new_resource.configuration).each do |config|
+    unless config.is_a?(Hash)
+      Chef::Log.error(source)
+      Chef::Log.error(config)
+      raise "source: Expected driver configuration to be a Hash, got #{config.class}"
+    end
+    config.each do |_, b|
+      b.compact!
+    end
+  end
 
   template "#{new_resource.config_dir}/#{new_resource.name}.conf" do
-    source new_resource.source ? new_resource.source : 'syslog-ng/source.conf.erb'
-    cookbook new_resource.cookbook ? new_resource.cookbook : node['syslog_ng']['config']['config_template_cookbook']
+    source new_resource.source || 'syslog-ng/source.conf.erb'
+    cookbook new_resource.cookbook || node['syslog_ng']['config']['config_template_cookbook']
+    sensitive new_resource.sensitive
     owner 'root'
     group 'root'
     mode '0755'
-    sensitive new_resource.sensitive
     variables(
+      name: new_resource.name,
       description: new_resource.description.nil? ? new_resource.name : new_resource.description,
-      source: source
+      source: source,
+      multiline: new_resource.multiline
     )
-    helpers(SyslogNg::ConfigHelpers)
+    helpers(SyslogNg::SourceHelpers)
     action :create
   end
 end
