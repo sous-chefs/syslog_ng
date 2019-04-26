@@ -18,7 +18,7 @@
 
 property :config_dir, String, default: '/etc/syslog-ng/template.d'
 property :cookbook, String
-property :source, String
+property :template_source, String
 property :template, String, required: true
 property :template_escape, [true, false], default: false
 property :description, String
@@ -33,8 +33,8 @@ action :create do
   template[new_resource.name]['template_escape'] = new_resource.template_escape ? 'yes' : 'no'
 
   template "#{new_resource.config_dir}/#{new_resource.name}.conf" do
-    source new_resource.source ? new_resource.source : 'syslog-ng/template.conf.erb'
-    cookbook new_resource.cookbook ? new_resource.cookbook : node['syslog_ng']['config']['config_template_cookbook']
+    source new_resource.template_source || 'syslog-ng/template.conf.erb'
+    cookbook new_resource.cookbook || node['syslog_ng']['config']['config_template_cookbook']
     owner 'root'
     group 'root'
     mode '0755'

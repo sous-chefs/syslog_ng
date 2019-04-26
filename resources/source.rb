@@ -41,8 +41,8 @@ action :create do
   end
 
   template "#{new_resource.config_dir}/#{new_resource.name}.conf" do
-    source new_resource.source ? new_resource.source : 'syslog-ng/source.conf.erb'
-    cookbook new_resource.cookbook ? new_resource.cookbook : node['syslog_ng']['config']['config_template_cookbook']
+    source new_resource.source || 'syslog-ng/source.conf.erb'
+    cookbook new_resource.cookbook || node['syslog_ng']['config']['config_template_cookbook']
     sensitive new_resource.sensitive
     owner 'root'
     group 'root'

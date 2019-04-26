@@ -24,8 +24,8 @@ property :description, String
 
 action :create do
   template "#{new_resource.config_dir}/#{new_resource.name}.conf" do
-    source new_resource.source ? new_resource.source : 'syslog-ng/filter.conf.erb'
-    cookbook new_resource.cookbook ? new_resource.cookbook : node['syslog_ng']['config']['config_template_cookbook']
+    source new_resource.source || 'syslog-ng/filter.conf.erb'
+    cookbook new_resource.cookbook || node['syslog_ng']['config']['config_template_cookbook']
     owner 'root'
     group 'root'
     mode '0755'

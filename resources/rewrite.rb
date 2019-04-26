@@ -18,7 +18,7 @@
 
 property :config_dir, String, default: '/etc/syslog-ng/rewrite.d'
 property :cookbook, String
-property :source, String
+property :template_source, String
 property :function, String, required: true, equal_to: ['subst', 'set', 'unset', 'groupset', 'groupunset', 'credit-card-mask', 'set-tag', 'clear-tag']
 property :match, String
 property :replacement, String
@@ -95,8 +95,8 @@ action :create do
             end
 
   template "#{new_resource.config_dir}/#{new_resource.name}.conf" do
-    source new_resource.source ? new_resource.source : 'syslog-ng/rewrite.conf.erb'
-    cookbook new_resource.cookbook ? new_resource.cookbook : node['syslog_ng']['config']['config_template_cookbook']
+    source new_resource.template_source || 'syslog-ng/rewrite.conf.erb'
+    cookbook new_resource.cookbook || node['syslog_ng']['config']['config_template_cookbook']
     owner 'root'
     group 'root'
     mode '0755'
