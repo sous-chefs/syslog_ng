@@ -9,7 +9,7 @@ describe service('syslog-ng') do
   it { should be_running }
 end
 
-%w(l_test).each do |file|
+%w(l_test l_test_2).each do |file|
   describe file("/etc/syslog-ng/log.d/#{file}.conf") do
     it { should exist }
     its('type') { should cmp 'file' }
