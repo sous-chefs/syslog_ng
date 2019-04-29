@@ -204,6 +204,7 @@ kitchen_config-ubuntu-1804:
     KITCHEN_NAME: config-ubuntu-1804
 
 berks_upload:
+  <<: *kitchen_docker_template
   stage: deploy
   script:
     - berks install
