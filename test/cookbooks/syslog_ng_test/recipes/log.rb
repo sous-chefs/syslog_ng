@@ -40,7 +40,7 @@ syslog_ng_log 'l_test_2' do
   source 's_test_tcp'
   filter 'f_test'
   destination 'd_test_file'
-  rewrite [ 'r_test_ip', 'r_test_set' ]
+  rewrite %w(r_test_ip r_test_set)
   notifies :run, 'execute[syslog-ng-config-test]', :delayed
   notifies :reload, 'service[syslog-ng]', :delayed
   action :create

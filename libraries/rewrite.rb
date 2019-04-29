@@ -31,7 +31,7 @@ module SyslogNg
       config_string.concat(build_parameter_string(parameters: int_parameters, unnamed_parameters: SYSLOG_NG_REWRITE_PARAMETERS_UNNAMED))
 
       config_string.rstrip!
-      config_string = config_string.slice(0, (config_string.length - 1)) if config_string[(config_string.length - 1)].eql?(',')
+      config_string = config_string[0...-1] if config_string.end_with?(',')
       config_string.concat(')')
 
       config_string

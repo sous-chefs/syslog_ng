@@ -29,69 +29,74 @@ property :flags, [String, Array]
 property :tags, String
 property :condition, String
 property :additional_options, Hash, default: {}
+property :configuration, Array
 property :description, String
 
 action :create do
-  rewrite = case new_resource.function
-            when 'subst'
-              {
-                new_resource.name => {
-                  'function' => new_resource.function,
-                  'match' => new_resource.match,
-                  'replacement' => new_resource.replacement,
-                  'value' => new_resource.value,
-                  'flags' => new_resource.flags,
-                  'condition' => new_resource.condition,
-                  'additional_options' => new_resource.additional_options,
-                },
-              }
-            when 'set'
-              {
-                new_resource.name => {
-                  'function' => new_resource.function,
-                  'replacement' => new_resource.replacement,
-                  'value' => new_resource.value,
-                  'condition' => new_resource.condition,
-                  'additional_options' => new_resource.additional_options,
-                },
-              }
-            when 'unset', 'groupunset'
-              {
-                new_resource.name => {
-                  'function' => new_resource.function,
-                  'field' => new_resource.field,
-                  'value' => new_resource.value,
-                  'values' => new_resource.values,
-                  'condition' => new_resource.condition,
-                  'additional_options' => new_resource.additional_options,
-                },
-              }
-            when 'groupset'
-              {
-                new_resource.name => {
-                  'function' => new_resource.function,
-                  'field' => new_resource.field,
-                  'values' => new_resource.values,
-                  'condition' => new_resource.condition,
-                  'additional_options' => new_resource.additional_options,
-                },
-              }
-            when 'set-tag', 'clear-tag'
-              {
-                new_resource.name => {
-                  'function' => new_resource.function,
-                  'tags' => new_resource.tags,
-                },
-              }
-            when 'credit-card-mask'
-              {
-                new_resource.name => {
-                  'function' => new_resource.function,
-                  'value' => new_resource.value,
-                  'condition' => new_resource.condition,
-                  'additional_options' => new_resource.additional_options,
-                },
-              }
+  rewrite = if new_resource.configuration.nil?
+              case new_resource.function
+              when 'subst'
+                [
+                  {
+                    'function' => new_resource.function,
+                    'match' => new_resource.match,
+                    'replacement' => new_resource.replacement,
+                    'value' => new_resource.value,
+                    'flags' => new_resource.flags,
+                    'condition' => new_resource.condition,
+                    'additional_options' => new_resource.additional_options,
+                  },
+                ]
+              when 'set'
+                [
+                  {
+                    'function' => new_resource.function,
+                    'replacement' => new_resource.replacement,
+                    'value' => new_resource.value,
+                    'condition' => new_resource.condition,
+                    'additional_options' => new_resource.additional_options,
+                  },
+                ]
+              when 'unset', 'groupunset'
+                [
+                  {
+                    'function' => new_resource.function,
+                    'field' => new_resource.field,
+                    'value' => new_resource.value,
+                    'values' => new_resource.values,
+                    'condition' => new_resource.condition,
+                    'additional_options' => new_resource.additional_options,
+                  },
+                ]
+              when 'groupset'
+                [
+                  {
+                    'function' => new_resource.function,
+                    'field' => new_resource.field,
+                    'values' => new_resource.values,
+                    'condition' => new_resource.condition,
+                    'additional_options' => new_resource.additional_options,
+                  },
+                ]
+              when 'set-tag', 'clear-tag'
+                [
+                  {
+                    'function' => new_resource.function,
+                    'tags' => new_resource.tags,
+                  },
+                ]
+              when 'credit-card-mask'
+                [
+                  {
+                    'function' => new_resource.function,
+                    'value' => new_resource.value,
+                    'condition' => new_resource.condition,
+                    'additional_options' => new_resource.additional_options,
+                  },
+                ]
+              end
+            else
+              new_resource.configuration
             end
 
   template "#{new_resource.config_dir}/#{new_resource.name}.conf" do
@@ -102,6 +107,7 @@ action :create do
     mode '0755'
     sensitive new_resource.sensitive
     variables(
+      name: new_resource.name,
       description: new_resource.description.nil? ? new_resource.name : new_resource.description,
       rewrite: rewrite
     )
