@@ -34,6 +34,13 @@ log {
     <% else -%>
     parser(<%= @parser %>);
     <% end -%>
+    <% if @rewrite.is_a?(Array) -%>
+    <% @rewrite.each do |rewrite| -%>
+    rewrite(<%= rewrite %>);
+    <% end -%>
+    <% else -%>
+    rewrite(<%= @rewrite %>);
+    <% end -%>
     <% if @destination.is_a?(Array) -%>
     <% @destination.each do |destination| -%>
     <% if destination.is_a?(Hash) -%>

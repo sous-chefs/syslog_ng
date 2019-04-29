@@ -122,3 +122,26 @@ syslog_ng_rewrite 'r_test_credit_card_mask' do
   notifies :reload, 'service[syslog-ng]', :delayed
   action :create
 end
+
+syslog_ng_rewrite 'r_test_multiple' do
+  configuration(
+    [
+      {
+        'function' => 'set-tag',
+        'tags' => 'tag-to-add-1',
+      },
+      {
+        'function' => 'clear-tag',
+        'tags' => 'tag-to-clear-1',
+      },
+      {
+        'function' => 'groupset',
+        'field' => 'myhost',
+        'values' => %w(HOST FULLHOST),
+      },
+    ]
+  )
+  notifies :run, 'execute[syslog-ng-config-test]', :delayed
+  notifies :reload, 'service[syslog-ng]', :delayed
+  action :create
+end

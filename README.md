@@ -113,7 +113,7 @@ See [usage](#destination-usage) for examples.
 | `driver`        | No        | String, Array | The destination driver to use                                                |
 | `path`          | Yes       | String, Array | The path for the destination driver (if it supports being specified one)     |
 | `parameters`    | Yes       | Hash, Array   | Driver parameters and options                                                |
-| `configuration` | Yes       | Hash, Array   | Raw configuration Hash                                                       |
+| `configuration` | Yes       | Array         | Array of Hash containing raw driver(s) configuration                         |
 | `multiline`     | Yes       | True, False   | Use multiline formatting, default is false                                   |
 
 ### filter
@@ -221,6 +221,7 @@ See [usage](#rewrite-usage) for examples.
 | `tags`               | Yes       | String        | Tags to apply                                                                |
 | `condition`          | Yes       | String        | Condition which must be satisfied for the rewrite to be applied              |
 | `additional_options` | Yes       | Hash          | Additional options for template function                                     |
+| `configuration`      | Yes       | Array         | Array of Hash containing raw rewrite(s) configuration                        |
 | `description`        | Yes       | String        | Rewrite statement description                                                |
 
 ### source
@@ -241,7 +242,7 @@ See [usage](#source-usage) for examples.
 | `source`        | Yes       | String, Array | Override the template source file                                            |
 | `driver`        | No        | String, Array | The source driver to use                                                     |
 | `parameters`    | Yes       | Hash, Array   | Driver parameters and options                                                |
-| `configuration` | Yes       | Array         | Raw driver(s) configuration                                                  |
+| `configuration` | Yes       | Array         | Array of Hash containing raw driver(s) configuration                         |
 | `description`   | Yes       | String        | Source statement description                                                 |
 | `multiline`     | Yes       | True, False   | Use multiline formatting, default is false                                   |
 
@@ -742,6 +743,44 @@ rewrite r_test_set_tag {
     set-tag("tag-to-add-1");
 };
 ```
+
+##### Example 5 - Multiple rewrite operations
+
+```ruby
+syslog_ng_rewrite 'r_test_multiple' do
+  configuration(
+    [
+      {
+        'function' => 'set-tag'
+        'tags' => 'tag-to-add-1'
+      },
+      {
+        'function' => 'clear-tag',
+        'tags' => 'tag-to-clear-1'
+      },
+      {
+        'function' => 'groupset',
+        'field' => 'myhost',
+        'values' => %w(HOST FULLHOST)
+      },
+    ]
+  )
+  notifies :run, 'execute[syslog-ng-config-test]', :delayed
+  notifies :reload, 'service[syslog-ng]', :delayed
+  action :create
+end
+```
+
+Generates:
+
+```c
+# Rewrite - r_test_multiple
+rewrite r_test_multiple {
+    set-tag("tag-to-add-1");
+    clear-tag("tag-to-clear-1");
+    groupset("myhost", values("HOST", "FULLHOST"));
+};
+````
 
 #### source Usage
 

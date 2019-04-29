@@ -20,7 +20,8 @@ end
   r_test_set_condition
   r_test_set_tag
   r_test_clear_tag
-  r_test_credit_card_mask).each do |file|
+  r_test_credit_card_mask
+  r_test_multiple).each do |file|
   describe file("/etc/syslog-ng/rewrite.d/#{file}.conf") do
     it { should exist }
     its('type') { should cmp 'file' }

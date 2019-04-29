@@ -1,6 +1,6 @@
 #
 # Cookbook:: syslog_ng
-# Spec:: filter_spec
+# Spec:: parser_spec
 #
 # Copyright:: 2018, Ben Hughes <bmhughes@bmhughes.co.uk>
 #
@@ -18,7 +18,7 @@
 
 require 'spec_helper'
 
-describe 'syslog_ng_test::log' do
+describe 'syslog_ng_test::parser' do
   platforms = {
     'CentOS' => '7.6.1804',
     'Fedora' => '29',
@@ -26,6 +26,7 @@ describe 'syslog_ng_test::log' do
     'Debian' => '9.6',
     'Ubuntu' => '18.04',
   }
+
   platforms.each do |platform, version|
     context "With test recipe, on #{platform} #{version}" do
       let(:chef_run) do
@@ -39,13 +40,13 @@ describe 'syslog_ng_test::log' do
         expect { chef_run }.to_not raise_error
       end
 
-      %w(l_test l_test_2 l_test_embedded).each do |testlog|
-        it 'creates log' do
-          expect(chef_run).to create_syslog_ng_log(testlog)
+      %w(p_csv_parser p_kv_parser p_json_parser p_iptables_parser).each do |testparser|
+        it "creates parser #{testparser}" do
+          expect(chef_run).to create_syslog_ng_parser(testparser)
 
-          log = chef_run.syslog_ng_log(testlog)
-          expect(log).to notify('execute[syslog-ng-config-test]').to(:run).delayed
-          expect(log).to notify('service[syslog-ng]').to(:reload).delayed
+          dest = chef_run.syslog_ng_parser(testparser)
+          expect(dest).to notify('execute[syslog-ng-config-test]').to(:run).delayed
+          expect(dest).to notify('service[syslog-ng]').to(:reload).delayed
         end
       end
     end

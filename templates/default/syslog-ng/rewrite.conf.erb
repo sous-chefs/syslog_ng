@@ -5,9 +5,9 @@
 
 # Rewrite - <%= @description %>
 <% if parameter_defined?(@rewrite) -%>
-<% @rewrite.each do |name, config| -%>
-rewrite <%= name -%> {
+rewrite <%= @name -%> {
+    <% @rewrite.each do |config| -%>
     <%= rewrite_builder(config) %>;
+    <% end -%>
 };
-<% end -%>
 <% end -%>
