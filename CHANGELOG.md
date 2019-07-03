@@ -2,12 +2,16 @@
 
 This file is used to list changes made in each version of the syslog_ng cookbook.
 
-## 0.2.1
+## 0.3.0 (2019-07-03)
+
+- Default COPR repository updated to v3.22
+
+## 0.2.1 (2019-04-29)
 
 - Add missing rewrite property to log resource
 - Add multi function support to rewrite resource
 
-## 0.2.0
+## 0.2.0 (2019-04-26)
 
 - Default COPR repository updated to v3.20
 - Added resources to create:
@@ -23,7 +27,7 @@ This file is used to list changes made in each version of the syslog_ng cookbook
 - Helper libraries refactored
 - Various bug fixes
 
-## 0.1.0
+## 0.1.0 (2019-02-08)
 
 ### Initial release
 
