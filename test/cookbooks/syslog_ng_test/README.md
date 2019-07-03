@@ -1,4 +1,3 @@
-# test
+# syslog_ng_test
 
-TODO: Enter the cookbook description here.
-
+Test kitchen cookbook for syslog_ng.

@@ -1,6 +1,8 @@
 # syslog_ng
 
- ![Release](https://img.shields.io/github/release/bmhughes/syslog_ng.svg) [![Build Status](https://travis-ci.org/bmhughes/syslog_ng.svg?branch=master)](https://travis-ci.org/bmhughes/syslog_ng) ![License](https://img.shields.io/github/license/bmhughes/syslog_ng.svg)
+ ![Release](https://img.shields.io/github/release/bmhughes/syslog_ng.svg)
+ [![Build Status](https://travis-ci.org/bmhughes/syslog_ng.svg?branch=master)](https://travis-ci.org/bmhughes/syslog_ng)
+ ![License](https://img.shields.io/github/license/bmhughes/syslog_ng.svg)
 
 Provides a set of resources to install and configure syslog-ng.
 
@@ -313,7 +315,7 @@ end
 
 [Resource](#destination)
 
-Generates a syslog-ng [destination](https://www.syslog-ng.com/technical-documents/doc/syslog-ng-open-source-edition/3.20/administration-guide/29#TOPIC-1121880) configuration statement.
+Generates a syslog-ng [destination](https://www.syslog-ng.com/technical-documents/doc/syslog-ng-open-source-edition/3.22/administration-guide/29#TOPIC-1209176) configuration statement.
 
 Some destination drivers accept a non-named parameter which is generally a path (the file and pipe driver accept a path) so an additional path property is provided alongside the parameters.
 
@@ -365,7 +367,7 @@ destination d_test_params {
 
 [Resource](#filter)
 
-Generates a syslog-ng [filter](https://www.syslog-ng.com/technical-documents/doc/syslog-ng-open-source-edition/3.20/administration-guide/54#TOPIC-1094669) configuration statement.
+Generates a syslog-ng [filter](https://www.syslog-ng.com/technical-documents/doc/syslog-ng-open-source-edition/3.22/administration-guide/56#TOPIC-1209285) configuration statement.
 
 Due to the large amount of possible combinations of Boolean operators and containers to which can be applied in a filter, this resource has a reasonably complex Hash structure and despite trying to break this as much as possible in testing, this library will very likely have some bugs in it.
 
@@ -543,7 +545,7 @@ end
 
 [Resource](#log)
 
-Generates a syslog-ng [log](https://www.syslog-ng.com/technical-documents/doc/syslog-ng-open-source-edition/3.20/administration-guide/50#TOPIC-1094654) configuration statement.
+Generates a syslog-ng [log](https://www.syslog-ng.com/technical-documents/doc/syslog-ng-open-source-edition/3.22/administration-guide/53#TOPIC-1209271) configuration statement.
 
 A log statement is the last part of a combination of `source`, `filter` and `destination` resources to create a completed log configuration with syslog-ng. Multiple source, filter and destination elements can be passed to the resource as a String Array.
 
@@ -576,7 +578,7 @@ log {
 
 [Resource](#parser)
 
-Generates a syslog-ng [parser](https://www.syslog-ng.com/technical-documents/doc/syslog-ng-open-source-edition/3.20/administration-guide/64#TOPIC-1122025) configuration statement.
+Generates a syslog-ng [parser](https://www.syslog-ng.com/technical-documents/doc/syslog-ng-open-source-edition/3.22/administration-guide/67#TOPIC-1209329) configuration statement.
 
 ##### Example 1 - CSV Parser
 
@@ -653,7 +655,7 @@ parser p_json_parser {
 
 [Resource](#rewrite)
 
-Generates a syslog-ng [rewrite](https://www.syslog-ng.com/technical-documents/doc/syslog-ng-open-source-edition/3.20/administration-guide/61#TOPIC-1122013) configuration statement.
+Generates a syslog-ng [rewrite](https://www.syslog-ng.com/technical-documents/doc/syslog-ng-open-source-edition/3.22/administration-guide/64#TOPIC-1209316) configuration statement.
 
 ##### Example 1 - Substitute string `IP` with `IP-Address` in MESSAGE field
 
@@ -784,7 +786,7 @@ rewrite r_test_multiple {
 
 #### source Usage
 
-Generates a syslog-ng [source](https://www.syslog-ng.com/technical-documents/doc/syslog-ng-open-source-edition/3.20/administration-guide/16#TOPIC-1094519) configuration statement.
+Generates a syslog-ng [source](https://www.syslog-ng.com/technical-documents/doc/syslog-ng-open-source-edition/3.22/administration-guide/16#TOPIC-1209125) configuration statement.
 
 ##### Example 1 - TCP source
 
@@ -839,7 +841,7 @@ source s_test_wildcard_file {
 
 [Resource](#template)
 
-Generates a syslog-ng [template](https://www.syslog-ng.com/technical-documents/doc/syslog-ng-open-source-edition/3.20/administration-guide/59#TOPIC-1122005) configuration statement.
+Generates a syslog-ng [template](https://www.syslog-ng.com/technical-documents/doc/syslog-ng-open-source-edition/3.22/administration-guide/62#TOPIC-1209309) configuration statement.
 
 ##### Example 1
 
