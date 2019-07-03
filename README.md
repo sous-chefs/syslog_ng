@@ -653,7 +653,7 @@ parser p_json_parser {
 
 [Resource](#rewrite)
 
-Generates a syslog-ng [parser](https://www.syslog-ng.com/technical-documents/doc/syslog-ng-open-source-edition/3.20/administration-guide/61#TOPIC-1122013) configuration statement.
+Generates a syslog-ng [rewrite](https://www.syslog-ng.com/technical-documents/doc/syslog-ng-open-source-edition/3.20/administration-guide/61#TOPIC-1122013) configuration statement.
 
 ##### Example 1 - Substitute string `IP` with `IP-Address` in MESSAGE field
 
