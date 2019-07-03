@@ -7,6 +7,7 @@ provisioner:
   name: chef_zero
   always_update_cookbooks: true
   deprecations_as_errors: true
+  chef_license: accept
 
 verifier:
   name: inspec
