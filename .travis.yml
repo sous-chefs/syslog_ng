@@ -27,6 +27,7 @@ stages:
   - unit
 
 env:
+  - CHEF_LICENSE=accept
   matrix:
     - INSTANCE=default-centos-7
     - INSTANCE=default-fedora-latest
@@ -39,6 +40,10 @@ env:
     - INSTANCE=latest-fedora-latest
     - INSTANCE=latest-ubuntu-1604
     - INSTANCE=latest-ubuntu-1804
+    - INSTANCE=manual-centos-7
+    - INSTANCE=manual-fedora-latest
+    - INSTANCE=manual-ubuntu-1604
+    - INSTANCE=manual-ubuntu-1804
     - INSTANCE=config-centos-7
     - INSTANCE=config-fedora-latest
     - INSTANCE=config-ubuntu-1604
