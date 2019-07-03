@@ -4,6 +4,7 @@ stages:
   - chefspec
   - default
   - latest
+  - manual
   - config
   - deploy
   - cleanup
@@ -202,6 +203,34 @@ kitchen_config-ubuntu-1804:
   stage: config
   variables:
     KITCHEN_NAME: config-ubuntu-1804
+
+kitchen_manual-centos-7:
+  <<: *kitchen_docker_template
+  <<: *kitchen_test_definition
+  stage: manual
+  variables:
+    KITCHEN_NAME: manual-centos-7
+
+kitchen_manual-fedora-latest:
+  <<: *kitchen_docker_template
+  <<: *kitchen_test_definition
+  stage: manual
+  variables:
+    KITCHEN_NAME: manual-fedora-latest
+
+kitchen_manual-ubuntu-1604:
+  <<: *kitchen_docker_template
+  <<: *kitchen_test_definition
+  stage: manual
+  variables:
+    KITCHEN_NAME: manual-ubuntu-1604
+
+kitchen_manual-ubuntu-1804:
+  <<: *kitchen_docker_template
+  <<: *kitchen_test_definition
+  stage: manual
+  variables:
+    KITCHEN_NAME: manual-ubuntu-1804
 
 berks_upload:
   <<: *kitchen_docker_template

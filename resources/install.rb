@@ -17,6 +17,7 @@
 # limitations under the License.
 
 property :package_source, String, equal_to: %w(distro latest package_distro package_copr), default: 'distro'
+property :packages, [String, Array]
 property :remove_rsyslog, [true, false], default: true
 property :repo_cleanup, [true, false], default: true
 
@@ -29,7 +30,7 @@ action :install do
   end
 
   if new_resource.remove_rsyslog
-    log 'Remove rsyslog selected, removing'
+    log 'Remove rsyslog selected'
     package 'rsyslog' do
       action :remove
     end
@@ -101,16 +102,20 @@ action :install do
   end
 
   packages = []
-  latest = new_resource.package_source.eql?('latest') || new_resource.package_source.eql?('package_copr')
-  ruby_block 'repo_get_packages' do
-    extend SyslogNg::InstallHelpers
-    block do
-      packages = repo_get_packages(platform: node['platform_family'], latest: latest, copr_version: node['syslog_ng']['install']['copr_repo_version'])
-      raise 'No packages found to install' if packages.empty?
-      log "Found #{packages.count} packages to install"
-      Chef::Log.debug("Packages to install are: #{packages.join(', ')}.")
+  if property_is_set?(:packages)
+    packages.push(new_resource.packages)
+  else
+    latest = new_resource.package_source.eql?('latest') || new_resource.package_source.eql?('package_copr')
+    ruby_block 'repo_get_packages' do
+      extend SyslogNg::InstallHelpers
+      block do
+        packages = repo_get_packages(platform: node['platform_family'], latest: latest, copr_version: node['syslog_ng']['install']['copr_repo_version'])
+        raise 'No packages found to install' if packages.empty?
+        log "Found #{packages.count} packages to install"
+        Chef::Log.debug("Packages to install are: #{packages.join(', ')}.")
+      end
+      action :run
     end
-    action :run
   end
 
   package 'syslog_ng' do
