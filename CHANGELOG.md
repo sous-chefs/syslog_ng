@@ -2,7 +2,7 @@
 
 This file is used to list changes made in each version of the syslog_ng cookbook.
 
-## 0.3.0 (2019-07-03)
+## 0.3.0 (2019-07-04)
 
 - Default COPR repository updated to v3.22
 - Add log junction/channel support
