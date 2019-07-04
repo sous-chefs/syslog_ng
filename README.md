@@ -173,7 +173,8 @@ See [usage](#log-usage) for examples.
 | `filter`          | Yes       | String, Array, Hash | The filter directive(s) to reference                                         |
 | `destination`     | Yes       | String, Array, Hash | The destination directive(s) to reference                                    |
 | `flags`           | Yes       | String, Array       | The log path flags to use                                                    |
-| `parser`          | Yes       | String, Array       | The log parser to use                                                        |  
+| `parser`          | Yes       | String, Array       | The log parser to use                                                        |
+| `junction`        | Yes       | Hash, Array         | Specify a log junction and contained channels                                |
 | `description`     | Yes       | String              | Log statement description                                                    |
 
 ### parser
@@ -297,7 +298,7 @@ This cookbook contains no recipes and only provides resources to be directly use
 
 #### config_global Usage
 
-[Resource](#config_global)
+[**Resource**](#config_global)
 
 All properties are optional and by default the settings in the generated global configuration will be retrieved from node attributes, any properties can be overridden by changing the attributes, specifying a different attribute or providing a value to the relevant resource property.
 
@@ -313,7 +314,7 @@ end
 
 #### destination Usage
 
-[Resource](#destination)
+[**Resource**](#destination)
 
 Generates a syslog-ng [destination](https://www.syslog-ng.com/technical-documents/doc/syslog-ng-open-source-edition/3.22/administration-guide/29#TOPIC-1209176) configuration statement.
 
@@ -365,7 +366,7 @@ destination d_test_params {
 
 #### filter Usage
 
-[Resource](#filter)
+[**Resource**](#filter)
 
 Generates a syslog-ng [filter](https://www.syslog-ng.com/technical-documents/doc/syslog-ng-open-source-edition/3.22/administration-guide/56#TOPIC-1209285) configuration statement.
 
@@ -508,7 +509,7 @@ filter f_test_raw_string_array {
 
 #### install Usage
 
-[Resource](#install)
+[**Resource**](#install)
 
 There are two installation methods available `package_distro` and `package_copr`. The COPR installation method is only available to current Redhat and Fedora (7+ and 28+) distributions but does provide up-to-date versions that aren't in the distribution repositories.
 
@@ -543,7 +544,7 @@ end
 
 #### log Usage
 
-[Resource](#log)
+[**Resource**](#log)
 
 Generates a syslog-ng [log](https://www.syslog-ng.com/technical-documents/doc/syslog-ng-open-source-edition/3.22/administration-guide/53#TOPIC-1209271) configuration statement.
 
@@ -551,7 +552,7 @@ A log statement is the last part of a combination of `source`, `filter` and `des
 
 *The resource does not presently support embedded log statements, this will be added as a future development.*
 
-##### Example
+##### Example 1 - Basic Log
 
 ```ruby
 syslog_ng_log 'l_test' do
@@ -574,9 +575,151 @@ log {
 };
 ```
 
+##### Example 2 - Contained Log
+
+```ruby
+syslog_ng_log 'l_test_embedded' do
+  source(
+    [
+      'tcp' => {
+        'parameters' => {
+          'ip' => '127.0.0.1',
+          'port' => '5516',
+        },
+      },
+      'udp' => {
+        'parameters' => {
+          'ip' => '127.0.0.1',
+          'port' => '5516',
+        },
+      },
+    ]
+  )
+  filter(
+    'container_outside' => {
+      'operator' => 'and',
+      'container_1' => {
+        'facility' => 'mail',
+      },
+      'container_2' => {
+        'operator' => 'or',
+        'facility' => %w(cron authpriv),
+      },
+    }
+  )
+  destination(
+    [
+      {
+        'file' => {
+          'path' => '/var/log/embedded_test/test_file_1.log',
+          'parameters' => {
+            'flush_lines' => 10,
+            'create-dirs' => 'yes',
+          },
+        },
+      },
+      {
+        'file' => {
+          'path' => '/var/log/embedded_test/test_file_2.log',
+          'parameters' => {
+            'flush_lines' => 100,
+            'create-dirs' => 'yes',
+          },
+        },
+      },
+    ]
+  )
+  notifies :run, 'execute[syslog-ng-config-test]', :delayed
+  notifies :reload, 'service[syslog-ng]', :delayed
+  action :create
+end
+```
+
+Generates:
+
+```c
+# Log - l_test_embedded
+log {
+    source { tcp(ip(127.0.0.1) port("5516")); };
+    source { udp(ip(127.0.0.1) port("5516")); };
+    filter { ((facility(mail)) and (facility(cron) or facility(authpriv))) };
+    destination { file("/var/log/embedded_test/test_file_1.log" flush_lines(10) create-dirs(yes)); };
+    destination { file("/var/log/embedded_test/test_file_2.log" flush_lines(100) create-dirs(yes)); };
+};
+```
+
+##### Example 3 - Log Junction/Channels
+
+```ruby
+syslog_ng_log 'l_test_junction' do
+  source(
+    [
+      'tcp' => {
+        'parameters' => {
+          'ip' => '127.0.0.1',
+          'port' => '5520',
+          'flags' => 'no-parse',
+        },
+      },
+    ]
+  )
+  destination(
+    [
+      {
+        'file' => {
+          'path' => '/var/log/junction_test/test_file_junction.log',
+          'parameters' => {
+            'flush_lines' => 10,
+            'create-dirs' => 'yes',
+          },
+        },
+      },
+    ]
+  )
+  junction(
+    [
+      {
+        'filter' => 'f_test',
+        'parser' => {
+          'parser' => 'syslog-parser',
+        },
+      },
+      {
+        'filter' => 'f_test_contained',
+      },
+    ]
+  )
+  notifies :run, 'execute[syslog-ng-config-test]', :delayed
+  notifies :reload, 'service[syslog-ng]', :delayed
+  action :create
+end
+```
+
+Generates:
+
+```c
+# Log - l_test_junction
+log {
+    source { tcp(ip(127.0.0.1) port("5520") flags("no-parse")); };
+    junction {
+        channel {
+            filter(f_test);
+            parser {
+                syslog-parser(
+                );
+            };
+        };
+        channel {
+            filter(f_test_contained);
+        };
+    };
+    destination { file("/var/log/junction_test/test_file_junction.log" flush_lines(10) create-dirs(yes)); };
+};
+```
+
 #### parser Usage
 
-[Resource](#parser)
+[**Resource**](#parser)
 
 Generates a syslog-ng [parser](https://www.syslog-ng.com/technical-documents/doc/syslog-ng-open-source-edition/3.22/administration-guide/67#TOPIC-1209329) configuration statement.
 
@@ -653,7 +796,7 @@ parser p_json_parser {
 
 #### rewrite Usage
 
-[Resource](#rewrite)
+[**Resource**](#rewrite)
 
 Generates a syslog-ng [rewrite](https://www.syslog-ng.com/technical-documents/doc/syslog-ng-open-source-edition/3.22/administration-guide/64#TOPIC-1209316) configuration statement.
 
@@ -839,7 +982,7 @@ source s_test_wildcard_file {
 
 #### template Usage
 
-[Resource](#template)
+[**Resource**](#template)
 
 Generates a syslog-ng [template](https://www.syslog-ng.com/technical-documents/doc/syslog-ng-open-source-edition/3.22/administration-guide/62#TOPIC-1209309) configuration statement.
 

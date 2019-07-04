@@ -39,8 +39,8 @@ describe 'syslog_ng_test::log' do
         expect { chef_run }.to_not raise_error
       end
 
-      %w(l_test l_test_2 l_test_embedded).each do |testlog|
-        it 'creates log' do
+      %w(l_test l_test_2 l_test_embedded l_test_junction).each do |testlog|
+        it "creates log #{testlog}" do
           expect(chef_run).to create_syslog_ng_log(testlog)
 
           log = chef_run.syslog_ng_log(testlog)

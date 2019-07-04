@@ -40,6 +40,9 @@ log {
     <% end -%>
     <% else -%>
     rewrite(<%= @rewrite %>);
+    <% end -%>    
+    <% if parameter_defined?(@junction) -%>
+    <%= render('syslog-ng/log.junction.partial.erb', :variables => {:junction => @junction}, :cookbook => 'syslog_ng') %>
     <% end -%>
     <% if @destination.is_a?(Array) -%>
     <% @destination.each do |destination| -%>

@@ -1,0 +1,89 @@
+junction {
+        <% if @junction.is_a?(Array) -%>
+        <% @junction.each do |channel| -%>
+        channel {
+            <% unless channel['filter'].nil? -%>
+            <% if channel['filter'].is_a?(Hash) -%>
+            filter { <%= filter_builder(channel['filter']) %> }; 
+            <% elsif channel['filter'].is_a?(Array) -%>
+            <% channel['filter'].each do |filter| -%>
+            filter(<%= filter %>);
+            <% end -%>    
+            <% else -%>
+            filter(<%= channel['filter'] %>);
+            <% end -%>
+            <% end -%> 
+            <% unless channel['parser'].nil? -%>
+            <% if channel['parser'].is_a?(Array) -%>
+            <% channel['parser'].each do |parser| -%>
+            parser(<%= parser %>);
+            <% end -%>
+            <% elsif channel['parser'].is_a?(Hash) -%>
+            parser {
+                <%= channel['parser']['parser'] -%>(
+                    <% unless channel['parser']['options'].nil? -%>
+                    <% channel['parser']['options'].each do |name, config| -%>
+                    <%= name -%>(<%= config -%>)
+                    <% end -%>
+                    <% end -%>
+                );
+            };
+            <% else -%>
+            parser(<%= channel['parser'] %>);
+            <% end -%>
+            <% end -%>
+            <% unless channel['rewrite'].nil? -%>
+            <% if channel['rewrite'].is_a?(Array) -%>
+            <% channel['rewrite'].each do |rewrite| -%>
+            rewrite(<%= rewrite %>);
+            <% end -%>
+            <% else -%>
+            rewrite(<%= channel['rewrite'] %>);
+            <% end -%>
+            <% end -%>
+            <% unless channel['flags'].nil? -%>
+            <% if @objects['flags'].is_a?(Array) -%>
+            <% @objects['flags'].each do |flags| -%>
+            flags(<%= flags %>);
+            <% end -%>
+            <% else -%>
+            flags(<%= @flags %>);
+            <% end -%>
+            <% end -%>
+        };
+        <% end -%>
+        <% else -%>
+        channel {
+            <% if channel['filter'].is_a?(Hash) -%>
+            filter { <%= filter_builder(channel['filter']) %> }; 
+            <% elsif channel['filter'].is_a?(Array) -%>
+            <% channel['filter'].each do |filter| -%>
+            filter(<%= filter %>);
+            <% end -%>    
+            <% else -%>
+            filter(<%= channel['filter'] %>);
+            <% end -%>
+            <% if channel['parser'].is_a?(Array) -%>
+            <% channel['parser'].each do |parser| -%>
+            parser(<%= parser %>);
+            <% end -%>
+            <% else -%>
+            parser(<%= channel['parser'] %>);
+            <% end -%>
+            <% if channel['rewrite'].is_a?(Array) -%>
+            <% channel['rewrite'].each do |rewrite| -%>
+            rewrite(<%= rewrite %>);
+            <% end -%>
+            <% else -%>
+            rewrite(<%= channel['rewrite'] %>);
+            <% end -%>
+            <% if @objects['flags'].is_a?(Array) -%>
+            <% @objects['flags'].each do |flags| -%>
+            flags(<%= flags %>);
+            <% end -%>
+            <% else -%>
+            flags(<%= @flags %>);
+            <% end -%>
+        };
+        <% end -%>
+    };

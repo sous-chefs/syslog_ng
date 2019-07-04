@@ -25,6 +25,7 @@ property :destination, [String, Array], default: []
 property :flags, [String, Array], default: []
 property :parser, [String, Array], default: []
 property :rewrite, [String, Array], default: []
+property :junction, [Hash, Array], default: []
 property :description, String
 
 action :create do
@@ -42,7 +43,8 @@ action :create do
       destination: new_resource.destination,
       flags: new_resource.flags,
       parser: new_resource.parser,
-      rewrite: new_resource.rewrite
+      rewrite: new_resource.rewrite,
+      junction: new_resource.junction
     )
     helpers(SyslogNg::DestinationHelpers)
     helpers(SyslogNg::SourceHelpers)
