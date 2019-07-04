@@ -13,10 +13,6 @@ addons:
 # Run bundle install to add simplecov
 install: chef exec bundle install
 
-branches:
-  only:
-    - master
-
 services: docker
 
 # Ensure we make ChefDK's Ruby the default
@@ -31,6 +27,8 @@ stages:
   - unit
 
 env:
+  global:
+    - CHEF_LICENSE=accept
   matrix:
     - INSTANCE=default-centos-7
     - INSTANCE=default-fedora-latest
@@ -43,6 +41,10 @@ env:
     - INSTANCE=latest-fedora-latest
     - INSTANCE=latest-ubuntu-1604
     - INSTANCE=latest-ubuntu-1804
+    - INSTANCE=manual-centos-7
+    - INSTANCE=manual-fedora-latest
+    - INSTANCE=manual-ubuntu-1604
+    - INSTANCE=manual-ubuntu-1804
     - INSTANCE=config-centos-7
     - INSTANCE=config-fedora-latest
     - INSTANCE=config-ubuntu-1604
@@ -53,8 +55,10 @@ script: KITCHEN_LOCAL_YAML=.kitchen.dokken.yml kitchen test ${INSTANCE}
 jobs:
   include:
     - stage: unit
-      name: "Unit Tests"   
-      script: chef --version
-      script: cookstyle --version
+      name: "Unit Tests"
       script: foodcritic --version
-      script: chef exec delivery local all   
+      script: foodcritic .
+      script: cookstyle --version
+      script: cookstyle .
+      script: chef --version
+      script: chef exec rspec -fd

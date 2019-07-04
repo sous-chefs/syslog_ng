@@ -101,3 +101,46 @@ syslog_ng_log 'l_test_embedded' do
   notifies :reload, 'service[syslog-ng]', :delayed
   action :create
 end
+
+syslog_ng_log 'l_test_junction' do
+  source(
+    [
+      'tcp' => {
+        'parameters' => {
+          'ip' => '127.0.0.1',
+          'port' => '5520',
+          'flags' => 'no-parse',
+        },
+      },
+    ]
+  )
+  destination(
+    [
+      {
+        'file' => {
+          'path' => '/var/log/junction_test/test_file_junction.log',
+          'parameters' => {
+            'flush_lines' => 10,
+            'create-dirs' => 'yes',
+          },
+        },
+      },
+    ]
+  )
+  junction(
+    [
+      {
+        'filter' => 'f_test',
+        'parser' => {
+          'parser' => 'syslog-parser',
+        },
+      },
+      {
+        'filter' => 'f_test_contained',
+      },
+    ]
+  )
+  notifies :run, 'execute[syslog-ng-config-test]', :delayed
+  notifies :reload, 'service[syslog-ng]', :delayed
+  action :create
+end

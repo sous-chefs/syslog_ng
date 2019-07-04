@@ -1,8 +1,8 @@
 #
-# Cookbook:: build_cookbook
-# Recipe:: security
+# Cookbook:: test
+# Recipe:: package_manual
 #
-# Copyright:: 2018, Ben Hughes <bmhughes@bmhughes.co.uk>
+# Copyright:: 2019, Ben Hughes <bmhughes@bmhughes.co.uk>
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,4 +15,9 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-include_recipe 'delivery-truck::security'
+
+syslog_ng_install '' do
+  package_source 'latest'
+  packages 'syslog-ng'
+  action :install
+end
