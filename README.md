@@ -149,7 +149,7 @@ See [usage](#install-usage) for examples.
 
 | Property         | Optional? | Type        | Description                                                                  |
 |------------------|-----------|-------------|------------------------------------------------------------------------------|
-| `package_source` | Yes       | String      | Package source selection choices are `distro` or `latest`                    |
+| `package_source` | Yes       | String      | Package source selection choices are `distro`, `latest` or `githead`         |
 | `remove_rsyslog` | Yes       | True, False | Remove rsyslog package during installation, otherwise disable the service    |
 | `repo_cleanup`   | Yes       | True, False | Clean up superseded repository configuration files                           |
 
@@ -511,9 +511,15 @@ filter f_test_raw_string_array {
 
 [**Resource**](#install)
 
-There are two installation methods available `package_distro` and `package_copr`. The COPR installation method is only available to current Redhat and Fedora (7+ and 28+) distributions but does provide up-to-date versions that aren't in the distribution repositories.
+There following installation methods are available:
 
-By default the resource will remove rsyslog which is the default syslog daemon on the supported distros, if this is set to `false` then the rsyslog service will just be disabled instead. Some package managers will remove rsyslog anyway when installing syslog-ng so even if this set to `false` rsyslog can still be removed.
+- `distro`
+- `latest`
+- `githead`
+
+The latest installation method is available to current Redhat (7+), Fedora (28+) and Debian distributions and provide up-to-dates versions that aren't in the distribution repositories. The githead method is only available to Redhat and Fedora distributions as a build of the latest code from the syslog-ng repository.
+
+By default the resource will remove rsyslog which is the default syslog daemon on the supported distros, if this is set to `false` then the rsyslog service will just be disabled instead. **Some package managers will remove rsyslog anyway when installing syslog-ng so even if this set to `false` rsyslog can still be removed.**
 
 The `syslog_ng_install` resource does not require a name property.
 
