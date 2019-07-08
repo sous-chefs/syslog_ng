@@ -5,6 +5,7 @@ stages:
   - default
   - latest
   - manual
+  - githead
   - config
   - deploy
   - cleanup
@@ -217,6 +218,20 @@ kitchen_manual-fedora-latest:
   stage: manual
   variables:
     KITCHEN_NAME: manual-fedora-latest
+
+kitchen_githead-centos-7:
+  <<: *kitchen_docker_template
+  <<: *kitchen_test_definition
+  stage: githead
+  variables:
+    KITCHEN_NAME: githead-centos-7
+
+kitchen_githead-fedora-latest:
+  <<: *kitchen_docker_template
+  <<: *kitchen_test_definition
+  stage: githead
+  variables:
+    KITCHEN_NAME: githead-fedora-latest
 
 kitchen_manual-ubuntu-1604:
   <<: *kitchen_docker_template

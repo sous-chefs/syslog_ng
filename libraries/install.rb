@@ -28,30 +28,28 @@ module SyslogNg
       /[0-9]+.[0-9]+/.match(syslog_ng_version_cmd.stdout).to_s
     end
 
-    def repo_get_packages(platform:, latest: false, copr_version: '0.0')
+    def repo_get_packages(platform:, source: nil)
       raise ArgumentException, "Expected platform to be a String, got a #{platform.class}." unless platform.is_a?(String)
 
       require 'mixlib/shellout'
 
-      version = copr_version.delete('.')
-
       case platform
       when 'rhel', 'amazon'
-        command = if latest
-                    "yum -q --disablerepo=* --enablerepo=syslog-ng#{version} search syslog-ng | grep -i 'syslog-ng' | awk '{print $1}' | grep -Po '(syslog-ng)((-[a-zA-Z0-9]+)?)+' | sort -u"
+        command = if !source.nil?
+                    "yum -q --disablerepo=* --enablerepo=#{source} search syslog-ng | grep -i 'syslog-ng' | awk '{print $1}' | grep -Po '(syslog-ng)((-[a-zA-Z0-9]+)?)+' | sort -u"
                   else
                     "yum -q search syslog-ng | grep -i 'syslog-ng' | awk '{print $1}' | grep -Po '(syslog-ng)((-[a-zA-Z0-9]+)?)+' | sort -u"
                   end
         Chef::Log.debug("RHEL selected, command will be '#{command}'")
       when 'fedora'
-        command = if latest
-                    "dnf -q --disablerepo=* --enablerepo=syslog-ng#{version} search syslog-ng | grep -i 'syslog-ng' | awk '{print $1}' | grep -Po '(syslog-ng)((-[a-zA-Z0-9]+)?)+' | sort -u"
+        command = if !source.nil?
+                    "dnf -q --disablerepo=* --enablerepo=#{source} search syslog-ng | grep -i 'syslog-ng' | awk '{print $1}' | grep -Po '(syslog-ng)((-[a-zA-Z0-9]+)?)+' | sort -u"
                   else
                     "dnf -q search syslog-ng | grep -i 'syslog-ng' | awk '{print $1}' | grep -Po '(syslog-ng)((-[a-zA-Z0-9]+)?)+' | sort -u"
                   end
         Chef::Log.debug("Fedora selected, command will be '#{command}'")
       when 'debian'
-        command = if latest
+        command = if !source.nil?
                     'apt-cache search syslog-ng | grep -i "syslog-ng" | awk "{print $1}" | grep -Po "(syslog-ng)" | sort -u'
                   else
                     "apt-cache search syslog-ng | grep -i 'syslog-ng' | awk '{print $1}' | grep -Po '(syslog-ng)((-[a-zA-Z0-9]+)?)+' | sort -u"
