@@ -44,6 +44,20 @@ suites:
     verifier:
       inspec_tests:
         - test/integration/latest
+  - name: githead
+    excludes:
+      - ubuntu-18.04
+      - ubuntu-16.04
+      - debian-8
+      - debian-9
+      - amazonlinux-2
+    run_list:   
+      - recipe[syslog_ng_test::selinux]        
+      - recipe[syslog_ng_test::package_githead]
+      - recipe[syslog_ng_test::config_global]
+    verifier:
+      inspec_tests:
+        - test/integration/default
   - name: manual
     excludes:
       - debian-8

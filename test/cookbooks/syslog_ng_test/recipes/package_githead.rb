@@ -1,8 +1,8 @@
 #
 # Cookbook:: test
-# Recipe:: package_latest
+# Recipe:: package_githead
 #
-# Copyright:: 2019, Ben Hughes <bmhughes@bmhughes.co.uk>
+# Copyright:: 2018, Ben Hughes <bmhughes@bmhughes.co.uk>
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@
 # limitations under the License.
 
 syslog_ng_install '' do
-  package_source 'latest'
-  packages_exclude 'syslog-ng-debugsource'
+  package_source 'githead'
+  packages_exclude ['syslog-ng-debuginfo', 'syslog-ng-debugsource', 'syslog-ng-libdbi']
   action :install
 end

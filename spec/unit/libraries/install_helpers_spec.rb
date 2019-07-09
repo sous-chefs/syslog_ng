@@ -72,8 +72,8 @@ describe 'SyslogNg::InstallHelpers' do
           allow(shellout).to receive(:error!).and_return(nil)
           allow(shellout).to receive(:stdout).and_return(packages)
 
-          expect(dummy_class.new.repo_get_packages(platform: platform, latest: true)).to be_a(Array)
-          expect(dummy_class.new.repo_get_packages(platform: platform, latest: true)).to eq(packages.split(/\n+/))
+          expect(dummy_class.new.repo_get_packages(platform: platform, source: 'syslog-ng322')).to be_a(Array)
+          expect(dummy_class.new.repo_get_packages(platform: platform, source: 'syslog-ng322')).to eq(packages.split(/\n+/))
         end
       end
     end

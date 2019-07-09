@@ -2,7 +2,7 @@
 # Cookbook:: syslog_ng
 # Resource:: install
 #
-# Copyright:: 2018, Ben Hughes <bmhughes@bmhughes.co.uk>
+# Copyright:: 2019, Ben Hughes <bmhughes@bmhughes.co.uk>
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,8 +16,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-property :package_source, String, equal_to: %w(distro latest package_distro package_copr), default: 'distro'
+property :package_source, String, equal_to: %w(distro latest githead package_distro package_copr), default: 'distro'
 property :packages, [String, Array]
+property :packages_exclude, [String, Array]
 property :remove_rsyslog, [true, false], default: true
 property :repo_cleanup, [true, false], default: true
 
@@ -41,9 +42,10 @@ action :install do
     end
   end
 
-  if new_resource.package_source.eql?('distro') || new_resource.package_source.eql?('package_distro')
+  case new_resource.package_source
+  when 'distro', 'package_distro'
     log 'Installing syslog-ng from distribution package repositories'
-  elsif new_resource.package_source.eql?('latest') || new_resource.package_source.eql?('package_copr')
+  when 'latest', 'package_copr'
     case node['platform_family']
     when 'fedora', 'rhel'
       log "Installing syslog-ng #{node['syslog_ng']['install']['copr_repo_version']} from COPR package repositories"
@@ -71,7 +73,8 @@ action :install do
         action :create
       end
     when 'debian'
-      apt_repository 'syslog-ng-latest' do
+      repo_name = 'syslog-ng-latest'
+      apt_repository repo_name do
         uri 'http://download.opensuse.org/repositories/home:/laszlo_budai:/syslog-ng/xUbuntu_17.04'
         key 'http://download.opensuse.org/repositories/home:/laszlo_budai:/syslog-ng/xUbuntu_17.04/Release.key'
         components ['./']
@@ -82,13 +85,34 @@ action :install do
     else
       raise "Lastest package installation not supported for platform #{node['platform']} | platform_family #{node['platform_family']}"
     end
+  when 'githead'
+    raise "Githead package installation not supported for platform #{node['platform']} | platform_family #{node['platform_family']}" unless platform_family?('fedora', 'rhel')
+
+    repo_name = 'syslog-ng-githead'
+    repo_platform_name = node['platform'].eql?('fedora') ? 'fedora' : 'epel'
+
+    yum_repository repo_name do
+      description "Copr repo for #{repo_name} owned by czanik"
+      baseurl "https://copr-be.cloud.fedoraproject.org/results/czanik/syslog-ng-githead/#{repo_platform_name}-$releasever-$basearch/"
+      skip_if_unavailable true
+      gpgcheck true
+      gpgkey 'https://copr-be.cloud.fedoraproject.org/results/czanik/syslog-ng-githead/pubkey.gpg'
+      repo_gpgcheck false
+      enabled true
+      make_cache true
+      options(
+        'enabled_metadata' => '1',
+        'type' => 'rpm-md'
+      )
+      action :create
+    end
   end
 
   if new_resource.repo_cleanup && %w(rhel centos fedora).include?(node['platform'])
-    log 'Performing superceeded repository cleanup'
     configured_yum_repos = Dir.entries('/etc/yum.repos.d')
 
     configured_yum_repos.delete_if { |repo| repo == '.' || repo == '..' || !repo.include?('syslog-ng') || repo.sub('.repo', '').eql?(repo_name) }
+    log "Performing superceeded repository cleanup, #{configured_yum_repos.count} repos to remove" if configured_yum_repos.count > 0
     configured_yum_repos.each do |repo|
       log "Removing superceeded repository #{repo}"
       file "/etc/yum.repos.d/#{repo}" do
@@ -105,14 +129,34 @@ action :install do
   if property_is_set?(:packages)
     packages.push(new_resource.packages)
   else
-    latest = new_resource.package_source.eql?('latest') || new_resource.package_source.eql?('package_copr')
-    ruby_block 'repo_get_packages' do
+    source = if %w(latest package_copr githead).include?(new_resource.package_source)
+               repo_name
+             end
+    ruby_block 'Get packages from repo' do
       extend SyslogNg::InstallHelpers
       block do
-        packages = repo_get_packages(platform: node['platform_family'], latest: latest, copr_version: node['syslog_ng']['install']['copr_repo_version'])
+        packages = repo_get_packages(platform: node['platform_family'], source: source)
         raise 'No packages found to install' if packages.empty?
         log "Found #{packages.count} packages to install"
         Chef::Log.debug("Packages to install are: #{packages.join(', ')}.")
+      end
+      action :run
+    end
+  end
+
+  if property_is_set?(:packages_exclude)
+    ruby_block 'Exclude packages' do
+      block do
+        if new_resource.packages_exclude.is_a?(String)
+          log "Excluding package #{new_resource.packages_exclude}"
+          packages.delete_if { |package| package.match?(new_resource.packages_exclude) }
+        elsif new_resource.packages_exclude.is_a?(Array)
+          log "Found #{new_resource.packages_exclude.count} packages to exclude"
+          new_resource.packages_exclude.each do |pkg|
+            log "Excluding package #{pkg}"
+            packages.delete_if { |package| package.match?(pkg) }
+          end
+        end
       end
       action :run
     end
