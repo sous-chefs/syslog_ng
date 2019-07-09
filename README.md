@@ -1032,7 +1032,7 @@ template t_second_template {
 };
 ```
 
-## Authors
+## Maintainers
 
 - Ben Hughes (<https://github.com/bmhughes>)
 
