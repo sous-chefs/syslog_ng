@@ -136,7 +136,7 @@ module SyslogNg
     end
 
     def format_parameter_pair(parameter:, value:, named: true)
-      raise ArgumentError, "format_parameter_pair: Type error, got #{parameter.class} and #{value.class}. Expected String and String/Integer." unless parameter.is_a?(String) && (value.is_a?(String) || value.is_a?(Integer))
+      raise ArgumentError, "format_parameter_pair: Type error, got #{parameter.class} and #{value.class}. Expected String and String/Integer/Symbol." unless parameter.is_a?(String) && (value.is_a?(String) || value.is_a?(Integer) || value.is_a?(Symbol))
 
       parameter_value = value.is_a?(String) && !value.match?('"') ? format_string_value(value) : value.to_s # TODO: Don't like this matching for already quoted strings
       parameter_string = ''
