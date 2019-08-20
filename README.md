@@ -69,6 +69,12 @@ The following resources are provided:
 - [source](#source)
 - [template](#template)
 
+### Resource Parameter Value - Notes
+
+Parameter values can generally be passed as the expected format type for the parameter they configure, for example integers for number fields and strings for text parameters.
+There are some exceptions to this rule such as the `use-dns()` parameter which accepts either `yes, no or persist_only`. In this case `persist_only` options is not a string 
+but a symbol and must be passed as such else it will be quoted as per normal strings and syslog-ng will fail with a configuration error.
+
 ### config_global
 
 Generates the `syslog-ng.conf` file from node attributes containing the global configuration.
@@ -983,6 +989,33 @@ Generates:
 # Source - Follow all files in the /var/log directory
 source s_test_wildcard_file {
     wildcard-file(base-dir("/var/log") filename-pattern("*.log") recursive(no) follow-freq(1));
+};
+```
+
+##### Example 3 - Syslog source
+
+```ruby
+syslog_ng_source 's_test_syslog' do
+  driver 'syslog'
+  parameters(
+    'ip' => '127.0.0.1',
+    'port' => '3381',
+    'max-connections' => 100,
+    'log_iw_size' => 10000,
+    "use_dns" => :persist_only
+  )
+  notifies :run, 'execute[syslog-ng-config-test]', :delayed
+  notifies :reload, 'service[syslog-ng]', :delayed
+  action :create
+end
+```
+
+Generates:
+
+```c
+# Source - s_test_syslog
+source s_test_syslog {
+    syslog(ip(127.0.0.1) port("3381") max-connections(100) log_iw_size(10000) use_dns(persist_only));
 };
 ```
 

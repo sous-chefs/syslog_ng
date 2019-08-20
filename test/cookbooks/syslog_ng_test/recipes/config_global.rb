@@ -1,8 +1,8 @@
 #
-# Cookbook:: test
+# Cookbook:: syslog_ng_test
 # Recipe:: package_distro
 #
-# Copyright:: 2018, Ben Hughes <bmhughes@bmhughes.co.uk>
+# Copyright:: 2019, Ben Hughes <bmhughes@bmhughes.co.uk>
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -36,5 +36,6 @@ else
 end
 
 service 'syslog-ng' do
-  action [:enable, :start]
+  action :nothing
+  delayed_action [:enable, :start]
 end

@@ -1,8 +1,8 @@
 #
-# Cookbook:: test
+# Cookbook:: syslog_ng_test
 # Recipe:: source
 #
-# Copyright:: 2018, Ben Hughes <bmhughes@bmhughes.co.uk>
+# Copyright:: 9018, Ben Hughes <bmhughes@bmhughes.co.uk>
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -24,6 +24,20 @@ with_run_context :root do
   find_resource(:service, 'syslog-ng') do
     action :nothing
   end
+end
+
+syslog_ng_source 's_test_syslog' do
+  driver 'syslog'
+  parameters(
+    'ip' => '127.0.0.1',
+    'port' => '3381',
+    'max-connections' => 100,
+    'log_iw_size' => 10000,
+    "use_dns" => :persist_only
+  )
+  notifies :run, 'execute[syslog-ng-config-test]', :delayed
+  notifies :reload, 'service[syslog-ng]', :delayed
+  action :create
 end
 
 syslog_ng_source 's_test_tcp' do

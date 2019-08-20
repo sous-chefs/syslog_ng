@@ -50,7 +50,7 @@ env:
     - INSTANCE=config-ubuntu-1604
     - INSTANCE=config-ubuntu-1804
 
-script: KITCHEN_LOCAL_YAML=.kitchen.dokken.yml kitchen test ${INSTANCE}
+script: KITCHEN_LOCAL_YAML=kitchen.dokken.yml kitchen test ${INSTANCE}
 
 jobs:
   include:

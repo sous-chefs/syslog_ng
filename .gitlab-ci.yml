@@ -14,8 +14,8 @@ stages:
 .kitchen_docker_template: &kitchen_docker_template
   before_script:
     - echo 'We are using docker.'
-    - export KITCHEN_YAML=.kitchen.yml
-    - export KITCHEN_LOCAL_YAML=.kitchen.dokken.yml
+    - export KITCHEN_YAML=kitchen.yml
+    - export KITCHEN_LOCAL_YAML=kitchen.dokken.yml
     - pwd
     - chef --version
     - kitchen --version

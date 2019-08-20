@@ -36,24 +36,24 @@ kitchen test
 ### Vagrant/Hyper-V
 
 ```shell
-$env:KITCHEN_YAML=".kitchen.yml"
-$env:KITCHEN_LOCAL_YAML=".kitchen.hyperv.yml"
+$env:KITCHEN_YAML="kitchen.yml"
+$env:KITCHEN_LOCAL_YAML="kitchen.hyperv.yml"
 kitchen test
 ```
 
 ### Docker on Linux
 
 ```shell
-export KITCHEN_YAML=.kitchen.yml
-export KITCHEN_LOCAL_YAML=.kitchen.dokken.yml
+export KITCHEN_YAML="kitchen.yml"
+export KITCHEN_LOCAL_YAML="kitchen.dokken.yml"
 kitchen test
 ```
 
 ### Docker on Windows
 
 ```shell
-$env:KITCHEN_YAML=".kitchen.yml"
-$env:KITCHEN_LOCAL_YAML=".kitchen.dokken.yml"
+$env:KITCHEN_YAML="kitchen.yml"
+$env:KITCHEN_LOCAL_YAML="kitchen.dokken.yml"
 kitchen test
 ```
 
