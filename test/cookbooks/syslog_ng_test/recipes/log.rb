@@ -1,5 +1,5 @@
 #
-# Cookbook:: test
+# Cookbook:: syslog_ng_test
 # Recipe:: log
 #
 # Copyright:: 2018, Ben Hughes <bmhughes@bmhughes.co.uk>
