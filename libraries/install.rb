@@ -18,6 +18,22 @@
 
 module SyslogNg
   module InstallHelpers
+    def latest_apt_package_uri
+      platform = node['platform'].capitalize
+      platform = platform.prepend('x') if platform?('ubuntu')
+
+      platform_version = case node['platform']
+                         when 'debian'
+                           v = version.to_f.floor.to_s
+                           v.concat('.0') if version.to_i < 10
+                           v
+                         when 'ubuntu'
+                           node['platform_version'].to_s
+                         end
+
+      "http://download.opensuse.org/repositories/home:/laszlo_budai:/syslog-ng/#{platform}_#{platform_version}"
+    end
+
     def installed_version_get
       require 'mixlib/shellout'
 
