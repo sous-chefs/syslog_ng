@@ -58,11 +58,13 @@ script: KITCHEN_LOCAL_YAML=kitchen.dokken.yml kitchen test ${INSTANCE}
 
 jobs:
   include:
-    - stage: unit
-      name: "Unit Tests"
+    - stage: lint
+      name: "Linting Tests"
       script: foodcritic --version
       script: foodcritic .
       script: cookstyle --version
       script: cookstyle .
+    - stage: unit
+      name: "Unit Tests"
       script: chef --version
       script: chef exec rspec -fd

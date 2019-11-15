@@ -8,6 +8,9 @@ provisioner:
   always_update_cookbooks: true
   deprecations_as_errors: true
   chef_license: accept
+  chef_log_level: <%= ENV['CHEF_LOG_LEVEL'] || 'auto' %>
+  product_name: chef
+  product_version: latest
 
 verifier:
   name: inspec

@@ -2,7 +2,7 @@
 # Cookbook:: syslog_ng
 # Library:: install
 #
-# Copyright:: 2018, Ben Hughes <bmhughes@bmhughes.co.uk>, All Rights Reserved.
+# Copyright:: 2019, Ben Hughes <bmhughes@bmhughes.co.uk>, All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,20 +18,20 @@
 
 module SyslogNg
   module InstallHelpers
-    def latest_apt_package_uri
-      platform = node['platform'].capitalize
-      platform = platform.prepend('x') if platform?('ubuntu')
+    def latest_apt_package_uri(platform, version)
+      platform_name = platform.capitalize
+      platform_name = platform_name.prepend('x') if platform.eql?('ubuntu')
 
-      platform_version = case node['platform']
+      platform_version = case platform
                          when 'debian'
                            v = version.to_f.floor.to_s
                            v.concat('.0') if version.to_i < 10
                            v
                          when 'ubuntu'
-                           node['platform_version'].to_s
+                           version.to_s
                          end
 
-      "http://download.opensuse.org/repositories/home:/laszlo_budai:/syslog-ng/#{platform}_#{platform_version}"
+      "http://download.opensuse.org/repositories/home:/laszlo_budai:/syslog-ng/#{platform_name}_#{platform_version}"
     end
 
     def installed_version_get

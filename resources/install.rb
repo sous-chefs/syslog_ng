@@ -74,9 +74,10 @@ action :install do
       end
     when 'debian'
       repo_name = 'syslog-ng-latest'
+      repo_url = latest_apt_package_uri(node['platform'], node['platform_version'])
       apt_repository repo_name do
-        uri latest_apt_package_uri
-        key "#{latest_apt_package_uri}/Release.key"
+        uri repo_url
+        key "#{repo_url}/Release.key"
         components ['./']
         distribution ''
         repo_name 'syslog-ng-latest'

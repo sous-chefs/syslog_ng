@@ -16,12 +16,13 @@ stages:
     - echo 'We are using docker.'
     - export KITCHEN_YAML=kitchen.yml
     - export KITCHEN_LOCAL_YAML=kitchen.dokken.yml
+    - whoami
     - pwd
     - chef --version
     - kitchen --version
 
 .chef_docker_template: &chef_docker_template
-  image: registry.gitlab.bmhughes.co.uk/bmhughes-net-docker/chefdk:latest
+  image: registry.gitlab.bmhughes.co.uk/bmhughes-net-docker/chefworkstation:latest
 
 foodcritic:
   stage: lint
@@ -34,6 +35,8 @@ foodcritic:
   tags:
     - chef
   except:
+    refs:
+    - production
     variables:
       - $MANUAL_CLEANUP
 
@@ -48,6 +51,8 @@ cookstyle:
   tags:
     - chef
   except:
+    refs:
+    - production
     variables:
       - $MANUAL_CLEANUP
 
@@ -63,6 +68,8 @@ chefspec:
     - chef exec rspec
     - mv -f coverage artifacts/
   except:
+    refs:
+    - production
     variables:
       - $MANUAL_CLEANUP
   tags:
@@ -78,16 +85,14 @@ chefspec:
   script:
     - kitchen converge $KITCHEN_NAME
     - kitchen verify $KITCHEN_NAME
-    - rm -rf etc
-    - mkdir -p etc
-    - kitchen exec $KITCHEN_NAME -c "rsync -a --no-links /etc/syslog-ng /var/gitlab-runner-artifacts/${CI_JOB_NAME}-${CI_COMMIT_SHA}/"
-    - cp -Rfvp /tmp/gitlab-runner-artifacts/$CI_JOB_NAME-$CI_COMMIT_SHA/* etc/
   after_script:
-    - export KITCHEN_YAML=.kitchen.yml
-    - export KITCHEN_LOCAL_YAML=.kitchen.dokken.yml
+    - export KITCHEN_YAML=kitchen.yml
+    - export KITCHEN_LOCAL_YAML=kitchen.dokken.yml
     - kitchen destroy $KITCHEN_NAME
   retry: 1
   except:
+    refs:
+    - production
     variables:
       - $MANUAL_CLEANUP
   tags:
@@ -97,7 +102,6 @@ chefspec:
     when: always
     expire_in: 3 days
     paths:
-      - etc/*
       - .kitchen/
 
 kitchen_default-centos-7:
@@ -107,19 +111,19 @@ kitchen_default-centos-7:
   variables:
     KITCHEN_NAME: default-centos-7
 
-kitchen_default-fedora-latest:
+kitchen_default-fedora-30:
   <<: *kitchen_docker_template
   <<: *kitchen_test_definition
   stage: default
   variables:
-    KITCHEN_NAME: default-fedora-latest
+    KITCHEN_NAME: default-fedora-30
 
-kitchen_default-ubuntu-1604:
+kitchen_default-ubuntu-1910:
   <<: *kitchen_docker_template
   <<: *kitchen_test_definition
   stage: default
   variables:
-    KITCHEN_NAME: default-ubuntu-1604
+    KITCHEN_NAME: default-ubuntu-1910
 
 kitchen_default-ubuntu-1804:
   <<: *kitchen_docker_template
@@ -156,19 +160,32 @@ kitchen_latest-centos-7:
   variables:
     KITCHEN_NAME: latest-centos-7
 
-kitchen_latest-fedora-latest:
+kitchen_latest-fedora-30:
   <<: *kitchen_docker_template
   <<: *kitchen_test_definition
   stage: latest
   variables:
-    KITCHEN_NAME: latest-fedora-latest
+    KITCHEN_NAME: latest-fedora-30
 
-kitchen_latest-ubuntu-1604:
+kitchen_latest-ubuntu-1910:
   <<: *kitchen_docker_template
   <<: *kitchen_test_definition
   stage: latest
   variables:
-    KITCHEN_NAME: latest-ubuntu-1604
+    KITCHEN_NAME: latest-ubuntu-1910
+
+kitchen_latest-debian-9:
+  <<: *kitchen_docker_template
+  <<: *kitchen_test_definition
+  stage: latest
+  variables:
+    KITCHEN_NAME: latest-debian-9
+kitchen_latest-debian-10:
+  <<: *kitchen_docker_template
+  <<: *kitchen_test_definition
+  stage: latest
+  variables:
+    KITCHEN_NAME: latest-debian-10
 
 kitchen_latest-ubuntu-1804:
   <<: *kitchen_docker_template
@@ -184,19 +201,19 @@ kitchen_config-centos-7:
   variables:
     KITCHEN_NAME: config-centos-7
 
-kitchen_config-fedora-latest:
+kitchen_config-fedora-30:
   <<: *kitchen_docker_template
   <<: *kitchen_test_definition
   stage: config
   variables:
-    KITCHEN_NAME: config-fedora-latest
+    KITCHEN_NAME: config-fedora-30
 
-kitchen_config-ubuntu-1604:
+kitchen_config-ubuntu-1910:
   <<: *kitchen_docker_template
   <<: *kitchen_test_definition
   stage: config
   variables:
-    KITCHEN_NAME: config-ubuntu-1604
+    KITCHEN_NAME: config-ubuntu-1910
 
 kitchen_config-ubuntu-1804:
   <<: *kitchen_docker_template
@@ -212,12 +229,12 @@ kitchen_manual-centos-7:
   variables:
     KITCHEN_NAME: manual-centos-7
 
-kitchen_manual-fedora-latest:
+kitchen_manual-fedora-30:
   <<: *kitchen_docker_template
   <<: *kitchen_test_definition
   stage: manual
   variables:
-    KITCHEN_NAME: manual-fedora-latest
+    KITCHEN_NAME: manual-fedora-30
 
 kitchen_githead-centos-7:
   <<: *kitchen_docker_template
@@ -226,19 +243,19 @@ kitchen_githead-centos-7:
   variables:
     KITCHEN_NAME: githead-centos-7
 
-kitchen_githead-fedora-latest:
+kitchen_githead-fedora-30:
   <<: *kitchen_docker_template
   <<: *kitchen_test_definition
   stage: githead
   variables:
-    KITCHEN_NAME: githead-fedora-latest
+    KITCHEN_NAME: githead-fedora-30
 
-kitchen_manual-ubuntu-1604:
+kitchen_manual-ubuntu-1910:
   <<: *kitchen_docker_template
   <<: *kitchen_test_definition
   stage: manual
   variables:
-    KITCHEN_NAME: manual-ubuntu-1604
+    KITCHEN_NAME: manual-ubuntu-1910
 
 kitchen_manual-ubuntu-1804:
   <<: *kitchen_docker_template
@@ -248,7 +265,7 @@ kitchen_manual-ubuntu-1804:
     KITCHEN_NAME: manual-ubuntu-1804
 
 berks_upload:
-  <<: *kitchen_docker_template
+  <<: *chef_docker_template
   stage: deploy
   script:
     - berks install
@@ -263,7 +280,6 @@ berks_upload:
     variables:
       - $MANUAL_CLEANUP
   tags:
-    - chef
     - chef-berks-upload
 
 cleanup_job:
@@ -274,6 +290,8 @@ cleanup_job:
     - sudo rm -Rf /tmp/gitlab-runner-artifacts/*
   when: always
   except:
+    refs:
+    - production
     variables:
       - $MANUAL_CLEANUP
   tags:
