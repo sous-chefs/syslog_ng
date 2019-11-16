@@ -3,7 +3,6 @@ maintainer 'Ben Hughes'
 maintainer_email 'bmhughes@bmhughes.co.uk'
 license 'Apache-2.0'
 description 'Installs/Configures syslog_ng'
-long_description 'Installs/Configures syslog_ng'
 version '0.3.3'
 chef_version '>= 12.14'
 
