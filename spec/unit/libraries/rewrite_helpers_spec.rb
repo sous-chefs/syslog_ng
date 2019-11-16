@@ -106,10 +106,7 @@ describe 'SyslogNg::RewriteHelpers' do
     context('given set-tag rewrite') do
       param = {
         'function' => 'set-tag',
-        'tags' => [
-          'test-tag-01',
-          'test-tag-02',
-        ],
+        'tags' => %w(test-tag-01 test-tag-02),
       }
 
       it 'returns valid config string' do

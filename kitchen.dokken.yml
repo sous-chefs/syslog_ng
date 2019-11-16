@@ -22,24 +22,14 @@ platforms:
        - RUN /usr/bin/yum install libselinux-utils -y
     volumes:
       - /tmp/gitlab-runner-artifacts:/var/gitlab-runner-artifacts   
-- name: fedora-latest
+- name: fedora-30
   driver:
-    image: dokken/fedora-latest
+    image: dokken/fedora-30
     pid_one_command: /usr/lib/systemd/systemd
     intermediate_instructions:
        - RUN /usr/bin/yum makecache -y -q
        - RUN /usr/bin/yum install rsync -y
        - RUN /usr/bin/yum install libselinux-utils -y
-    volumes:
-      - /tmp/gitlab-runner-artifacts:/var/gitlab-runner-artifacts
-- name: ubuntu-16.04
-  driver:
-    image: dokken/ubuntu-16.04
-    pid_one_command: /bin/systemd
-    intermediate_instructions:
-      - RUN /usr/bin/apt-get update
-      - RUN /usr/bin/apt-get install rsync -y -q
-      - RUN /usr/bin/apt-get install selinux-utils -y
     volumes:
       - /tmp/gitlab-runner-artifacts:/var/gitlab-runner-artifacts
 - name: ubuntu-18.04
@@ -50,6 +40,16 @@ platforms:
        - RUN /usr/bin/apt-get update
        - RUN /usr/bin/apt-get install rsync -y -q
        - RUN /usr/bin/apt-get install selinux-utils -y
+    volumes:
+      - /tmp/gitlab-runner-artifacts:/var/gitlab-runner-artifacts
+- name: ubuntu-19.10
+  driver:
+    image: dokken/ubuntu-19.10
+    pid_one_command: /bin/systemd
+    intermediate_instructions:
+      - RUN /usr/bin/apt-get update
+      - RUN /usr/bin/apt-get install rsync -y -q
+      - RUN /usr/bin/apt-get install selinux-utils -y
     volumes:
       - /tmp/gitlab-runner-artifacts:/var/gitlab-runner-artifacts
 - name: debian-8
@@ -65,6 +65,16 @@ platforms:
 - name: debian-9
   driver:
     image: dokken/debian-9
+    pid_one_command: /bin/systemd
+    intermediate_instructions:
+       - RUN /usr/bin/apt-get update
+       - RUN /usr/bin/apt-get install rsync -y -q
+       - RUN /usr/bin/apt-get install selinux-utils -y
+    volumes:
+      - /tmp/gitlab-runner-artifacts:/var/gitlab-runner-artifacts
+- name: debian-10
+  driver:
+    image: dokken/debian-10
     pid_one_command: /bin/systemd
     intermediate_instructions:
        - RUN /usr/bin/apt-get update

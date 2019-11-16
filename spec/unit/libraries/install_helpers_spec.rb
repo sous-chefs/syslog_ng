@@ -20,6 +20,16 @@ require 'spec_helper'
 
 describe 'SyslogNg::InstallHelpers' do
   let(:dummy_class) { Class.new { include SyslogNg::InstallHelpers } }
+  describe '.latest_apt_package_uri' do
+    context('when called') do
+      it 'return correct apt repo uri' do
+        expect(dummy_class.new.latest_apt_package_uri('debian', 9.6)).to eq('http://download.opensuse.org/repositories/home:/laszlo_budai:/syslog-ng/Debian_9.0')
+        expect(dummy_class.new.latest_apt_package_uri('debian', 10)).to eq('http://download.opensuse.org/repositories/home:/laszlo_budai:/syslog-ng/Debian_10')
+        expect(dummy_class.new.latest_apt_package_uri('ubuntu', 18.04)).to eq('http://download.opensuse.org/repositories/home:/laszlo_budai:/syslog-ng/xUbuntu_18.04')
+      end
+    end
+  end
+
   describe '.installed_version_get' do
     context('when called') do
       let(:shellout) do

@@ -52,7 +52,7 @@ action :install do
 
       raise 'COPR package installation is not supported on Fedora version < 28!' if platform_family?('fedora') && node['platform_version'].to_i < 28
       raise 'COPR package installation is not supported on RHEL/CentOS version < 7!' if platform_family?('rhel') && node['platform_version'].to_i < 7
-      raise 'COPR installation method selected but platform is not CentOS/Fedora!' unless %w(fedora rhel).include?(node['platform_family'])
+      raise 'COPR installation method selected but platform is not RHEL/CentOS/Fedora!' unless %w(fedora rhel).include?(node['platform_family'])
 
       repo_name = "syslog-ng#{node['syslog_ng']['install']['copr_repo_version'].delete('.')}"
       repo_platform_name = node['platform'].eql?('fedora') ? 'fedora' : 'epel'
@@ -74,9 +74,10 @@ action :install do
       end
     when 'debian'
       repo_name = 'syslog-ng-latest'
+      repo_url = latest_apt_package_uri(node['platform'], node['platform_version'])
       apt_repository repo_name do
-        uri 'http://download.opensuse.org/repositories/home:/laszlo_budai:/syslog-ng/xUbuntu_17.04'
-        key 'http://download.opensuse.org/repositories/home:/laszlo_budai:/syslog-ng/xUbuntu_17.04/Release.key'
+        uri repo_url
+        key "#{repo_url}/Release.key"
         components ['./']
         distribution ''
         repo_name 'syslog-ng-latest'
@@ -120,7 +121,7 @@ action :install do
       end
     end
   else
-    log "Superceeded repository cleanup is not available on #{node['platform']}" do
+    log "Superceeded repository cleanup is not available on #{node['platform'].capitalize}" do
       level :warn
     end
   end

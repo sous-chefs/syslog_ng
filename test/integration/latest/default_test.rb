@@ -21,7 +21,7 @@ when 'debian'
     it { should be_file }
     it { should_not be_directory }
     its('type') { should cmp 'file' }
-    its('content') { should match %r{deb      "http://download.opensuse.org/repositories/home:/laszlo_budai:/syslog-ng/xUbuntu_17.04"  ./} }
+    its('content') { should match %r{deb      "http://download.opensuse.org/repositories/home:/laszlo_budai:/syslog-ng/.*"  \./} }
   end
 end
 

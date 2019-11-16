@@ -1,29 +1,24 @@
 sudo: required
-dist: trusty
+dist: xenial
 language: ruby
 
 addons:
   apt:
     sources:
-      - chef-current-trusty
+      - chef-current-xenial
     packages:
-      - chefdk
-  artifacts: true
+      - chef-workstation
 
-# Run bundle install to add simplecov
 install: chef exec bundle install
 
 services: docker
 
-# Ensure we make ChefDK's Ruby the default
 before_script:
   - eval "$(chef shell-init bash)"
   - curl -sL https://raw.githubusercontent.com/travis-ci/artifacts/master/install | bash
 
-after_script:
-  - artifacts upload
-
 stages:
+  - lint
   - unit
 
 env:
@@ -31,34 +26,36 @@ env:
     - CHEF_LICENSE=accept
   matrix:
     - INSTANCE=default-centos-7
-    - INSTANCE=default-fedora-latest
-    - INSTANCE=default-ubuntu-1604
+    - INSTANCE=default-fedora-30
+    - INSTANCE=default-ubuntu-1910
     - INSTANCE=default-ubuntu-1804
     - INSTANCE=default-debian-8
     - INSTANCE=default-debian-9
+    - INSTANCE=default-debian-10
     - INSTANCE=default-amazonlinux-2
     - INSTANCE=latest-centos-7
-    - INSTANCE=latest-fedora-latest
-    - INSTANCE=latest-ubuntu-1604
+    - INSTANCE=latest-fedora-30
+    - INSTANCE=latest-ubuntu-1910
     - INSTANCE=latest-ubuntu-1804
+    - INSTANCE=latest-debian-8
+    - INSTANCE=latest-debian-9
+    - INSTANCE=latest-debian-10
     - INSTANCE=manual-centos-7
-    - INSTANCE=manual-fedora-latest
-    - INSTANCE=manual-ubuntu-1604
+    - INSTANCE=manual-fedora-30
+    - INSTANCE=manual-ubuntu-1910
     - INSTANCE=manual-ubuntu-1804
     - INSTANCE=config-centos-7
-    - INSTANCE=config-fedora-latest
-    - INSTANCE=config-ubuntu-1604
+    - INSTANCE=config-fedora-30
+    - INSTANCE=config-ubuntu-1910
     - INSTANCE=config-ubuntu-1804
 
 script: KITCHEN_LOCAL_YAML=kitchen.dokken.yml kitchen test ${INSTANCE}
 
 jobs:
   include:
+    - stage: lint
+      name: "Linting Tests"
+      script: foodcritic --version && foodcritic . && cookstyle --version && cookstyle .
     - stage: unit
       name: "Unit Tests"
-      script: foodcritic --version
-      script: foodcritic .
-      script: cookstyle --version
-      script: cookstyle .
-      script: chef --version
-      script: chef exec rspec -fd
+      script: chef --version && chef exec rspec -fd

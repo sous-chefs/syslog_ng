@@ -18,6 +18,6 @@
 
 syslog_ng_install '' do
   package_source 'githead'
-  packages_exclude ['syslog-ng-debuginfo', 'syslog-ng-debugsource', 'syslog-ng-libdbi']
+  packages_exclude %w(syslog-ng-debuginfo syslog-ng-debugsource syslog-ng-libdbi)
   action :install
 end

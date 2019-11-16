@@ -21,15 +21,15 @@ require 'spec_helper'
 describe 'syslog_ng_test::install' do
   tests = {
     'syslog_ng_test::package_distro' => {
-      'CentOS' => '7.6.1804',
-      'Fedora' => '29',
+      'CentOS' => '8',
+      'Fedora' => '30',
       'Amazon' => '2',
-      'Debian' => '9.6',
+      'Debian' => '10',
       'Ubuntu' => '18.04',
     },
     'syslog_ng_test::package_latest' => {
-      'CentOS' => '7.6.1804',
-      'Fedora' => '29',
+      'CentOS' => '8',
+      'Fedora' => '30',
     },
   }
 
@@ -37,8 +37,6 @@ describe 'syslog_ng_test::install' do
     platforms.each do |platform, version|
       context "With test recipe, on #{platform} #{version}" do
         let(:chef_run) do
-          # for a complete list of available platforms and versions see:
-          # https://github.com/customink/fauxhai/blob/master/PLATFORMS.md
           runner = ChefSpec::SoloRunner.new(platform: platform.dup.downcase!, version: version)
           runner.converge(resource)
         end

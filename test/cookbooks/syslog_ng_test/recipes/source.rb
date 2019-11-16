@@ -33,7 +33,7 @@ syslog_ng_source 's_test_syslog' do
     'port' => '3381',
     'max-connections' => 100,
     'log_iw_size' => 10000,
-    "use_dns" => :persist_only
+    'use_dns' => :persist_only
   )
   notifies :run, 'execute[syslog-ng-config-test]', :delayed
   notifies :reload, 'service[syslog-ng]', :delayed

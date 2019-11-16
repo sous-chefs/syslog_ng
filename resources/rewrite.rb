@@ -19,7 +19,7 @@
 property :config_dir, String, default: '/etc/syslog-ng/rewrite.d'
 property :cookbook, String
 property :template_source, String
-property :function, String, required: true, equal_to: ['subst', 'set', 'unset', 'groupset', 'groupunset', 'credit-card-mask', 'set-tag', 'clear-tag']
+property :function, String, required: true, equal_to: %w(subst set unset groupset groupunset credit-card-mask set-tag clear-tag)
 property :match, String
 property :replacement, String
 property :field, String
@@ -57,7 +57,7 @@ action :create do
                     'additional_options' => new_resource.additional_options,
                   },
                 ]
-              when 'unset', 'groupunset'
+              when 'unset groupunset'
                 [
                   {
                     'function' => new_resource.function,
@@ -78,7 +78,7 @@ action :create do
                     'additional_options' => new_resource.additional_options,
                   },
                 ]
-              when 'set-tag', 'clear-tag'
+              when 'set-tag clear-tag'
                 [
                   {
                     'function' => new_resource.function,
