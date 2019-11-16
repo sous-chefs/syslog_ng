@@ -33,14 +33,6 @@ Integration testing is performed using Test Kitchen. There are configurations to
 kitchen test
 ```
 
-### Vagrant/Hyper-V
-
-```shell
-$env:KITCHEN_YAML="kitchen.yml"
-$env:KITCHEN_LOCAL_YAML="kitchen.hyperv.yml"
-kitchen test
-```
-
 ### Docker on Linux
 
 ```shell

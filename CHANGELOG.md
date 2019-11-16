@@ -2,9 +2,9 @@
 
 ## syslog_ng
 
-### v0.3.3 (2019-11-14)
+### v0.3.3 (2019-11-16)
 
-- WIP
+- #25 - Fix Debian/Ubuntu latest package repository
 
 ### v0.3.2 (2019-08-20)
 

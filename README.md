@@ -72,8 +72,7 @@ The following resources are provided:
 ### Resource Parameter Value - Notes
 
 Parameter values can generally be passed as the expected format type for the parameter they configure, for example integers for number fields and strings for text parameters.
-There are some exceptions to this rule such as the `use-dns()` parameter which accepts either `yes, no or persist_only`. In this case `persist_only` options is not a string 
-but a symbol and must be passed as such else it will be quoted as per normal strings and syslog-ng will fail with a configuration error.
+There are some exceptions to this rule such as the `use-dns()` parameter which accepts either `yes, no or persist_only`. In this case `persist_only` options is not a string but a symbol and must be passed as such else it will be quoted as per normal strings and syslog-ng will fail with a configuration error.
 
 ### config_global
 
