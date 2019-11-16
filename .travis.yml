@@ -1,29 +1,24 @@
 sudo: required
-dist: trusty
+dist: xenial
 language: ruby
 
 addons:
   apt:
     sources:
-      - chef-current-trusty
+      - chef-current-xenial
     packages:
-      - chefdk
-  artifacts: true
+      - chef-workstation
 
-# Run bundle install to add simplecov
 install: chef exec bundle install
 
 services: docker
 
-# Ensure we make ChefDK's Ruby the default
 before_script:
   - eval "$(chef shell-init bash)"
   - curl -sL https://raw.githubusercontent.com/travis-ci/artifacts/master/install | bash
 
-after_script:
-  - artifacts upload
-
 stages:
+  - lint
   - unit
 
 env:
@@ -60,11 +55,7 @@ jobs:
   include:
     - stage: lint
       name: "Linting Tests"
-      script: foodcritic --version
-      script: foodcritic .
-      script: cookstyle --version
-      script: cookstyle .
+      script: foodcritic --version && foodcritic . && cookstyle --version && cookstyle .
     - stage: unit
       name: "Unit Tests"
-      script: chef --version
-      script: chef exec rspec -fd
+      script: chef --version && chef exec rspec -fd
