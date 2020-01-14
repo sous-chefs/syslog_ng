@@ -6,4 +6,4 @@
 #
 
 default['syslog_ng']['install']['remove_rsyslog'] = true
-default['syslog_ng']['install']['copr_repo_version'] = '3.22'
+default['syslog_ng']['install']['copr_repo_version'] = '3.25'

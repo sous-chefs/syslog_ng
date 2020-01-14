@@ -3,7 +3,7 @@ maintainer 'Ben Hughes'
 maintainer_email 'bmhughes@bmhughes.co.uk'
 license 'Apache-2.0'
 description 'Installs/Configures syslog_ng'
-version '0.3.3'
+version '0.3.4'
 chef_version '>= 12.14'
 
 # The `issues_url` points to the location where issues for this cookbook are
@@ -18,17 +18,6 @@ issues_url 'https://github.com/bmhughes/syslog_ng/issues'
 #
 source_url 'https://github.com/bmhughes/syslog_ng'
 
-os_support = {
-  'redhat' => '>= 7.0.0',
-  'centos' => '>= 7.0.0',
-  'fedora' => '>= 28.0',
-  'debian' => '>= 8.0.0',
-  'ubuntu' => '>= 16.04',
-  'amazon' => '>= 2.0.0',
-}
-
-os_support.each do |os, ver|
-  supports os, ver
-end
+%w(redhat centos fedora debian ubuntu amazon).each { |os| supports os }
 
 depends 'yum-epel'

@@ -22,8 +22,7 @@ syslog_ng_config_global '/etc/syslog-ng/syslog-ng.conf' do
   action :create
 end
 
-case node['platform_family']
-when 'amazon'
+if platform_family?('amazon')
   execute 'syslog-ng-config-test' do
     command '/sbin/syslog-ng -s'
     action :nothing

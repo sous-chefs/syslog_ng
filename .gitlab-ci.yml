@@ -111,12 +111,19 @@ kitchen_default-centos-7:
   variables:
     KITCHEN_NAME: default-centos-7
 
-kitchen_default-fedora-30:
+kitchen_default-centos-8:
   <<: *kitchen_docker_template
   <<: *kitchen_test_definition
   stage: default
   variables:
-    KITCHEN_NAME: default-fedora-30
+    KITCHEN_NAME: default-centos-8
+    
+kitchen_default-fedora-31:
+  <<: *kitchen_docker_template
+  <<: *kitchen_test_definition
+  stage: default
+  variables:
+    KITCHEN_NAME: default-fedora-31
 
 kitchen_default-ubuntu-1910:
   <<: *kitchen_docker_template
@@ -160,12 +167,19 @@ kitchen_latest-centos-7:
   variables:
     KITCHEN_NAME: latest-centos-7
 
-kitchen_latest-fedora-30:
+kitchen_latest-centos-8:
   <<: *kitchen_docker_template
   <<: *kitchen_test_definition
   stage: latest
   variables:
-    KITCHEN_NAME: latest-fedora-30
+    KITCHEN_NAME: latest-centos-8
+    
+kitchen_latest-fedora-31:
+  <<: *kitchen_docker_template
+  <<: *kitchen_test_definition
+  stage: latest
+  variables:
+    KITCHEN_NAME: latest-fedora-31
 
 kitchen_latest-ubuntu-1910:
   <<: *kitchen_docker_template
@@ -201,12 +215,19 @@ kitchen_config-centos-7:
   variables:
     KITCHEN_NAME: config-centos-7
 
-kitchen_config-fedora-30:
+kitchen_config-centos-8:
   <<: *kitchen_docker_template
   <<: *kitchen_test_definition
   stage: config
   variables:
-    KITCHEN_NAME: config-fedora-30
+    KITCHEN_NAME: config-centos-8
+
+kitchen_config-fedora-31:
+  <<: *kitchen_docker_template
+  <<: *kitchen_test_definition
+  stage: config
+  variables:
+    KITCHEN_NAME: config-fedora-31
 
 kitchen_config-ubuntu-1910:
   <<: *kitchen_docker_template
@@ -229,12 +250,19 @@ kitchen_manual-centos-7:
   variables:
     KITCHEN_NAME: manual-centos-7
 
-kitchen_manual-fedora-30:
+kitchen_manual-centos-8:
   <<: *kitchen_docker_template
   <<: *kitchen_test_definition
   stage: manual
   variables:
-    KITCHEN_NAME: manual-fedora-30
+    KITCHEN_NAME: manual-centos-8
+
+kitchen_manual-fedora-31:
+  <<: *kitchen_docker_template
+  <<: *kitchen_test_definition
+  stage: manual
+  variables:
+    KITCHEN_NAME: manual-fedora-31
 
 kitchen_githead-centos-7:
   <<: *kitchen_docker_template
@@ -243,12 +271,19 @@ kitchen_githead-centos-7:
   variables:
     KITCHEN_NAME: githead-centos-7
 
-kitchen_githead-fedora-30:
+kitchen_githead-centos-8:
   <<: *kitchen_docker_template
   <<: *kitchen_test_definition
   stage: githead
   variables:
-    KITCHEN_NAME: githead-fedora-30
+    KITCHEN_NAME: githead-centos-8
+
+kitchen_githead-fedora-31:
+  <<: *kitchen_docker_template
+  <<: *kitchen_test_definition
+  stage: githead
+  variables:
+    KITCHEN_NAME: githead-fedora-31
 
 kitchen_manual-ubuntu-1910:
   <<: *kitchen_docker_template
