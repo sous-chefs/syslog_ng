@@ -17,7 +17,8 @@ verifier:
 
 platforms:
   - name: centos-7
-  - name: fedora-30
+  - name: centos-8
+  - name: fedora-31
   - name: ubuntu-18.04
   - name: ubuntu-19.10
   - name: debian-8

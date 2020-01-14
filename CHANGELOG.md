@@ -2,6 +2,12 @@
 
 ## syslog_ng
 
+### v0.3.4 (2020-01-14)
+
+- Update default COPR versions to 3.25
+- Foodcritic fixes
+- Update Kitchen platforms
+
 ### v0.3.3 (2019-11-16)
 
 - #25 - Fix Debian/Ubuntu latest package repository

@@ -25,7 +25,7 @@ property :repo_cleanup, [true, false], default: true
 action :install do
   extend SyslogNg::InstallHelpers
 
-  if %w(rhel centos amazon).include?(node['platform'])
+  if platform?('redhat', 'centos', 'amazon')
     log 'Running on RHEL/CentOS/Amazon, we need epel'
     include_recipe 'yum-epel'
   end
@@ -52,7 +52,7 @@ action :install do
 
       raise 'COPR package installation is not supported on Fedora version < 28!' if platform_family?('fedora') && node['platform_version'].to_i < 28
       raise 'COPR package installation is not supported on RHEL/CentOS version < 7!' if platform_family?('rhel') && node['platform_version'].to_i < 7
-      raise 'COPR installation method selected but platform is not RHEL/CentOS/Fedora!' unless %w(fedora rhel).include?(node['platform_family'])
+      raise 'COPR installation method selected but platform is not RHEL/CentOS/Fedora!' unless platform_family?('rhel', 'fedora')
 
       repo_name = "syslog-ng#{node['syslog_ng']['install']['copr_repo_version'].delete('.')}"
       repo_platform_name = node['platform'].eql?('fedora') ? 'fedora' : 'epel'
@@ -109,7 +109,7 @@ action :install do
     end
   end
 
-  if new_resource.repo_cleanup && %w(rhel centos fedora).include?(node['platform'])
+  if new_resource.repo_cleanup && platform?('redhat', 'centos', 'fedora')
     configured_yum_repos = Dir.entries('/etc/yum.repos.d')
 
     configured_yum_repos.delete_if { |repo| repo == '.' || repo == '..' || !repo.include?('syslog-ng') || repo.sub('.repo', '').eql?(repo_name) }

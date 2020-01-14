@@ -7,13 +7,13 @@
 
 case os.family
 when 'redhat', 'fedora'
-  describe file('/etc/yum.repos.d/syslog-ng322.repo') do
+  describe file('/etc/yum.repos.d/syslog-ng325.repo') do
     it { should exist }
     it { should be_file }
     it { should_not be_directory }
     its('type') { should cmp 'file' }
-    its('content') { should match /name=Copr repo for syslog-ng322 owned by czanik/ }
-    its('content') { should match %r{baseurl=https:\/\/copr-be.cloud.fedoraproject.org\/results\/czanik\/syslog-ng322\/(epel|fedora)-\$releasever-\$basearch\/} }
+    its('content') { should match /name=Copr repo for syslog-ng325 owned by czanik/ }
+    its('content') { should match %r{baseurl=https:\/\/copr-be.cloud.fedoraproject.org\/results\/czanik\/syslog-ng325\/(epel|fedora)-\$releasever-\$basearch\/} }
   end
 when 'debian'
   describe file('/etc/apt/sources.list.d/syslog-ng-latest.list') do
@@ -21,7 +21,7 @@ when 'debian'
     it { should be_file }
     it { should_not be_directory }
     its('type') { should cmp 'file' }
-    its('content') { should match %r{deb      "http://download.opensuse.org/repositories/home:/laszlo_budai:/syslog-ng/.*"  \./} }
+    its('content') { should match %r{deb      http://download.opensuse.org/repositories/home:/laszlo_budai:/syslog-ng/.*  \./} }
   end
 end
 
