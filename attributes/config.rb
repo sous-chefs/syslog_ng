@@ -2,7 +2,7 @@
 # Cookbook:: syslog_ng
 # Attribute:: config
 #
-# Copyright:: 2019, Ben Hughes <bmhughes@bmhughes.co.uk>
+# Copyright:: 2020, Ben Hughes <bmhughes@bmhughes.co.uk>
 #
 
 default['syslog_ng']['config']['config_dir'] = '/etc/syslog-ng'
