@@ -55,7 +55,7 @@ action :install do
       raise 'COPR installation method selected but platform is not RHEL/CentOS/Fedora!' unless platform_family?('rhel', 'fedora')
 
       repo_name = "syslog-ng#{node['syslog_ng']['install']['copr_repo_version'].delete('.')}"
-      repo_platform_name = node['platform'].eql?('fedora') ? 'fedora' : 'epel'
+      repo_platform_name = platform?('fedora') ? 'fedora' : 'epel'
 
       yum_repository repo_name do
         description "Copr repo for #{repo_name} owned by czanik"
@@ -90,7 +90,7 @@ action :install do
     raise "Githead package installation not supported for platform #{node['platform']} | platform_family #{node['platform_family']}" unless platform_family?('fedora', 'rhel')
 
     repo_name = 'syslog-ng-githead'
-    repo_platform_name = node['platform'].eql?('fedora') ? 'fedora' : 'epel'
+    repo_platform_name = platform?('fedora') ? 'fedora' : 'epel'
 
     yum_repository repo_name do
       description "Copr repo for #{repo_name} owned by czanik"
