@@ -57,4 +57,9 @@
   - Destinations
   - Filters
   - Sources
+## Unreleased
+
+- resolved cookstyle error: resources/install.rb:58:28 refactor: `ChefStyle/UsePlatformHelpers`
+- resolved cookstyle error: resources/install.rb:93:26 refactor: `ChefStyle/UsePlatformHelpers`
+
   - Logs
