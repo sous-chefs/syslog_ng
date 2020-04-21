@@ -38,8 +38,6 @@ suites:
       inspec_tests:
         - test/integration/default
   - name: latest
-    excludes:
-      - amazonlinux-2
     run_list:
       - recipe[syslog_ng_test::selinux]
       - recipe[syslog_ng_test::package_latest]
@@ -48,13 +46,6 @@ suites:
       inspec_tests:
         - test/integration/latest
   - name: githead
-    excludes:
-      - ubuntu-18.04
-      - ubuntu-19.10
-      - debian-8
-      - debian-9
-      - debian-10
-      - amazonlinux-2
     run_list:
       - recipe[syslog_ng_test::selinux]
       - recipe[syslog_ng_test::package_githead]
@@ -63,10 +54,6 @@ suites:
       inspec_tests:
         - test/integration/default
   - name: manual
-    excludes:
-      - debian-8
-      - debian-9
-      - amazonlinux-2
     run_list:
       - recipe[syslog_ng_test::selinux]
       - recipe[syslog_ng_test::package_manual]
@@ -75,10 +62,6 @@ suites:
       inspec_tests:
         - test/integration/latest
   - name: config
-    excludes:
-      - debian-8
-      - debian-9
-      - amazonlinux-2
     run_list:
       - recipe[syslog_ng_test::selinux]
       - recipe[syslog_ng_test::cleanup]
