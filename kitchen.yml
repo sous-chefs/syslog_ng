@@ -30,8 +30,8 @@ platforms:
 
 suites:
   - name: default
-    run_list:   
-      - recipe[syslog_ng_test::selinux]        
+    run_list:
+      - recipe[syslog_ng_test::selinux]
       - recipe[syslog_ng_test::package_distro]
       - recipe[syslog_ng_test::config_global]
     verifier:
@@ -55,8 +55,8 @@ suites:
       - debian-9
       - debian-10
       - amazonlinux-2
-    run_list:   
-      - recipe[syslog_ng_test::selinux]        
+    run_list:
+      - recipe[syslog_ng_test::selinux]
       - recipe[syslog_ng_test::package_githead]
       - recipe[syslog_ng_test::config_global]
     verifier:
@@ -94,4 +94,3 @@ suites:
     verifier:
       inspec_tests:
         - test/integration/config
-...

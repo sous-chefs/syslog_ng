@@ -27,9 +27,9 @@ platforms:
       image: dokken/centos-8
       pid_one_command: /usr/lib/systemd/systemd
       intermediate_instructions:
-          - RUN /usr/bin/yum makecache -y -q
-          - RUN /usr/bin/yum install rsync -y
-          - RUN /usr/bin/yum install libselinux-utils -y
+        - RUN /usr/bin/yum makecache -y -q
+        - RUN /usr/bin/yum install rsync -y
+        - RUN /usr/bin/yum install libselinux-utils -y
       volumes:
         - /tmp/gitlab-runner-artifacts:/var/gitlab-runner-artifacts
   - name: fedora-31
