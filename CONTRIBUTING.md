@@ -1,3 +1,4 @@
 # Contributing
 
-You are more than welcome to submit issues and merge requests to this project.
+Please refer to
+[https://github.com/chef-cookbooks/community_cookbook_documentation/blob/master/CONTRIBUTING.MD](https://github.com/chef-cookbooks/community_cookbook_documentation/blob/master/CONTRIBUTING.MD)
