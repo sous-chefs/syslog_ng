@@ -46,6 +46,13 @@ suites:
       inspec_tests:
         - test/integration/latest
   - name: githead
+    excludes:
+      - ubuntu-18.04
+      - ubuntu-19.10
+      - debian-8
+      - debian-9
+      - debian-10
+      - amazonlinux-2
     run_list:
       - recipe[syslog_ng_test::selinux]
       - recipe[syslog_ng_test::package_githead]

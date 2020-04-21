@@ -44,6 +44,7 @@ jobs:
           - 'centos-7'
           - 'centos-8'
           - 'ubuntu-2004'
+          - 'fedora-31'
           - 'ubuntu-1804'
         suite:
           - 'default'
