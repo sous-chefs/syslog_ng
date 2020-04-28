@@ -18,35 +18,21 @@
 
 require 'spec_helper'
 
-describe 'syslog_ng_test::config_global' do
-  platforms = {
-    'CentOS' => '8',
-    'Fedora' => '30',
-    'Amazon' => '2',
-    'Debian' => '10',
-    'Ubuntu' => '18.04',
-  }
+describe 'syslog_ng_config_global' do
+  step_into :syslog_ng_config_global
+  platform 'centos'
 
-  platforms.each do |platform, version|
-    context "With test recipe, on #{platform} #{version}" do
-      let(:chef_run) do
-        runner = ChefSpec::SoloRunner.new(platform: platform.dup.downcase!, version: version)
-        runner.converge(described_recipe)
-      end
+  context 'create syslog-ng global config file' do
+    recipe do
+      syslog_ng_config_global '/etc/syslog-ng/syslog-ng.conf'
+    end
 
-      it 'converges successfully' do
-        expect { chef_run }.to_not raise_error
-      end
-
-      it 'creates global config file' do
-        expect(chef_run).to create_syslog_ng_config_global('/etc/syslog-ng/syslog-ng.conf')
-
-        config_test = chef_run.execute('syslog-ng-config-test')
-        expect(config_test).to do_nothing
-
-        expect(chef_run).to start_service('syslog-ng')
-        expect(chef_run).to enable_service('syslog-ng')
-      end
+    it 'Creates the global config file correctly' do
+      is_expected.to render_file('/etc/syslog-ng/syslog-ng.conf')
+        .with_content(/@include "scl.conf/)
+        .with_content(/source s_sys {/)
+        .with_content(/destination d_mesg {/)
+        .with_content(/level(info..emerg) and not (facility(mail) or facility(authpriv) or facility(cron));/)
     end
   end
 end

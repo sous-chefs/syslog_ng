@@ -18,8 +18,8 @@
 
 require 'spec_helper'
 
-describe 'SyslogNg::InstallHelpers' do
-  let(:dummy_class) { Class.new { include SyslogNg::InstallHelpers } }
+describe 'SyslogNg::Cookbook::InstallHelpers' do
+  let(:dummy_class) { Class.new { include SyslogNg::Cookbook::InstallHelpers } }
   describe '.latest_apt_package_uri' do
     context('when called') do
       it 'return correct apt repo uri' do
@@ -89,7 +89,7 @@ describe 'SyslogNg::InstallHelpers' do
     end
 
     context('when given unknown platform') do
-      let(:dummy_class) { Class.new { include SyslogNg::InstallHelpers } }
+      let(:dummy_class) { Class.new { include SyslogNg::Cookbook::InstallHelpers } }
       it 'raises RuntimeError' do
         expect { dummy_class.new.repo_get_packages(platform: 'unknown') }.to raise_exception(RuntimeError)
       end
@@ -121,7 +121,7 @@ describe 'SyslogNg::InstallHelpers' do
     end
 
     context('when given unknown platform') do
-      let(:dummy_class) { Class.new { include SyslogNg::InstallHelpers } }
+      let(:dummy_class) { Class.new { include SyslogNg::Cookbook::InstallHelpers } }
       it 'raises RuntimeError' do
         expect { dummy_class.new.installed_get_packages(platform: 'unknown') }.to raise_exception(RuntimeError)
       end

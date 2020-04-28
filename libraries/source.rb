@@ -19,32 +19,34 @@
 require_relative '_common'
 
 module SyslogNg
-  module SourceHelpers
-    include SyslogNg::CommonHelpers
-    def source_builder(driver:, parameters:, multiline: false)
-      raise ArgumentError, "source_builder: Expected syslog-ng destination driver name to be a String, got a #{driver.class}." unless driver.is_a?(String)
-      raise ArgumentError, "source_builder: Expected syslog-ng destination driver configuration attribute block to be a Hash, got a #{parameters.class}." unless parameters.is_a?(Hash)
+  module Cookbook
+    module SourceHelpers
+      include SyslogNg::Cookbook::CommonHelpers
+      def source_builder(driver:, parameters:, multiline: false)
+        raise ArgumentError, "source_builder: Expected syslog-ng destination driver name to be a String, got a #{driver.class}." unless driver.is_a?(String)
+        raise ArgumentError, "source_builder: Expected syslog-ng destination driver configuration attribute block to be a Hash, got a #{parameters.class}." unless parameters.is_a?(Hash)
 
-      config = []
+        config = []
 
-      config.push(driver.dup.concat('('))
-      config.push(format_string_value(parameters['path'])) if parameters.key?('path') # Certain drivers have an unnamed 'path' parameter (eg File)
-      if parameters.key?('parameters')
+        config.push(driver.dup.concat('('))
+        config.push(format_string_value(parameters['path'])) if parameters.key?('path') # Certain drivers have an unnamed 'path' parameter (eg File)
+        if parameters.key?('parameters')
+          if multiline
+            build_parameter_string(parameters: parameters['parameters']).split.each { |string| config.push(string.prepend('  ')) }
+          else
+            config.push(build_parameter_string(parameters: parameters['parameters']))
+          end
+        end
+        config.push(');')
+
         if multiline
-          build_parameter_string(parameters: parameters['parameters']).split.each { |string| config.push(string.prepend('  ')) }
+          config
         else
-          config.push(build_parameter_string(parameters: parameters['parameters']))
+          array_join(config)
         end
       end
-      config.push(');')
 
-      if multiline
-        config
-      else
-        array_join(config)
-      end
+      alias_method :destination_builder, :source_builder
     end
-
-    alias_method :destination_builder, :source_builder
   end
 end

@@ -28,7 +28,7 @@ property :include, Array
 property :console_logging, [true, false]
 
 action :create do
-  extend SyslogNg::InstallHelpers
+  extend SyslogNg::Cookbook::InstallHelpers
 
   include_dirs = if new_resource.include.nil?
                    node['syslog_ng']['config']['include'].dup
@@ -63,9 +63,9 @@ action :create do
         }
       end
     )
-    helpers(SyslogNg::SourceHelpers)
-    helpers(SyslogNg::DestinationHelpers)
-    helpers(SyslogNg::FilterHelpers)
+    helpers(SyslogNg::Cookbook::SourceHelpers)
+    helpers(SyslogNg::Cookbook::DestinationHelpers)
+    helpers(SyslogNg::Cookbook::FilterHelpers)
     action :create
   end
 

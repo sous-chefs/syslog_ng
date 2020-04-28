@@ -288,15 +288,15 @@ heavy lifting is done by the libraries.
 
 ### install
 
-#### `SyslogNg::InstallHelpers.installed_version_get`
+#### `SyslogNg::Cookbook::InstallHelpers.installed_version_get`
 
 Returns the current installed version as a float to be used for the version directive in the global configuration file.
 
-#### `SyslogNg::InstallHelpers.repo_get_packages`
+#### `SyslogNg::Cookbook::InstallHelpers.repo_get_packages`
 
 Returns an array of the packages to install from the relevant package manager.
 
-#### `SyslogNg::InstallHelpers.installed_get_packages`
+#### `SyslogNg::Cookbook::InstallHelpers.installed_get_packages`
 
 Returns an array of install syslog-ng packages to remove as part of an uninstall.
 

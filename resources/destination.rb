@@ -27,7 +27,7 @@ property :description, String
 property :multiline, [true, false], default: false
 
 action :create do
-  extend SyslogNg::CommonHelpers
+  extend SyslogNg::Cookbook::CommonHelpers
 
   destination = parameter_builder(driver: new_resource.driver, path: new_resource.path, parameters: new_resource.parameters, configuration: new_resource.configuration).each do |config|
     raise "destination: Expected driver configuration to be a Hash, got #{config.class}" unless config.is_a?(Hash)
@@ -49,7 +49,7 @@ action :create do
       destination: destination,
       multiline: new_resource.multiline
     )
-    helpers(SyslogNg::DestinationHelpers)
+    helpers(SyslogNg::Cookbook::DestinationHelpers)
     action :create
   end
 end

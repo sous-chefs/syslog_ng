@@ -43,7 +43,7 @@ action :create do
       description: new_resource.description.nil? ? new_resource.name : new_resource.description,
       template: template
     )
-    helpers(SyslogNg::CommonHelpers)
+    helpers(SyslogNg::Cookbook::CommonHelpers)
     action :create
   end
 end

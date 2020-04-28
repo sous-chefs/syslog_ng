@@ -111,7 +111,7 @@ action :create do
       description: new_resource.description.nil? ? new_resource.name : new_resource.description,
       rewrite: rewrite
     )
-    helpers(SyslogNg::RewriteHelpers)
+    helpers(SyslogNg::Cookbook::RewriteHelpers)
     action :create
   end
 end

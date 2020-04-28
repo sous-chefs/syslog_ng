@@ -19,44 +19,46 @@
 require_relative '_common'
 
 module SyslogNg
-  module FilterHelpers
-    include SyslogNg::CommonHelpers
-    def filter_builder(parameters)
-      raise ArgumentError, "filter_builder: Expected syslog-ng filter definition to be passed as a Hash, Array or String. Got a #{parameters.class}." unless parameters.is_a?(Hash) || parameters.is_a?(Array) || parameters.is_a?(String)
+  module Cookbook
+    module FilterHelpers
+      include SyslogNg::Cookbook::CommonHelpers
+      def filter_builder(parameters)
+        raise ArgumentError, "filter_builder: Expected syslog-ng filter definition to be passed as a Hash, Array or String. Got a #{parameters.class}." unless parameters.is_a?(Hash) || parameters.is_a?(Array) || parameters.is_a?(String)
 
-      config_string = ''
-      if parameters.is_a?(Hash)
-        parameters.each do |filter, parameter|
-          if (SYSLOG_NG_BOOLEAN_OPERATORS.include?(filter) || filter.match?('container')) && parameter.is_a?(Hash)
-            if filter.match?('container')
-              config_string.concat(contained_group(parameter))
-            else
-              config_string.concat(filter.tr('_', ' ') + ' ' + filter_builder(parameter) + ' ')
-            end
-          elsif SYSLOG_NG_FILTER_FUNCTIONS.include?(filter) && (parameter.is_a?(String) || parameter.is_a?(Array))
-            if parameter.is_a?(String)
-              config_string.concat(filter + '(' + parameter + ') ')
-            elsif parameter.is_a?(Array)
-              parameter.each do |param|
-                config_string.concat(filter + '(' + param + ') ')
+        config_string = ''
+        if parameters.is_a?(Hash)
+          parameters.each do |filter, parameter|
+            if (SYSLOG_NG_BOOLEAN_OPERATORS.include?(filter) || filter.match?('container')) && parameter.is_a?(Hash)
+              if filter.match?('container')
+                config_string.concat(contained_group(parameter))
+              else
+                config_string.concat(filter.tr('_', ' ') + ' ' + filter_builder(parameter) + ' ')
               end
-              config_string.rstrip!
+            elsif SYSLOG_NG_FILTER_FUNCTIONS.include?(filter) && (parameter.is_a?(String) || parameter.is_a?(Array))
+              if parameter.is_a?(String)
+                config_string.concat(filter + '(' + parameter + ') ')
+              elsif parameter.is_a?(Array)
+                parameter.each do |param|
+                  config_string.concat(filter + '(' + param + ') ')
+                end
+                config_string.rstrip!
+              end
+            else
+              raise ArgumentError, "filter_builder: Invalid operator '#{filter}' specified in filter configuration. Object type #{parameter.class}."
             end
-          else
-            raise ArgumentError, "filter_builder: Invalid operator '#{filter}' specified in filter configuration. Object type #{parameter.class}."
           end
+          config_string.rstrip!
+        elsif parameters.is_a?(Array)
+          parameters.each do |parameter|
+            config_string.concat(parameter + ' ')
+          end
+        elsif parameters.is_a?(String)
+          config_string.concat(parameters)
         end
         config_string.rstrip!
-      elsif parameters.is_a?(Array)
-        parameters.each do |parameter|
-          config_string.concat(parameter + ' ')
-        end
-      elsif parameters.is_a?(String)
-        config_string.concat(parameters)
-      end
-      config_string.rstrip!
 
-      config_string
+        config_string
+      end
     end
   end
 end

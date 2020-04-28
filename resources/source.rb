@@ -27,7 +27,7 @@ property :description, String
 property :multiline, [true, false], default: false
 
 action :create do
-  extend SyslogNg::CommonHelpers
+  extend SyslogNg::Cookbook::CommonHelpers
 
   source = parameter_builder(driver: new_resource.driver, path: new_resource.path, parameters: new_resource.parameters, configuration: new_resource.configuration).each do |config|
     unless config.is_a?(Hash)
@@ -53,7 +53,7 @@ action :create do
       source: source,
       multiline: new_resource.multiline
     )
-    helpers(SyslogNg::SourceHelpers)
+    helpers(SyslogNg::Cookbook::SourceHelpers)
     action :create
   end
 end

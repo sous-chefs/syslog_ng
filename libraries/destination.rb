@@ -19,7 +19,9 @@
 require_relative 'source'
 
 module SyslogNg
-  module DestinationHelpers
-    include SyslogNg::SourceHelpers
+  module Cookbook
+    module DestinationHelpers
+      include SyslogNg::Cookbook::SourceHelpers
+    end
   end
 end

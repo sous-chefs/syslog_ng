@@ -46,9 +46,9 @@ action :create do
       rewrite: new_resource.rewrite,
       junction: new_resource.junction
     )
-    helpers(SyslogNg::DestinationHelpers)
-    helpers(SyslogNg::SourceHelpers)
-    helpers(SyslogNg::FilterHelpers)
+    helpers(SyslogNg::Cookbook::DestinationHelpers)
+    helpers(SyslogNg::Cookbook::SourceHelpers)
+    helpers(SyslogNg::Cookbook::FilterHelpers)
     action :create
   end
 end

@@ -18,8 +18,8 @@
 
 require 'spec_helper'
 
-describe 'SyslogNg::FilterHelpers' do
-  let(:dummy_class) { Class.new { include SyslogNg::FilterHelpers } }
+describe 'SyslogNg::Cookbook::FilterHelpers' do
+  let(:dummy_class) { Class.new { include SyslogNg::Cookbook::FilterHelpers } }
 
   describe '.filter_builder' do
     context('given basic filter') do

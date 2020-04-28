@@ -18,8 +18,8 @@
 
 require 'spec_helper'
 
-describe 'SyslogNg::CommonHelpers' do
-  let(:dummy_class) { Class.new { include SyslogNg::CommonHelpers } }
+describe 'SyslogNg::Cookbook::CommonHelpers' do
+  let(:dummy_class) { Class.new { include SyslogNg::Cookbook::CommonHelpers } }
   describe '.parameter_builder' do
     context('given string driver with no path or parameters') do
       it 'returns array' do

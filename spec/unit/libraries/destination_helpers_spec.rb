@@ -18,8 +18,8 @@
 
 require 'spec_helper'
 
-describe 'SyslogNg::SourceHelpers' do
-  let(:dummy_class) { Class.new { include SyslogNg::SourceHelpers } }
+describe 'SyslogNg::Cookbook::SourceHelpers' do
+  let(:dummy_class) { Class.new { include SyslogNg::Cookbook::SourceHelpers } }
   describe '.destination_builder destinations' do
     context('given driver with no parameters and a path') do
       it 'returns valid config string' do
