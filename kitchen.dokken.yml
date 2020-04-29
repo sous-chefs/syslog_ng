@@ -20,7 +20,6 @@ platforms:
         - RUN /usr/bin/yum makecache -y -q
         - RUN /usr/bin/yum install rsync -y
         - RUN /usr/bin/yum install libselinux-utils -y
-
   - name: centos-8
     driver:
       image: dokken/centos-8
@@ -29,7 +28,6 @@ platforms:
         - RUN /usr/bin/yum makecache -y -q
         - RUN /usr/bin/yum install rsync -y
         - RUN /usr/bin/yum install libselinux-utils -y
-
   - name: fedora-31
     driver:
       image: dokken/fedora-31
@@ -38,7 +36,6 @@ platforms:
         - RUN /usr/bin/yum makecache -y -q
         - RUN /usr/bin/yum install rsync -y
         - RUN /usr/bin/yum install libselinux-utils -y
-
   - name: ubuntu-18.04
     driver:
       image: dokken/ubuntu-18.04
@@ -47,7 +44,6 @@ platforms:
         - RUN /usr/bin/apt-get update
         - RUN /usr/bin/apt-get install rsync -y -q
         - RUN /usr/bin/apt-get install selinux-utils -y
-
   - name: ubuntu-20.04
     driver:
       image: dokken/ubuntu-20.04
@@ -56,25 +52,6 @@ platforms:
         - RUN /usr/bin/apt-get update
         - RUN /usr/bin/apt-get install rsync -y -q
         - RUN /usr/bin/apt-get install selinux-utils -y
-
-  - name: debian-8
-    driver:
-      image: dokken/debian-8
-      pid_one_command: /bin/systemd
-      intermediate_instructions:
-        - RUN /usr/bin/apt-get update
-        - RUN /usr/bin/apt-get install rsync -y -q
-        - RUN /usr/bin/apt-get install selinux-utils -y
-
-  - name: debian-9
-    driver:
-      image: dokken/debian-9
-      pid_one_command: /bin/systemd
-      intermediate_instructions:
-        - RUN /usr/bin/apt-get update
-        - RUN /usr/bin/apt-get install rsync -y -q
-        - RUN /usr/bin/apt-get install selinux-utils -y
-
   - name: debian-10
     driver:
       image: dokken/debian-10
@@ -83,7 +60,6 @@ platforms:
         - RUN /usr/bin/apt-get update
         - RUN /usr/bin/apt-get install rsync -y -q
         - RUN /usr/bin/apt-get install selinux-utils -y
-
   - name: amazonlinux-2
     driver:
       image: dokken/amazonlinux-2
