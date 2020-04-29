@@ -80,9 +80,9 @@ module SyslogNg
       end
 
       def parameter_builder(driver: nil, path: nil, parameters: nil, configuration: nil)
-        if parameter_defined?(configuration) && configuration.is_a?(Array)
+        if !nil_or_empty?(configuration) && configuration.is_a?(Array)
           configuration
-        elsif parameter_defined?(driver) && driver.is_a?(Array)
+        elsif !nil_or_empty?(driver) && driver.is_a?(Array)
           source_config = []
           if !path.nil? && !parameters.nil?
             driver.zip(path, parameters).each do |drv, pth, param|
@@ -90,31 +90,31 @@ module SyslogNg
               hash[drv] = {}
               hash[drv]['path'] = pth unless pth.nil?
               hash[drv]['parameters'] = param unless param.nil?
-              source_config.push(hash)
+              source_config.push(hash.compact!)
             end
           elsif path.nil? && !parameters.nil?
             driver.zip(parameters).each do |drv, param|
               hash = {}
               hash[drv] = {}
               hash[drv]['parameters'] = param unless param.nil?
-              source_config.push(hash)
+              source_config.push(hash.compact!)
             end
           elsif !path.nil? && parameters.nil?
             driver.zip(path).each do |drv, pth|
               hash = {}
               hash[drv] = {}
               hash[drv]['path'] = pth unless pth.nil?
-              source_config.push(hash)
+              source_config.push(hash.compact!)
             end
           else
             driver.zip(driver).each do |drv|
               hash = {}
               hash[drv] = {}
-              source_config.push(hash)
+              source_config.push(hash.compact!)
             end
           end
           source_config
-        elsif parameter_defined?(driver) && driver.is_a?(String)
+        elsif !nil_or_empty?(driver) && driver.is_a?(String)
           [
             driver => {
               'path' => path,
@@ -126,15 +126,13 @@ module SyslogNg
         end
       end
 
-      private
+      def nil_or_empty?(property)
+        return true if property.nil? || (property.respond_to?(:empty?) && property.empty?)
 
-      def parameter_defined?(parameter)
-        if parameter.nil? || parameter.empty?
-          false
-        else
-          true
-        end
+        false
       end
+
+      private
 
       def format_parameter_pair(parameter:, value:, named: true)
         raise ArgumentError, "format_parameter_pair: Type error, got #{parameter.class} and #{value.class}. Expected String and String/Integer/Symbol." unless parameter.is_a?(String) && (value.is_a?(String) || value.is_a?(Integer) || value.is_a?(Symbol))

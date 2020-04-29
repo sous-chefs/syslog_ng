@@ -4,7 +4,7 @@
 #
 
 # Destination - <%= @description %>
-<% if parameter_defined?(@destination) -%>
+<% unless nil_or_empty?(@destination) -%>
 destination <%= @name -%> {
     <% @destination.each do |config| -%>
     <% config.each do |driver, parameters| -%>

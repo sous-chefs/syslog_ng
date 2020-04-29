@@ -4,7 +4,7 @@
 #
 
 # Rewrite - <%= @description %>
-<% if parameter_defined?(@rewrite) -%>
+<% unless nil_or_empty?(@rewrite) -%>
 rewrite <%= @name -%> {
     <% @rewrite.each do |config| -%>
     <%= rewrite_builder(config) %>;

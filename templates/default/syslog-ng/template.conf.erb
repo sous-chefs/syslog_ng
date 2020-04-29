@@ -4,7 +4,7 @@
 #
 
 # Template - <%= @description %>
-<% if parameter_defined?(@template) -%>
+<% unless nil_or_empty?(@template) -%>
 <% @template.each do |name, config| -%>
 template <%= name -%> {
     template("<%= config['template'] -%>"); template-escape(<%= config['template_escape'] -%>);

@@ -1,5 +1,5 @@
 @version:<%= @version %>
-<% if parameter_defined?(@preinclude) -%>
+<% unless nil_or_empty?(@preinclude) -%>
 <% @preinclude.each do |file| -%>
 @include "<%= file %>"
 <% end -%>
@@ -20,16 +20,17 @@
 # Note: it also sources additional configuration files (*.conf)
 #       located in /etc/syslog_ng/conf.d/
 
-<% if parameter_defined?(@options) -%>
+<% unless nil_or_empty?(@options) -%>
+# Options
 options {
     <% @options.each do |key, value| -%>
     <%= key %> (<%= value %>);
     <% end -%>
 };
 <% end -%>
+<% unless nil_or_empty?(@source) -%>
 
 # Sources
-<% if parameter_defined?(@source) -%>
 <% @source.each do |name, config| -%>
 source <%= name -%> {
     <% config.each do |driver, parameters| -%>
@@ -38,9 +39,9 @@ source <%= name -%> {
 };
 <% end -%>
 <% end -%>
+<% unless nil_or_empty?(@destination) -%>
 
 # Destinations
-<% if parameter_defined?(@destination) -%>
 <% @destination.each do |name, config| -%>
 destination <%= name -%> {
     <% config.each do |driver, parameters| -%>
@@ -49,18 +50,18 @@ destination <%= name -%> {
 };
 <% end -%>
 <% end -%>
+<% unless nil_or_empty?(@filter) -%>
 
 # Filters
-<% if parameter_defined?(@filter) -%>
 <% @filter.each do |name, config| -%>
 filter <%= name %> {
     <%= filter_builder(config) %>;
 };
 <% end -%>
 <% end -%>
+<% unless nil_or_empty?(@log) -%>
 
 # Logs
-<% if parameter_defined?(@log) -%>
 <% @log.each do |name, config| -%>
 log {
     <% config.each do |element, values| -%>
@@ -71,9 +72,16 @@ log {
 };
 <% end -%>
 <% end -%>
+<% unless nil_or_empty?(@config_dirs) -%>
+
+# Include configuration directories
+<% @config_dirs.each do |dir| -%>
+@include "<%= dir %>/*.conf"
+<% end -%>
+<% end -%>
+<% unless nil_or_empty?(@include) -%>
 
 # Source additional configuration files (.conf extension only)
-<% if parameter_defined?(@include) -%>
 <% @include.each do |file| -%>
 @include "<%= file %>"
 <% end -%>
