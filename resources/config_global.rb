@@ -17,15 +17,28 @@
 # limitations under the License.
 
 property :cookbook, String
+
 property :source, String
+
 property :options, Hash
+
 property :source, Hash
+
 property :destination, Hash
+
 property :filter, Hash
+
 property :log, Hash
+
 property :preinclude, Array
+
 property :include, Array
+
 property :console_logging, [true, false]
+
+property :config_version, [String, Float],
+          coerce: proc { |p| p.is_a?(String) ? p : p.to_s },
+          description: 'Configuration file version'
 
 action :create do
   extend SyslogNg::Cookbook::InstallHelpers
@@ -51,7 +64,7 @@ action :create do
     variables(
       lazy do
         {
-          version: installed_version_get,
+          version: syslog_ng_version_installed,
           options: new_resource.options.nil? ? node['syslog_ng']['config']['options'] : new_resource.options,
           source: new_resource.source.nil? ? node['syslog_ng']['config']['source'] : new_resource.source,
           destination: new_resource.destination.nil? ? node['syslog_ng']['config']['destination'] : new_resource.destination,

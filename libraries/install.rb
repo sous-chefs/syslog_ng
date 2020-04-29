@@ -16,95 +16,51 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+require 'mixlib/shellout'
+
 module SyslogNg
-  module InstallHelpers
-    def latest_apt_package_uri(platform, version)
-      platform_name = platform.capitalize
-      platform_name = platform_name.prepend('x') if platform.eql?('ubuntu')
+  module Cookbook
+    module InstallHelpers
+      def default_packages(repo_include: nil, repo_exclude: nil)
+        filter_output = " | grep -i 'syslog-ng' | awk '{print $1}' | grep -Po '(syslog-ng)((-[a-zA-Z0-9]+)?)+' | sort -u".freeze
 
-      platform_version = case platform
-                         when 'debian'
-                           v = version.to_f.floor.to_s
-                           v.concat('.0') if version.to_i < 10
-                           v
-                         when 'ubuntu'
-                           version.to_s
-                         end
+        case node['platform_family']
+        when 'rhel', 'amazon', 'fedora'
+          package_command = platform?('fedora') || (platform_family?('rhel') && platform_version.to_i > 7) ? 'dnf' : 'yum'
 
-      "http://download.opensuse.org/repositories/home:/laszlo_budai:/syslog-ng/#{platform_name}_#{platform_version}"
-    end
+          command = "#{package_command} -q search syslog-ng"
+          command.concat("--includerepo=#{repo_include.join(',')}") if repo_include
+          command.concat("--excluderepo=#{repo_exclude.join(',')}") if repo_exclude
+          command.concat(filter_output)
 
-    def installed_version_get
-      require 'mixlib/shellout'
+          Chef::Log.debug("RHEL selected, command will be '#{command}'")
+        when 'debian'
+          command = 'apt-cache search syslog-ng'
+          command.concat(filter_output)
 
-      syslog_ng_version_cmd = Mixlib::ShellOut.new("syslog-ng --version | grep 'Installer-Version' | grep -Po '([0-9]\.?)+'")
-      syslog_ng_version_cmd.run_command
-      syslog_ng_version_cmd.error!
+          Chef::Log.debug("Debian selected, command will be '#{command}'")
+        else
+          raise "repo_get_packages: Unsupported platform #{node['platform_family']}."
+        end
 
-      /[0-9]+.[0-9]+/.match(syslog_ng_version_cmd.stdout).to_s
-    end
+        package_search_cmd = Mixlib::ShellOut.new(command).run_command
+        package_search_cmd.error!
+        packages = package_search_cmd.stdout.split(/\n+/)
 
-    def repo_get_packages(platform:, source: nil)
-      raise ArgumentException, "Expected platform to be a String, got a #{platform.class}." unless platform.is_a?(String)
+        Chef::Log.info("Found #{packages.count} packages to install")
+        Chef::Log.debug("Packages to install are: #{packages.join(', ')}.")
 
-      require 'mixlib/shellout'
-
-      case platform
-      when 'rhel', 'amazon'
-        command = if !source.nil?
-                    "yum -q --disablerepo=* --enablerepo=#{source} search syslog-ng | grep -i 'syslog-ng' | awk '{print $1}' | grep -Po '(syslog-ng)((-[a-zA-Z0-9]+)?)+' | sort -u"
-                  else
-                    "yum -q search syslog-ng | grep -i 'syslog-ng' | awk '{print $1}' | grep -Po '(syslog-ng)((-[a-zA-Z0-9]+)?)+' | sort -u"
-                  end
-        Chef::Log.debug("RHEL selected, command will be '#{command}'")
-      when 'fedora'
-        command = if !source.nil?
-                    "dnf -q --disablerepo=* --enablerepo=#{source} search syslog-ng | grep -i 'syslog-ng' | awk '{print $1}' | grep -Po '(syslog-ng)((-[a-zA-Z0-9]+)?)+' | sort -u"
-                  else
-                    "dnf -q search syslog-ng | grep -i 'syslog-ng' | awk '{print $1}' | grep -Po '(syslog-ng)((-[a-zA-Z0-9]+)?)+' | sort -u"
-                  end
-        Chef::Log.debug("Fedora selected, command will be '#{command}'")
-      when 'debian'
-        command = if !source.nil?
-                    'apt-cache search syslog-ng | grep -i "syslog-ng" | awk "{print $1}" | grep -Po "(syslog-ng)" | sort -u'
-                  else
-                    "apt-cache search syslog-ng | grep -i 'syslog-ng' | awk '{print $1}' | grep -Po '(syslog-ng)((-[a-zA-Z0-9]+)?)+' | sort -u"
-                  end
-        Chef::Log.debug("Debian selected, command will be '#{command}'")
-      else
-        raise "repo_get_packages: Unknown platform. Given platform: #{platform}."
+        packages
       end
 
-      package_search = Mixlib::ShellOut.new(command)
-      package_search.run_command
-      package_search.error!
-      packages = package_search.stdout.split(/\n+/)
+      def syslog_ng_version_installed
+        require 'mixlib/shellout'
 
-      packages
-    end
+        version_cmd = Mixlib::ShellOut.new("syslog-ng --version | grep 'Installer-Version' | grep -Po '([0-9]\.?)+'").run_command
+        version_cmd.error!
 
-    def installed_get_packages(platform:)
-      raise ArgumentException, "Expected platform to be a String, got a #{platform.class}." unless platform.is_a?(String)
-
-      require 'mixlib/shellout'
-
-      case platform
-      when 'rhel', 'fedora', 'amazon'
-        command = "rpm -qa | grep -i 'syslog-ng' | awk '{print $1}' | grep -Po '(syslog-ng)((-[a-z]+)?)+' | sort -u"
-        Chef::Log.debug("RHEL selected, command will be '#{command}'")
-      when 'debian'
-        command = "dpkg -l | grep -i 'syslog-ng' | awk '{print $2}' | grep -Po '(syslog-ng)((-[a-z]+)?)+' | sort -u"
-        Chef::Log.debug("Debian selected, command will be '#{command}'")
-      else
-        raise "installed_get_packages: Unknown platform. Given platform: #{platform}."
+        /[0-9]+.[0-9]+/.match(version_cmd.stdout).to_s
       end
-
-      package_search = Mixlib::ShellOut.new(command)
-      package_search.run_command
-      package_search.error!
-      packages = package_search.stdout.split(/\n+/)
-
-      packages
     end
   end
 end

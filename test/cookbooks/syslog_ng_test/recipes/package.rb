@@ -1,6 +1,6 @@
 #
 # Cookbook:: syslog_ng_test
-# Recipe:: package_githead
+# Recipe:: package
 #
 # Copyright:: 2020, Ben Hughes <bmhughes@bmhughes.co.uk>
 #
@@ -16,8 +16,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-syslog_ng_install '' do
-  package_source 'githead'
-  packages_exclude %w(syslog-ng-debuginfo syslog-ng-debugsource syslog-ng-libdbi)
+syslog_ng_install 'syslog-ng' do
+  packages_exclude %w(syslog-ng-debuginfo syslog-ng-devel)
   action :install
 end

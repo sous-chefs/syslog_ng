@@ -18,6 +18,6 @@
 
 syslog_ng_install '' do
   package_source 'latest'
-  packages 'syslog-ng'
+  packages 'syslog-ng-devel'
   action :install
 end
