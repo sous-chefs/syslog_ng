@@ -16,44 +16,59 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-property :config_dir, String, default: '/etc/syslog-ng/source.d'
-property :cookbook, String
-property :source, String
+property :config_dir, String,
+          default: lazy { "#{syslog_ng_config_dir}/source.d" }
+
+property :cookbook, String,
+          default: 'syslog_ng'
+
+property :template, String,
+          default: 'syslog-ng/source.conf.erb'
+
+property :owner, String,
+          default: lazy { syslog_ng_user }
+
+property :group, String,
+          default: lazy { syslog_ng_group }
+
+property :mode, String,
+          default: '0640'
+
 property :driver, [String, Array]
+
 property :path, [String, Array]
+
 property :parameters, [Hash, Array]
+
 property :configuration, Array
+
 property :description, String
-property :multiline, [true, false], default: false
+
+property :multiline, [true, false],
+          default: false
+
+action_class do
+  include SyslogNg::Cookbook::CommonHelpers
+end
 
 action :create do
-  extend SyslogNg::Cookbook::CommonHelpers
-
-  source = parameter_builder(driver: new_resource.driver, path: new_resource.path, parameters: new_resource.parameters, configuration: new_resource.configuration).each do |config|
-    unless config.is_a?(Hash)
-      Chef::Log.error(source)
-      Chef::Log.error(config)
-      raise "source: Expected driver configuration to be a Hash, got #{config.class}"
-    end
-    config.each do |_, b|
-      b.compact!
-    end
-  end
-
   template "#{new_resource.config_dir}/#{new_resource.name}.conf" do
-    source new_resource.source || 'syslog-ng/source.conf.erb'
-    cookbook new_resource.cookbook || node['syslog_ng']['config']['config_template_cookbook']
+    cookbook new_resource.cookbook
+    source new_resource.template
+
+    owner new_resource.owner
+    group new_resource.group
+    mode new_resource.mode
     sensitive new_resource.sensitive
-    owner 'root'
-    group 'root'
-    mode '0755'
+
     variables(
       name: new_resource.name,
       description: new_resource.description.nil? ? new_resource.name : new_resource.description,
-      source: source,
+      source: parameter_builder(driver: new_resource.driver, path: new_resource.path, parameters: new_resource.parameters, configuration: new_resource.configuration),
       multiline: new_resource.multiline
     )
     helpers(SyslogNg::Cookbook::SourceHelpers)
+
     action :create
   end
 end

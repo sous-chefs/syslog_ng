@@ -16,80 +16,93 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-property :cookbook, String
+include SyslogNg::Cookbook::GeneralHelpers
+include SyslogNg::Cookbook::InstallHelpers
 
-property :source, String
+property :config_file, String,
+          default: lazy { "#{syslog_ng_config_dir}/syslog-ng.conf" },
+          description: 'The full path to the Syslog-NG server configuration on disk'
 
-property :options, Hash
+property :cookbook, String,
+          default: 'syslog_ng'
 
-property :source, Hash
+property :template, String,
+          default: 'syslog-ng/syslog-ng.conf.erb'
 
-property :destination, Hash
+property :owner, String,
+          default: lazy { syslog_ng_user }
 
-property :filter, Hash
+property :group, String,
+          default: lazy { syslog_ng_group }
 
-property :log, Hash
+property :mode, String,
+          default: '0640'
 
-property :preinclude, Array
+property :options, Hash,
+          default: lazy { syslog_ng_default_config(:options) }
 
-property :include, Array
+property :source, Hash,
+          default: lazy { syslog_ng_default_config(:source) }
+
+property :destination, Hash,
+          default: lazy { syslog_ng_default_config(:destination) }
+
+property :filter, Hash,
+          default: lazy { syslog_ng_default_config(:filter) }
+
+property :log, Hash,
+          default: lazy { syslog_ng_default_config(:log) }
+
+property :preinclude, Array,
+          default: lazy { syslog_ng_default_config(:preinclude) }
+
+property :include, Array,
+          default: []
 
 property :console_logging, [true, false]
 
 property :config_version, [String, Float],
+          default: lazy { syslog_ng_installed_version },
           coerce: proc { |p| p.is_a?(String) ? p : p.to_s },
           description: 'Configuration file version'
 
 action :create do
-  extend SyslogNg::Cookbook::InstallHelpers
+  syslog_ng_config_dirs.each do |directory|
+    directory directory do
+      owner new_resource.owner
+      group new_resource.group
+      mode new_resource.mode
 
-  include_dirs = if new_resource.include.nil?
-                   node['syslog_ng']['config']['include'].dup
-                 else
-                   new_resource.include.dup
-                 end
-
-  unless node['syslog_ng']['config']['config_dirs'].nil?
-    node['syslog_ng']['config']['config_dirs'].each do |directory|
-      include_dirs.push(directory + '/*.conf')
+      action :create
     end
   end
 
-  template new_resource.name do
-    cookbook new_resource.cookbook.nil? ? node['syslog_ng']['config']['config_template_cookbook'] : new_resource.cookbook
-    source new_resource.source.nil? ? node['syslog_ng']['config']['config_template_template'] : new_resource.source
-    owner 'root'
-    group 'root'
-    mode '0755'
+  template new_resource.config_file do
+    cookbook new_resource.cookbook
+    source new_resource.template
+
+    owner new_resource.owner
+    group new_resource.group
+    mode new_resource.mode
+    sensitive new_resource.sensitive
+
     variables(
-      lazy do
-        {
-          version: syslog_ng_version_installed,
-          options: new_resource.options.nil? ? node['syslog_ng']['config']['options'] : new_resource.options,
-          source: new_resource.source.nil? ? node['syslog_ng']['config']['source'] : new_resource.source,
-          destination: new_resource.destination.nil? ? node['syslog_ng']['config']['destination'] : new_resource.destination,
-          filter: new_resource.filter.nil? ? node['syslog_ng']['config']['filter'] : new_resource.filter,
-          log: new_resource.log.nil? ? node['syslog_ng']['config']['log'] : new_resource.log,
-          preinclude: new_resource.preinclude.nil? ? node['syslog_ng']['config']['preinclude'] : new_resource.preinclude,
-          include: include_dirs,
-          console_logging: new_resource.console_logging.nil? ? node['syslog_ng']['config']['console_logging'] : new_resource.console_logging,
-        }
-      end
+      version: new_resource.config_version,
+      options: new_resource.options,
+      source: new_resource.source,
+      destination: new_resource.destination,
+      filter: new_resource.filter,
+      log: new_resource.log,
+      preinclude: new_resource.preinclude,
+      config_dirs: syslog_ng_config_dirs,
+      include: new_resource.include,
+      console_logging: new_resource.console_logging,
     )
     helpers(SyslogNg::Cookbook::SourceHelpers)
     helpers(SyslogNg::Cookbook::DestinationHelpers)
     helpers(SyslogNg::Cookbook::FilterHelpers)
-    action :create
-  end
 
-  node['syslog_ng']['config']['config_dirs'].each do |name, directory|
-    directory name do
-      owner 'root'
-      group 'root'
-      mode '0755'
-      path directory
-      action :create
-    end
+    action :create
   end
 end
 

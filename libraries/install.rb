@@ -53,7 +53,7 @@ module SyslogNg
         packages
       end
 
-      def syslog_ng_version_installed
+      def syslog_ng_installed_version
         require 'mixlib/shellout'
 
         version_cmd = Mixlib::ShellOut.new("syslog-ng --version | grep 'Installer-Version' | grep -Po '([0-9]\.?)+'").run_command

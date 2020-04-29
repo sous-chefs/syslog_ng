@@ -16,11 +16,30 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-property :config_dir, String, default: '/etc/syslog-ng/template.d'
-property :cookbook, String
-property :template_source, String
-property :template, String, required: true
-property :template_escape, [true, false], default: false
+property :config_dir, String,
+          default: lazy { "#{syslog_ng_config_dir}/template.d" }
+
+property :cookbook, String,
+          default: 'syslog_ng'
+
+property :template, String,
+          default: 'syslog-ng/template.conf.erb'
+
+property :owner, String,
+          default: lazy { syslog_ng_user }
+
+property :group, String,
+          default: lazy { syslog_ng_group }
+
+property :mode, String,
+          default: '0640'
+
+property :template, String,
+          required: true
+
+property :template_escape, [true, false],
+          default: false
+
 property :description, String
 
 action :create do
@@ -33,17 +52,20 @@ action :create do
   template[new_resource.name]['template_escape'] = new_resource.template_escape ? 'yes' : 'no'
 
   template "#{new_resource.config_dir}/#{new_resource.name}.conf" do
-    source new_resource.template_source || 'syslog-ng/template.conf.erb'
-    cookbook new_resource.cookbook || node['syslog_ng']['config']['config_template_cookbook']
-    owner 'root'
-    group 'root'
-    mode '0755'
+    cookbook new_resource.cookbook
+    source new_resource.template
+
+    owner new_resource.owner
+    group new_resource.group
+    mode new_resource.mode
     sensitive new_resource.sensitive
+
     variables(
       description: new_resource.description.nil? ? new_resource.name : new_resource.description,
       template: template
     )
     helpers(SyslogNg::Cookbook::CommonHelpers)
+
     action :create
   end
 end
