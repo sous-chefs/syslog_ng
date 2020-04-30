@@ -31,16 +31,15 @@ suites:
     run_list:
       - recipe[syslog_ng_test::selinux]
       - recipe[syslog_ng_test::package]
-      - recipe[syslog_ng_test::config_global]
+      - recipe[syslog_ng_test::config]
     verifier:
       inspec_tests:
         - test/integration/default
   - name: config
     run_list:
       - recipe[syslog_ng_test::selinux]
-      - recipe[syslog_ng_test::cleanup]
-      - recipe[syslog_ng_test::package]
-      - recipe[syslog_ng_test::config_global]
+      - recipe[syslog_ng_test::package_copr]
+      - recipe[syslog_ng_test::config]
       - recipe[syslog_ng_test::destination]
       - recipe[syslog_ng_test::source]
       - recipe[syslog_ng_test::filter]
