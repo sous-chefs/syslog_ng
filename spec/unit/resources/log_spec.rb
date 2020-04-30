@@ -1,6 +1,6 @@
 #
 # Cookbook:: syslog_ng
-# Spec:: filter_spec
+# Spec:: log_spec
 #
 # Copyright:: 2020, Ben Hughes <bmhughes@bmhughes.co.uk>
 #
@@ -18,34 +18,27 @@
 
 require 'spec_helper'
 
-describe 'syslog_ng_test::log' do
-  platforms = {
-    'CentOS' => '8',
-    'Fedora' => '30',
-    'Amazon' => '2',
-    'Debian' => '10',
-    'Ubuntu' => '18.04',
-  }
-  platforms.each do |platform, version|
-    context "With test recipe, on #{platform} #{version}" do
-      let(:chef_run) do
-        runner = ChefSpec::SoloRunner.new(platform: platform.dup.downcase!, version: version)
-        runner.converge(described_recipe)
-      end
+describe 'syslog_ng_log' do
+  step_into :syslog_ng_log
+  platform 'centos'
 
-      it 'converges successfully' do
-        expect { chef_run }.to_not raise_error
+  context 'create syslog-ng log config file' do
+    recipe do
+      syslog_ng_log 'l_test' do
+        source 's_test_tcp'
+        filter 'f_test'
+        destination 'd_test_file'
+        rewrite 'r_test_ip'
+        action :create
       end
+    end
 
-      %w(l_test l_test_2 l_test_embedded l_test_junction).each do |testlog|
-        it "creates log #{testlog}" do
-          expect(chef_run).to create_syslog_ng_log(testlog)
-
-          log = chef_run.syslog_ng_log(testlog)
-          expect(log).to notify('execute[syslog-ng-config-test]').to(:run).delayed
-          expect(log).to notify('service[syslog-ng]').to(:reload).delayed
-        end
-      end
+    it 'Creates the filter config file correctly' do
+      is_expected.to render_file('/etc/syslog-ng/log.d/l_test.conf')
+        .with_content(/# Log - l_test/)
+        .with_content(/log {/)
+        .with_content(/source\(s_test_tcp\);/)
+        .with_content(/rewrite\(r_test_ip\);/)
     end
   end
 end

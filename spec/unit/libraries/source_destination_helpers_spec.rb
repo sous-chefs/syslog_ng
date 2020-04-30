@@ -1,6 +1,6 @@
 #
 # Cookbook:: syslog_ng
-# Spec:: source_helpers_spec
+# Spec:: destination_helpers_spec
 #
 # Copyright:: 2020, Ben Hughes <bmhughes@bmhughes.co.uk>
 #
@@ -19,9 +19,43 @@
 require 'spec_helper'
 
 describe 'SyslogNg::Cookbook::SourceHelpers' do
-  let(:dummy_class) { Class.new { include SyslogNg::Cookbook::SourceHelpers } }
+  let(:dummy_class) { Class.new { include SyslogNg::Cookbook::SourceDestinationHelpers } }
+  describe 'destination_builder destinations' do
+    context('given driver with no parameters and a path') do
+      it 'returns valid config string' do
+        expect(dummy_class.new.destination_builder(driver: 'file', parameters: { 'path' => '/dev/console' })).to be_a(String)
+        expect(dummy_class.new.destination_builder(driver: 'file', parameters: { 'path' => '/dev/console' })).to eql('file("/dev/console");')
+      end
+    end
 
-  describe '.source_builder sources' do
+    context('given driver with parameters and a path') do
+      param = {
+        'path' => '/var/log/maillog',
+        'parameters' => {
+          'flush_lines' => 10,
+        },
+      }
+
+      it 'returns valid config string' do
+        expect(dummy_class.new.destination_builder(driver: 'file', parameters: param)).to be_a(String)
+        expect(dummy_class.new.destination_builder(driver: 'file', parameters: param)).to eql('file("/var/log/maillog" flush_lines(10));')
+      end
+    end
+
+    context('given string') do
+      param = {
+        'path' => '/var/log/maillog',
+        'parameters' => 'flush_lines(10)',
+      }
+
+      it 'returns valid config string' do
+        expect(dummy_class.new.destination_builder(driver: 'file', parameters: param)).to be_a(String)
+        expect(dummy_class.new.destination_builder(driver: 'file', parameters: param)).to eql('file("/var/log/maillog" flush_lines(10));')
+      end
+    end
+  end
+
+  describe 'source_builder sources' do
     context('given driver with no parameters') do
       it 'returns config string' do
         expect(dummy_class.new.source_builder(driver: 'system', parameters: {})).to be_a(String)

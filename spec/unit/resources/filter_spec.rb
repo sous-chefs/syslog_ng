@@ -18,35 +18,28 @@
 
 require 'spec_helper'
 
-describe 'syslog_ng_test::filter' do
-  platforms = {
-    'CentOS' => '8',
-    'Fedora' => '30',
-    'Amazon' => '2',
-    'Debian' => '10',
-    'Ubuntu' => '18.04',
-  }
+describe 'syslog_ng_filter' do
+  step_into :syslog_ng_filter
+  platform 'centos'
 
-  platforms.each do |platform, version|
-    context "With test recipe, on #{platform} #{version}" do
-      let(:chef_run) do
-        runner = ChefSpec::SoloRunner.new(platform: platform.dup.downcase!, version: version)
-        runner.converge(described_recipe)
+  context 'create syslog-ng filter config file' do
+    recipe do
+      syslog_ng_filter 'f_test' do
+        parameters(
+          'container' => {
+            'operator' => 'or',
+            'facility' => %w(mail authpriv cron),
+          }
+        )
+        action :create
       end
+    end
 
-      it 'converges successfully' do
-        expect { chef_run }.to_not raise_error
-      end
-
-      %w(f_test f_test_contained f_test_array_and f_test_array_or f_test_raw_string f_test_raw_string_array).each do |testfilter|
-        it "creates test filter #{testfilter}" do
-          expect(chef_run).to create_syslog_ng_filter(testfilter)
-
-          filter = chef_run.syslog_ng_filter(testfilter)
-          expect(filter).to notify('execute[syslog-ng-config-test]').to(:run).delayed
-          expect(filter).to notify('service[syslog-ng]').to(:reload).delayed
-        end
-      end
+    it 'Creates the filter config file correctly' do
+      is_expected.to render_file('/etc/syslog-ng/filter.d/f_test.conf')
+        .with_content(/# Filter - f_test/)
+        .with_content(/filter f_test {/)
+        .with_content(/\(facility\(mail\) or facility\(authpriv\) or facility\(cron\)\);/)
     end
   end
 end

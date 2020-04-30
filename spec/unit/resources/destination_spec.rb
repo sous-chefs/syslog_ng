@@ -18,35 +18,28 @@
 
 require 'spec_helper'
 
-describe 'syslog_ng_test::destination' do
-  platforms = {
-    'CentOS' => '8',
-    'Fedora' => '30',
-    'Amazon' => '2',
-    'Debian' => '10',
-    'Ubuntu' => '18.04',
-  }
+describe 'syslog_ng_destination' do
+  step_into :syslog_ng_destination
+  platform 'centos'
 
-  platforms.each do |platform, version|
-    context "With test recipe, on #{platform} #{version}" do
-      let(:chef_run) do
-        runner = ChefSpec::SoloRunner.new(platform: platform.dup.downcase!, version: version)
-        runner.converge(described_recipe)
+  context 'create syslog-ng destination config file' do
+    recipe do
+      syslog_ng_destination 'd_test_file_params' do
+        driver 'file'
+        path '/var/log/test/test_params.log'
+        parameters(
+          'flush_lines' => 10,
+          'create-dirs' => 'yes'
+        )
+        action :create
       end
+    end
 
-      it 'converges successfully' do
-        expect { chef_run }.to_not raise_error
-      end
-
-      %w(d_test_file d_test_file_params d_test_mongo_params d_test_multi_file d_test_multi_file_multiline d_test_multi_file_alternative).each do |testdestination|
-        it "creates destination #{testdestination}" do
-          expect(chef_run).to create_syslog_ng_destination(testdestination)
-
-          dest = chef_run.syslog_ng_destination(testdestination)
-          expect(dest).to notify('execute[syslog-ng-config-test]').to(:run).delayed
-          expect(dest).to notify('service[syslog-ng]').to(:reload).delayed
-        end
-      end
+    it 'Creates the destination config file correctly' do
+      is_expected.to render_file('/etc/syslog-ng/destination.d/d_test_file_params.conf')
+        .with_content(/# Destination - d_test_file_params/)
+        .with_content(/destination d_test_file_params {/)
+        .with_content(%r{file\("/var/log/test/test_params.log" flush_lines\(10\) create-dirs\(yes\)\);})
     end
   end
 end

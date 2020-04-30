@@ -18,35 +18,30 @@
 
 require 'spec_helper'
 
-describe 'syslog_ng_test::source' do
-  platforms = {
-    'CentOS' => '8',
-    'Fedora' => '30',
-    'Amazon' => '2',
-    'Debian' => '10',
-    'Ubuntu' => '18.04',
-  }
+describe 'syslog_ng_source' do
+  step_into :syslog_ng_source
+  platform 'centos'
 
-  platforms.each do |platform, version|
-    context "With test recipe, on #{platform} #{version}" do
-      let(:chef_run) do
-        runner = ChefSpec::SoloRunner.new(platform: platform.dup.downcase!, version: version)
-        runner.converge(described_recipe)
+  context 'create syslog-ng source config file' do
+    recipe do
+      syslog_ng_source 's_test_syslog' do
+        driver 'syslog'
+        parameters(
+          'ip' => '127.0.0.1',
+          'port' => '3381',
+          'max-connections' => 100,
+          'log_iw_size' => 10000,
+          'use_dns' => :persist_only
+        )
+        action :create
       end
+    end
 
-      it 'converges successfully' do
-        expect { chef_run }.to_not raise_error
-      end
-
-      %w(s_test_tcp s_test_pipe s_test_tcpudp s_test_network_multiline s_test_network_multiple).each do |testsource|
-        it "creates source #{testsource}" do
-          expect(chef_run).to create_syslog_ng_source(testsource)
-
-          source = chef_run.syslog_ng_source(testsource)
-          expect(source).to notify('execute[syslog-ng-config-test]').to(:run).delayed
-          expect(source).to notify('service[syslog-ng]').to(:reload).delayed
-        end
-      end
+    it 'Creates the source config file correctly' do
+      is_expected.to render_file('/etc/syslog-ng/source.d/s_test_syslog.conf')
+        .with_content(/# Source - s_test_syslog/)
+        .with_content(/source s_test_syslog {/)
+        .with_content(/syslog\(ip\(127.0.0.1\) port\("3381"\) max-connections\(100\) log_iw_size\(10000\) use_dns\(persist_only\)\);/)
     end
   end
 end

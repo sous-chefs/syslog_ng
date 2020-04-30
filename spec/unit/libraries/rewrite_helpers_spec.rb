@@ -21,7 +21,7 @@ require 'spec_helper'
 describe 'SyslogNg::Cookbook::RewriteHelpers' do
   let(:dummy_class) { Class.new { include SyslogNg::Cookbook::RewriteHelpers } }
 
-  describe '.rewrite_builder' do
+  describe 'rewrite_builder' do
     context('given subst rewrite') do
       param = {
         'function' => 'subst',

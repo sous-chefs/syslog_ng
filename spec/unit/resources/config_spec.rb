@@ -24,7 +24,13 @@ describe 'syslog_ng_config' do
 
   context 'create syslog-ng global config file' do
     recipe do
-      syslog_ng_config_global '/etc/syslog-ng/syslog-ng.conf'
+      syslog_ng_config '/etc/syslog-ng/syslog-ng.conf'
+    end
+
+    let(:shellout) { double(run_command: nil, error!: nil, stdout: '3.25', stderr: '', exitstatus: 0, live_stream: '') }
+
+    before do
+      allow(Mixlib::ShellOut).to receive(:new).and_return(shellout)
     end
 
     it 'Creates the global config file correctly' do
@@ -32,7 +38,7 @@ describe 'syslog_ng_config' do
         .with_content(/@include "scl.conf/)
         .with_content(/source s_sys {/)
         .with_content(/destination d_mesg {/)
-        .with_content(/level(info..emerg) and not (facility(mail) or facility(authpriv) or facility(cron));/)
+        .with_content(/level\(info..emerg\) and not \(facility\(mail\) or facility\(authpriv\) or facility\(cron\)\);/)
     end
   end
 end
