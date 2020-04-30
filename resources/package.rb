@@ -1,6 +1,6 @@
 #
 # Cookbook:: syslog_ng
-# Resource:: install
+# Resource:: package
 #
 # Copyright:: 2020, Ben Hughes <bmhughes@bmhughes.co.uk>
 #
@@ -16,7 +16,7 @@
 # See the License for the spcific language governing prmissions and
 # limitations under the License.
 
-include SyslogNg::Cookbook::InstallHelpers
+include SyslogNg::Cookbook::PackageHelpers
 
 property :packages, [String, Array],
           default: lazy { default_packages(repo_include: package_repository, repo_exclude: package_repository_exclude) },
@@ -27,24 +27,37 @@ property :packages_exclude, [String, Array],
           default: []
 
 property :package_repository, [String, Array],
+          coerce: proc { |p| p.is_a?(Array) ? p : [p] },
           description: 'Install packages from a specific repository/repositories'
 
 property :package_repository_exclude, [String, Array],
           coerce: proc { |p| p.is_a?(Array) ? p : [p] },
-          description: 'Exclude repository when installing packages'
+          description: 'Repository/repositories to exclude when installing packages'
 
 action_class do
   def do_package_action(action)
-    log "Excluding packages: #{new_resource.packages_exclude.join(', ')}." if new_resource.packages_exclude
+    packages = []
+    ruby_block 'get packages' do
+      block do
+        packages = new_resource.packages
+        log "Found #{packages.count} packages to #{action}."
+        if new_resource.packages_exclude
+          log "Excluding packages: #{new_resource.packages_exclude.join(', ')}."
+          packages.delete_if { |package| new_resource.packages_exclude.include?(package) }
+          log "There are #{packages.count} packages to #{action} after exclusion."
+        end
+      end
+    end
+
     package 'syslog-ng' do
-      package_name lazy { new_resource.packages.delete_if { |package| new_resource.packages_exclude.include?(package) } }
+      package_name lazy { packages }
       action action
     end
   end
 end
 
 action :install do
-  if platform?('redhat', 'centos', 'amazon')
+  if platform?('redhat', 'centos', 'amazon', 'scientific')
     log 'Running on RHEL/CentOS/Amazon, we need EPEL.'
     include_recipe 'yum-epel'
   end

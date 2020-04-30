@@ -1,6 +1,6 @@
 #
 # Cookbook:: syslog_ng_test
-# Recipe:: package
+# Recipe:: package_distro
 #
 # Copyright:: 2020, Ben Hughes <bmhughes@bmhughes.co.uk>
 #
@@ -16,7 +16,26 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-syslog_ng_package 'syslog-ng' do
-  packages_exclude %w(syslog-ng-debuginfo syslog-ng-devel)
-  action :install
+syslog_ng_config '/etc/syslog-ng/syslog-ng.conf' do
+  sensitive true
+  notifies :run, 'execute[syslog-ng-config-test]', :delayed
+  notifies :restart, 'service[syslog-ng]', :delayed
+  action :create
+end
+
+if platform_family?('amazon')
+  execute 'syslog-ng-config-test' do
+    command '/sbin/syslog-ng -s'
+    action :nothing
+  end
+else
+  execute 'syslog-ng-config-test' do
+    command '/usr/sbin/syslog-ng -s'
+    action :nothing
+  end
+end
+
+service 'syslog-ng' do
+  action :nothing
+  delayed_action [:enable, :start]
 end
