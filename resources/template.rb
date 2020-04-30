@@ -53,10 +53,18 @@ property :template_escape, [true, false],
           default: false,
           description: 'Escape the `\'`, `"`, and `\` characters from the messages'
 
-action :create do
-  config = { new_resource.name => { 'template' => new_resource.template_expression }}
-  config[new_resource.name]['template_escape'] = new_resource.template_escape ? 'yes' : 'no'
+action_class do
+  def template_config
+    {
+      new_resource.name => {
+        'template' => new_resource.template_expression,
+        'template_escape' => new_resource.template_escape ? 'yes' : 'no',
+      },
+    }
+  end
+end
 
+action :create do
   template "#{new_resource.config_dir}/#{new_resource.name}.conf" do
     cookbook new_resource.cookbook
     source new_resource.template
@@ -68,7 +76,7 @@ action :create do
 
     variables(
       description: new_resource.description.nil? ? new_resource.name : new_resource.description,
-      template: config
+      template: template_config
     )
     helpers(SyslogNg::Cookbook::ConfigHelpers)
 

@@ -61,7 +61,7 @@ action :create do
 
     variables(
       name: new_resource.name,
-      description: new_resource.description.nil? ? new_resource.name : new_resource.description,
+      description: new_resource.description ? new_resource.description : new_resource.name,
       filter: new_resource.parameters
     )
     helpers(SyslogNg::Cookbook::FilterHelpers)

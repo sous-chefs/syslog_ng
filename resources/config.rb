@@ -103,7 +103,7 @@ action :create do
       log: new_resource.log,
       preinclude: new_resource.preinclude,
       config_dirs: syslog_ng_config_dirs,
-      include: new_resource.include,
+      include: new_resource.include
     )
     helpers(SyslogNg::Cookbook::SourceDestinationHelpers)
     helpers(SyslogNg::Cookbook::FilterHelpers)

@@ -83,7 +83,7 @@ action :create do
 
     variables(
       name: new_resource.name,
-      description: new_resource.description.nil? ? new_resource.name : new_resource.description,
+      description: new_resource.description ? new_resource.description : new_resource.name,
       destination: parameter_builder(driver: new_resource.driver, path: new_resource.path, parameters: new_resource.parameters, configuration: new_resource.configuration),
       multiline: new_resource.multiline
     )

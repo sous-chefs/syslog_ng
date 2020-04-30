@@ -76,79 +76,83 @@ property :condition, String,
 
 property :additional_options, Hash,
           default: {},
-          description: 'Additional options for rewrite function' 
+          description: 'Additional options for rewrite function'
 
 property :configuration, [Hash, Array],
           coerce: proc { |p| p.is_a?(Array) ? p : [p] },
           description: 'Hash or Array of Hash containing raw rewrite(s) configuration'
 
-action :create do
-  rewrite = if new_resource.configuration.nil?
-              case new_resource.function
-              when 'subst'
-                [
-                  {
-                    'function' => new_resource.function,
-                    'match' => new_resource.match,
-                    'replacement' => new_resource.replacement,
-                    'value' => new_resource.value,
-                    'flags' => new_resource.flags,
-                    'condition' => new_resource.condition,
-                    'additional_options' => new_resource.additional_options,
-                  },
-                ]
-              when 'set'
-                [
-                  {
-                    'function' => new_resource.function,
-                    'replacement' => new_resource.replacement,
-                    'value' => new_resource.value,
-                    'condition' => new_resource.condition,
-                    'additional_options' => new_resource.additional_options,
-                  },
-                ]
-              when 'unset groupunset'
-                [
-                  {
-                    'function' => new_resource.function,
-                    'field' => new_resource.field,
-                    'value' => new_resource.value,
-                    'values' => new_resource.values,
-                    'condition' => new_resource.condition,
-                    'additional_options' => new_resource.additional_options,
-                  },
-                ]
-              when 'groupset'
-                [
-                  {
-                    'function' => new_resource.function,
-                    'field' => new_resource.field,
-                    'values' => new_resource.values,
-                    'condition' => new_resource.condition,
-                    'additional_options' => new_resource.additional_options,
-                  },
-                ]
-              when 'set-tag clear-tag'
-                [
-                  {
-                    'function' => new_resource.function,
-                    'tags' => new_resource.tags,
-                  },
-                ]
-              when 'credit-card-mask'
-                [
-                  {
-                    'function' => new_resource.function,
-                    'value' => new_resource.value,
-                    'condition' => new_resource.condition,
-                    'additional_options' => new_resource.additional_options,
-                  },
-                ]
-              end
-            else
-              new_resource.configuration
-            end
+action_class do
+  def rewrite_config
+    if new_resource.configuration
+      new_resource.configuration
+    else
+      case new_resource.function
+      when 'subst'
+        [
+          {
+            'function' => new_resource.function,
+            'match' => new_resource.match,
+            'replacement' => new_resource.replacement,
+            'value' => new_resource.value,
+            'flags' => new_resource.flags,
+            'condition' => new_resource.condition,
+            'additional_options' => new_resource.additional_options,
+          },
+        ]
+      when 'set'
+        [
+          {
+            'function' => new_resource.function,
+            'replacement' => new_resource.replacement,
+            'value' => new_resource.value,
+            'condition' => new_resource.condition,
+            'additional_options' => new_resource.additional_options,
+          },
+        ]
+      when 'unset groupunset'
+        [
+          {
+            'function' => new_resource.function,
+            'field' => new_resource.field,
+            'value' => new_resource.value,
+            'values' => new_resource.values,
+            'condition' => new_resource.condition,
+            'additional_options' => new_resource.additional_options,
+          },
+        ]
+      when 'groupset'
+        [
+          {
+            'function' => new_resource.function,
+            'field' => new_resource.field,
+            'values' => new_resource.values,
+            'condition' => new_resource.condition,
+            'additional_options' => new_resource.additional_options,
+          },
+        ]
+      when 'set-tag clear-tag'
+        [
+          {
+            'function' => new_resource.function,
+            'tags' => new_resource.tags,
+          },
+        ]
+      when 'credit-card-mask'
+        [
+          {
+            'function' => new_resource.function,
+            'value' => new_resource.value,
+            'condition' => new_resource.condition,
+            'additional_options' => new_resource.additional_options,
+          },
+        ]
+      end
+    end
+  end
+end
 
+action :create do
   template "#{new_resource.config_dir}/#{new_resource.name}.conf" do
     cookbook new_resource.cookbook
     source new_resource.template
@@ -160,8 +164,8 @@ action :create do
 
     variables(
       name: new_resource.name,
-      description: new_resource.description.nil? ? new_resource.name : new_resource.description,
-      rewrite: rewrite
+      description: new_resource.description ? new_resource.description : new_resource.name,
+      rewrite: rewrite_config
     )
     helpers(SyslogNg::Cookbook::RewriteHelpers)
 
