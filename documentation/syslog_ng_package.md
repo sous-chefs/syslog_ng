@@ -1,35 +1,27 @@
 # syslog_ng_package
 
-See [usage](#install-usage) for examples.
+[Back to resource list](../README.md#resources)
 
 ## Actions
 
-- `install` - Install syslog-ng
-- `remove` - Uninstall syslog-ng
+- `:install` - Install Syslog-NG
+- `:upgrade` - Upgrade Syslog-NG
+- `:remove` - Uninstall Syslog-NG
 
 ## Properties
 
-| Property         | Optional? | Type        | Description                                                                  |
-|------------------|-----------|-------------|------------------------------------------------------------------------------|
-| `package_source` | Yes       | String      | Package source selection choices are `distro`, `latest` or `githead`         |
-| `remove_rsyslog` | Yes       | True, False | Remove rsyslog package during installation, otherwise disable the service    |
-| `repo_cleanup`   | Yes       | True, False | Clean up superseded repository configuration files                           |
+| Name                   | Type          | Default                          | Description                                                         | Allowed Values      |
+| ---------------------- | ------------- | -------------------------------- | ------------------------------------------------------------------- | ------------------- |
+| `packages`             | String, Array | All Syslog-NG packages in repos  | Packages to install                                                 |                     |
+| `packages_exclude`     | String, Array |                                  | Package to exclude                                                  |                     |
+| `package_repository`   | String        |                                  | Package repository/repositories to install from                     |                     |
+| `package_repository_exclude` | String, Array| `                           | Package repository/repositories to exclude when installing          |                     |
 
 ## Usage
 
-There following installation methods are available:
+By default the resource will install all Syslog-NG packages available in the system package repositories, use the `package_repository` to specify a specific repository to source the packages to install from in the case of package conflicts when not using distro packages.
 
-- `distro`
-- `latest`
-- `githead`
-
-The latest installation method is available to current Redhat (7+), Fedora (28+) and Debian distributions and provide up-to-dates versions that aren't in the distribution repositories. The githead method is only available to Redhat and Fedora distributions as a build of the latest code from the syslog-ng repository.
-
-By default the resource will remove rsyslog which is the default syslog daemon on the supported distros, if this is set to `false` then the rsyslog service will just be disabled instead. **Some package managers will remove rsyslog anyway when installing syslog-ng so even if this set to `false` rsyslog can still be removed.**
-
-The `syslog_ng_install` resource does not require a name property.
-
-### Distribution repository package installation
+### Default installation
 
 ```ruby
 syslog_ng_install '' do
@@ -37,11 +29,11 @@ syslog_ng_install '' do
 end
 ```
 
-### COPR repository package installation
+### Install with excluded packages
 
 ```ruby
 syslog_ng_install '' do
-  package_source 'package_copr'
+  packages_exclude %w(syslog-ng-debuginfo, syslog-ng-devel)
   action :install
 end
 ```

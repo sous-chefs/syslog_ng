@@ -19,33 +19,39 @@
 include SyslogNg::Cookbook::GeneralHelpers
 
 property :config_dir, String,
-          default: lazy { "#{syslog_ng_config_dir}/parser.d" }
+          default: lazy { "#{syslog_ng_config_dir}/parser.d" },
+          description: 'Directory to create configuration file in'
 
 property :cookbook, String,
-          default: 'syslog_ng'
+          default: 'syslog_ng',
+          description: 'Cookbook to source configuration file template from'
 
 property :template, String,
-          default: 'syslog-ng/parser.conf.erb'
+          default: 'syslog-ng/parser.conf.erb',
+          description: 'Template to use to generate the configuration file'
 
 property :owner, String,
-          default: lazy { syslog_ng_user }
+          default: lazy { syslog_ng_user },
+          description: 'Owner of the generated configuration file'
 
 property :group, String,
-          default: lazy { syslog_ng_group }
+          default: lazy { syslog_ng_group },
+          description: 'Group of the generated configuration file'
 
 property :mode, String,
-          default: '0640'
+          default: '0640',
+          description: 'Filemode of the generated configuration file'
+
+property :description, String,
+          description: 'Unparsed description to add to the configuration file'
 
 property :parser, String,
-          required: true
+          required: true,
+          description: 'Parser driver'
 
-property :parser_options, Hash,
-          default: {}
-
-property :additional_options, Hash,
-          default: {}
-
-property :description, String
+property :options, Hash,
+          default: {},
+          description: 'Parser driver configuration options'
 
 action :create do
   template "#{new_resource.config_dir}/#{new_resource.name}.conf" do
@@ -61,8 +67,7 @@ action :create do
       name: new_resource.name,
       description: new_resource.description.nil? ? new_resource.name : new_resource.description,
       parser: new_resource.parser,
-      parser_options: new_resource.parser_options,
-      additional_options: new_resource.additional_options
+      options: new_resource.options
     )
     helpers(SyslogNg::Cookbook::ConfigHelpers)
 

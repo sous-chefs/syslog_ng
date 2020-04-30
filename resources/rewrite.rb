@@ -19,49 +19,68 @@
 include SyslogNg::Cookbook::GeneralHelpers
 
 property :config_dir, String,
-          default: lazy { "#{syslog_ng_config_dir}/rewrite.d" }
+          default: lazy { "#{syslog_ng_config_dir}/rewrite.d" },
+          description: 'Directory to create configuration file in'
 
 property :cookbook, String,
-          default: 'syslog_ng'
+          default: 'syslog_ng',
+          description: 'Cookbook to source configuration file template from'
 
 property :template, String,
-          default: 'syslog-ng/rewrite.conf.erb'
+          default: 'syslog-ng/rewrite.conf.erb',
+          description: 'Template to use to generate the configuration file'
 
 property :owner, String,
-          default: lazy { syslog_ng_user }
+          default: lazy { syslog_ng_user },
+          description: 'Owner of the generated configuration file'
 
 property :group, String,
-          default: lazy { syslog_ng_group }
+          default: lazy { syslog_ng_group },
+          description: 'Group of the generated configuration file'
 
 property :mode, String,
-          default: '0640'
+          default: '0640',
+          description: 'Filemode of the generated configuration file'
+
+property :description, String,
+          description: 'Unparsed description to add to the configuration file'
 
 property :function, String,
           required: true,
-          equal_to: %w(subst set unset groupset groupunset credit-card-mask set-tag clear-tag)
+          equal_to: %w(subst set unset groupset groupunset credit-card-mask set-tag clear-tag),
+          description: 'Rewrite function'
 
-property :match, String
+property :match, String,
+          description: 'String or regular expression to find'
 
-property :replacement, String
+property :replacement, String,
+          description: 'Replacement string'
 
-property :field, String
+property :field, String,
+          description: 'Field to match against'
 
-property :value, String
+property :value, String,
+          description: 'Value to apply rewrite action to (Field name)'
 
-property :values, [String, Array]
+property :values, [String, Array],
+          description: 'Values to apply rewrite action to (Field name or Glob pattern)'
 
-property :flags, [String, Array]
+property :flags, [String, Array],
+          description: 'Flag(s) to apply'
 
-property :tags, String
+property :tags, String,
+          description: 'Tags to apply'
 
-property :condition, String
+property :condition, String,
+          description: 'Condition which must be satisfied for the rewrite to be applied'
 
 property :additional_options, Hash,
-          default: {}
+          default: {},
+          description: 'Additional options for rewrite function' 
 
-property :configuration, Array
-
-property :description, String
+property :configuration, [Hash, Array],
+          coerce: proc { |p| p.is_a?(Array) ? p : [p] },
+          description: 'Hash or Array of Hash containing raw rewrite(s) configuration'
 
 action :create do
   rewrite = if new_resource.configuration.nil?

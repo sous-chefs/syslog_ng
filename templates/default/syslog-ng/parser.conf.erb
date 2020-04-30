@@ -7,7 +7,7 @@
 <% unless nil_or_empty?(@parser) -%>
 parser <%= @name -%> {
     <%= @parser -%>(
-        <% @parser_options.each do |name, config| -%>
+        <% @options.each do |name, config| -%>
         <%= name -%>(<%= config -%>)
         <% end -%>
     );

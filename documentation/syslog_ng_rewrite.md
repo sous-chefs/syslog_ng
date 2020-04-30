@@ -2,8 +2,6 @@
 
 [Back to resource list](../README.md#resources)
 
-See [usage](#rewrite-usage) for examples.
-
 ## Actions
 
 - `create` - Create a syslog-ng rewrite configuration file
@@ -11,27 +9,30 @@ See [usage](#rewrite-usage) for examples.
 
 ## Properties
 
-| Property             | Optional? | Type          | Description                                                                  |
-|----------------------|-----------|---------------|------------------------------------------------------------------------------|
-| `config_dir`         | Yes       | String        | Directory to create config file, defaults to `/etc/syslog-ng/rewrite.d`      |
-| `cookbook`           | Yes       | String        | Override cookbook to source the template file from                           |
-| `template_source`    | Yes       | String        | Override the template source file                                            |
-| `function`           | No        | String        | Rewrite function                                                             |
-| `match`              | Yes       | String        | String or regular expression to find                                         |
-| `replacement`        | Yes       | String        | Replacement string                                                           |
-| `field`              | Yes       | String        | Field to match against---                                                    |
-| `value`              | Yes       | String        | Value to apply rewrite action to (Field name)                                |
-| `values`             | Yes       | String, Array | Values to apply rewrite action to (Field name or Glob pattern)               |
-| `flags`              | Yes       | String, Array | Flag(s) to apply                                                             |
-| `tags`               | Yes       | String        | Tags to apply                                                                |
-| `condition`          | Yes       | String        | Condition which must be satisfied for the rewrite to be applied              |
-| `additional_options` | Yes       | Hash          | Additional options for template function                                     |
-| `configuration`      | Yes       | Array         | Array of Hash containing raw rewrite(s) configuration                        |
-| `description`        | Yes       | String        | Rewrite statement description                                                |
+| Name                   | Type          | Default                          | Description                                                         | Allowed Values      |
+| ---------------------- | ------------- | -------------------------------- | ------------------------------------------------------------------- | ------------------- |
+| `config_dir`           | String        | /etc/syslog-ng/destionation.d    | Directory to create configuration file in                           |                     |
+| `cookbook`             | String        | syslog-ng                        | Cookbook to source configuration file template from                 |                     |
+| `template`             | String        | syslog-ng/destination.conf.erb   | Template to use to generate the configuration file                  |                     |
+| `owner`                | String        | root                             | Owner of the generated configuration file                           |                     |
+| `group`                | String        | root                             | Group of the generated configuration file                           |                     |
+| `mode`                 | String        | `'0640'`                         | Filemode of the generated configuration file                        |                     |
+| `description`          | String        |                                  | Unparsed description to add to the configuration file               |                     |
+| `function`             | String        |                                  | Rewrite function                                                    |                     |
+| `match`                | String        |                                  | String or regular expression to find                                |                     |
+| `replacement`          | String        |                                  | Replacement string                                                  |                     |
+| `field`                | String        |                                  | Field to match against                                              |                     |
+| `value`                | String        |                                  | Value to apply rewrite action to (Field name)                       |                     |
+| `values`               | String, Array |                                  | Values to apply rewrite action to (Field name or Glob pattern)      |                     |
+| `flags`                | String, Array |                                  | Flag(s) to apply                                                    |                     |
+| `tags`                 | String        |                                  | Tags to apply                                                       |                     |
+| `condition`            | String        |                                  | Condition which must be satisfied for the rewrite to be applied     |                     |
+| `additional_options`   | Hash          |                                  | Additional options for rewrite function                             |                     |
+| `configuration`        | Array         |                                  | Hash or Array of Hash containing raw rewrite(s) configuration       |                     |
 
 ## Usage
 
-Generates a syslog-ng [rewrite](https://www.syslog-ng.com/technical-documents/doc/syslog-ng-open-source-edition/3.22/administration-guide/64#TOPIC-1209316) configuration statement.
+Generates a syslog-ng [rewrite](https://www.syslog-ng.com/technical-documents/doc/syslog-ng-open-source-edition/3.25/administration-guide/65#TOPIC-1349541) configuration statement.
 
 ### Example 1 - Substitute string `IP` with `IP-Address` in MESSAGE field
 

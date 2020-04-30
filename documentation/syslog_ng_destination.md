@@ -2,8 +2,6 @@
 
 [Back to resource list](../README.md#resources)
 
-See [usage](#destination-usage) for examples.
-
 ## Actions
 
 - `create` - Create a syslog-ng destination configuration file
@@ -11,22 +9,24 @@ See [usage](#destination-usage) for examples.
 
 ## Properties
 
-| Property        | Optional? | Type          | Description                                                                  |
-|-----------------|-----------|---------------|------------------------------------------------------------------------------|
-| `config_dir`    | Yes       | String        | Directory to create config file, defaults to `/etc/syslog-ng/destination.d`  |
-| `cookbook`      | Yes       | String        | Override cookbook to source the template file from                           |
-| `source`        | Yes       | String        | Override the template source file                                            |
-| `driver`        | No        | String, Array | The destination driver to use                                                |
-| `path`          | Yes       | String, Array | The path for the destination driver (if it supports being specified one)     |
-| `parameters`    | Yes       | Hash, Array   | Driver parameters and options                                                |
-| `configuration` | Yes       | Array         | Array of Hash containing raw driver(s) configuration                         |
-| `multiline`     | Yes       | True, False   | Use multiline formatting, default is false                                   |
+| Name                   | Type          | Default                          | Description                                                         | Allowed Values      |
+| ---------------------- | ------------- | -------------------------------- | ------------------------------------------------------------------- | ------------------- |
+| `config_dir`           | String        | /etc/syslog-ng/destionation.d    | Directory to create configuration file in                           |                     |
+| `cookbook`             | String        | syslog-ng                        | Cookbook to source configuration file template from                 |                     |
+| `template`             | String        | syslog-ng/destination.conf.erb   | Template to use to generate the configuration file                  |                     |
+| `owner`                | String        | root                             | Owner of the generated configuration file                           |                     |
+| `group`                | String        | root                             | Group of the generated configuration file                           |                     |
+| `mode`                 | String        | `'0640'`                         | Filemode of the generated configuration file                        |                     |
+| `description`          | String        |                                  | Unparsed description to add to the configuration file               |                     |
+| `driver`               | String, Array |                                  | Destination driver(s) to use                                        |                     |
+| `path`                 | String, Array |                                  | Path(s) for the destination driver(s) (if supported)                |                     |
+| `parameters`           | Hash, Array   |                                  | Driver(s) parameters and options                                    |                     |
+| `configuration`        | Hash, Array   |                                  | Hash or Array of Hash containing raw driver(s) configuration        |                     |
+| `multiline`            | True, False   | `false`                          | Use multiline formatting                                            |                     |
 
 ## Usage
 
-[**Resource**](#destination)
-
-Generates a syslog-ng [destination](https://www.syslog-ng.com/technical-documents/doc/syslog-ng-open-source-edition/3.22/administration-guide/29#TOPIC-1209176) configuration statement.
+Generates a syslog-ng [destination](https://www.syslog-ng.com/technical-documents/doc/syslog-ng-open-source-edition/3.25/administration-guide/30#TOPIC-1349402) configuration statement.
 
 Some destination drivers accept a non-named parameter which is generally a path (the file and pipe driver accept a path) so an additional path property is provided alongside the parameters.
 

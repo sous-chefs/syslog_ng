@@ -2,8 +2,6 @@
 
 [Back to resource list](../README.md#resources)
 
-See [usage](#filter-usage) for examples.
-
 ## Actions
 
 - `create` - Create a syslog-ng filter configuration file
@@ -11,18 +9,20 @@ See [usage](#filter-usage) for examples.
 
 ## Properties
 
-| Property      | Optional? | Type   | Description                                                                  |
-|---------------|-----------|--------|------------------------------------------------------------------------------|
-| `config_dir`  | Yes       | String | Directory to create config file, defaults to `/etc/syslog-ng/filter.d`       |
-| `cookbook`    | Yes       | String | Override cookbook to source the template file from                           |
-| `source`      | Yes       | String | Override the template source file                                            |
-| `parmameters` | No        | String | A syslog-ng filter directive modelled as a Hash                              |
+| Name                   | Type          | Default                          | Description                                                         | Allowed Values      |
+| ---------------------- | ------------- | -------------------------------- | ------------------------------------------------------------------- | ------------------- |
+| `config_dir`           | String        | /etc/syslog-ng/filter.d          | Directory to create configuration file in                           |                     |
+| `cookbook`             | String        | syslog-ng                        | Cookbook to source configuration file template from                 |                     |
+| `template`             | String        | syslog-ng/filter.conf.erb        | Template to use to generate the configuration file                  |                     |
+| `owner`                | String        | root                             | Owner of the generated configuration file                           |                     |
+| `group`                | String        | root                             | Group of the generated configuration file                           |                     |
+| `mode`                 | String        | `'0640'`                         | Filemode of the generated configuration file                        |                     |
+| `description`          | String        |                                  | Unparsed description to add to the configuration file               |                     |
+| `parameters`           | Hash, Array, String |                            | Filter(s) parameters and options                                    |                     |
 
 ## Usage
 
-[**Resource**](#filter)
-
-Generates a syslog-ng [filter](https://www.syslog-ng.com/technical-documents/doc/syslog-ng-open-source-edition/3.22/administration-guide/56#TOPIC-1209285) configuration statement.
+Generates a syslog-ng [filter](https://www.syslog-ng.com/technical-documents/doc/syslog-ng-open-source-edition/3.25/administration-guide/57#TOPIC-1349510) configuration statement.
 
 Due to the large amount of possible combinations of Boolean operators and containers to which can be applied in a filter, this resource has a reasonably complex Hash structure and despite trying to break this as much as possible in testing, this library will very likely have some bugs in it.
 

@@ -20,50 +20,60 @@ include SyslogNg::Cookbook::GeneralHelpers
 
 property :config_file, String,
           default: lazy { "#{syslog_ng_config_dir}/syslog-ng.conf" },
-          description: 'The full path to the Syslog-NG server configuration on disk'
-
-property :cookbook, String,
-          default: 'syslog_ng'
-
-property :template, String,
-          default: 'syslog-ng/syslog-ng.conf.erb'
-
-property :owner, String,
-          default: lazy { syslog_ng_user }
-
-property :group, String,
-          default: lazy { syslog_ng_group }
-
-property :mode, String,
-          default: '0640'
-
-property :options, Hash,
-          default: lazy { syslog_ng_default_config(:options) }
-
-property :source, Hash,
-          default: lazy { syslog_ng_default_config(:source) }
-
-property :destination, Hash,
-          default: lazy { syslog_ng_default_config(:destination) }
-
-property :filter, Hash,
-          default: lazy { syslog_ng_default_config(:filter) }
-
-property :log, Hash,
-          default: lazy { syslog_ng_default_config(:log) }
-
-property :preinclude, Array,
-          default: lazy { syslog_ng_default_config(:preinclude) }
-
-property :include, Array,
-          default: []
-
-property :console_logging, [true, false]
+          description: 'The path to the Syslog-NG server configuration on disk'
 
 property :config_version, [String, Float],
           default: lazy { syslog_ng_installed_version },
           coerce: proc { |p| p.is_a?(String) ? p : p.to_s },
           description: 'Configuration file version'
+
+property :cookbook, String,
+          default: 'syslog_ng',
+          description: 'Cookbook to source configuration file template from'
+
+property :template, String,
+          default: 'syslog-ng/syslog-ng.conf.erb',
+          description: 'Template to use to generate the configuration file'
+
+property :owner, String,
+          default: lazy { syslog_ng_user },
+          description: 'Owner of the generated configuration file'
+
+property :group, String,
+          default: lazy { syslog_ng_group },
+          description: 'Group of the generated configuration file'
+
+property :mode, String,
+          default: '0640',
+          description: 'Filemode of the generated configuration file'
+
+property :options, Hash,
+          default: lazy { syslog_ng_default_config(:options) },
+          description: 'Syslog-NG server global options'
+
+property :source, Hash,
+          default: lazy { syslog_ng_default_config(:source) },
+          description: 'Syslog-NG server global log sources'
+
+property :destination, Hash,
+          default: lazy { syslog_ng_default_config(:destination) },
+          description: 'Syslog-NG server global log destinations'
+
+property :filter, Hash,
+          default: lazy { syslog_ng_default_config(:filter) },
+          description: 'Syslog-NG server global log filters '
+
+property :log, Hash,
+          default: lazy { syslog_ng_default_config(:log) },
+          description: 'Syslog-NG server global logs'
+
+property :preinclude, Array,
+          default: lazy { syslog_ng_default_config(:preinclude) },
+          description: 'Files to include at the beginning of the global configuration file'
+
+property :include, Array,
+          default: [],
+          description: 'Files to include in the global configuration file'
 
 action :create do
   syslog_ng_config_dirs.each do |directory|
@@ -94,7 +104,6 @@ action :create do
       preinclude: new_resource.preinclude,
       config_dirs: syslog_ng_config_dirs,
       include: new_resource.include,
-      console_logging: new_resource.console_logging
     )
     helpers(SyslogNg::Cookbook::SourceDestinationHelpers)
     helpers(SyslogNg::Cookbook::FilterHelpers)

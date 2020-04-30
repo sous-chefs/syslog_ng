@@ -2,8 +2,6 @@
 
 [Back to resource list](../README.md#resources)
 
-See [usage](#parser-usage) for examples.
-
 ## Actions
 
 - `create` - Create a syslog-ng parser configuration file
@@ -11,19 +9,21 @@ See [usage](#parser-usage) for examples.
 
 ## Properties
 
-| Property             | Optional? | Type                | Description                                                                  |
-|----------------------|-----------|---------------------|------------------------------------------------------------------------------|
-| `config_dir`         | Yes       | String              | Directory to create config file, defaults to `/etc/syslog-ng/log.d`          |
-| `cookbook`           | Yes       | String              | Override cookbook to source the template file from                           |
-| `template_source`    | Yes       | String              | Override the template source file                                            |
-| `parser`             | Yes       | String, Array, Hash | The parser type to use                                                       |
-| `parser_options`     | Yes       | String, Array, Hash | Parser type configuration options                                            |
-| `additional_options` | Yes       | Hash                | Additional parser options                                                    |
-| `description`        | Yes       | String              | Parser statement description                                                 |
+| Name                   | Type          | Default                          | Description                                                         | Allowed Values      |
+| ---------------------- | ------------- | -------------------------------- | ------------------------------------------------------------------- | ------------------- |
+| `config_dir`           | String        | /etc/syslog-ng/destionation.d    | Directory to create configuration file in                           |                     |
+| `cookbook`             | String        | syslog-ng                        | Cookbook to source configuration file template from                 |                     |
+| `template`             | String        | syslog-ng/destination.conf.erb   | Template to use to generate the configuration file                  |                     |
+| `owner`                | String        | root                             | Owner of the generated configuration file                           |                     |
+| `group`                | String        | root                             | Group of the generated configuration file                           |                     |
+| `mode`                 | String        | `'0640'`                         | Filemode of the generated configuration file                        |                     |
+| `description`          | String        |                                  | Unparsed description to add to the configuration file               |                     |
+| `parser`               | String        |                                  | Parser driver                                                       |                     |
+| `options`              | Hash          |                                  | Parser driver configuration options                                 |                     |
 
 ## Usage
 
-Generates a syslog-ng [parser](https://www.syslog-ng.com/technical-documents/doc/syslog-ng-open-source-edition/3.22/administration-guide/67#TOPIC-1209329) configuration statement.
+Generates a syslog-ng [parser](https://www.syslog-ng.com/technical-documents/doc/syslog-ng-open-source-edition/3.25/administration-guide/69#TOPIC-1349555) configuration statement.
 
 ### Example 1 - CSV Parser
 

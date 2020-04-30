@@ -24,3 +24,6 @@ This document will give you help on upgrading major versions of syslog_ng
 
 - Resource `syslog_ng_template` - [Documentation](./documentation/syslog_ng_template.md)
   - The `template` property has been renamed to `template_expression` to avoid a clash with the Chef template file override property
+
+- Resource `syslog_ng_parser` - [Documentation](./documentation/syslog_ng_parser.md)
+  - The `parser_options` property has been renamed to `options`

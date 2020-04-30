@@ -11,22 +11,26 @@ See [usage](#log-usage) for examples.
 
 ## Properties
 
-| Property          | Optional? | Type                | Description                                                                  |
-|-------------------|-----------|---------------------|------------------------------------------------------------------------------|
-| `config_dir`      | Yes       | String              | Directory to create config file, defaults to `/etc/syslog-ng/log.d`          |
-| `cookbook`        | Yes       | String              | Override cookbook to source the template file from                           |
-| `template_source` | Yes       | String              | Override the template source file                                            |
-| `source`          | Yes       | String, Array, Hash | The source directive(s) to reference                                         |
-| `filter`          | Yes       | String, Array, Hash | The filter directive(s) to reference                                         |
-| `destination`     | Yes       | String, Array, Hash | The destination directive(s) to reference                                    |
-| `flags`           | Yes       | String, Array       | The log path flags to use                                                    |
-| `parser`          | Yes       | String, Array       | The log parser to use                                                        |
-| `junction`        | Yes       | Hash, Array         | Specify a log junction and contained channels                                |
-| `description`     | Yes       | String              | Log statement description                                                    |
+| Name                   | Type          | Default                          | Description                                                         | Allowed Values      |
+| ---------------------- | ------------- | -------------------------------- | ------------------------------------------------------------------- | ------------------- |
+| `config_dir`           | String        | /etc/syslog-ng/destionation.d    | Directory to create configuration file in                           |                     |
+| `cookbook`             | String        | syslog-ng                        | Cookbook to source configuration file template from                 |                     |
+| `template`             | String        | syslog-ng/destination.conf.erb   | Template to use to generate the configuration file                  |                     |
+| `owner`                | String        | root                             | Owner of the generated configuration file                           |                     |
+| `group`                | String        | root                             | Group of the generated configuration file                           |                     |
+| `mode`                 | String        | `'0640'`                         | Filemode of the generated configuration file                        |                     |
+| `description`          | String        |                                  | Unparsed description to add to the configuration file               |                     |
+| `source`               | String, Array, Hash |                            | Source(s) to collect logs from                                      |                     |
+| `filter`               | String, Array, Hash |                            | Filter(s) to apply to logs                                          |                     |
+| `destination`          | String, Array, Hash |                            | Destination(s) to output logs                                       |                     |
+| `flags`                | String, Array, Hash |                            | Flag(s) to apply                                                    |                     |
+| `parser`               | String, Array, Hash |                            | Parser(s) to apply                                                  |                     |
+| `rewrite`              | String, Array, Hash |                            | Rewrite(s) to apply                                                 |                     |
+| `junction`             | String, Array, Hash |                            | Junction(s) to split/combine logs                                   |                     |
 
 ## Usage
 
-Generates a syslog-ng [log](https://www.syslog-ng.com/technical-documents/doc/syslog-ng-open-source-edition/3.22/administration-guide/53#TOPIC-1209271) configuration statement.
+Generates a syslog-ng [log](https://www.syslog-ng.com/technical-documents/doc/syslog-ng-open-source-edition/3.25/administration-guide/53#TOPIC-1349495) configuration statement.
 
 A log statement is the last part of a combination of `source`, `filter` and `destination` resources to create a completed log configuration with syslog-ng. Multiple source, filter and destination elements can be passed to the resource as a String Array.
 

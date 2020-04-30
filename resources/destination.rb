@@ -19,41 +19,53 @@
 include SyslogNg::Cookbook::GeneralHelpers
 
 property :config_dir, String,
-          default: lazy { "#{syslog_ng_config_dir}/destination.d" }
+          default: lazy { "#{syslog_ng_config_dir}/destination.d" },
+          description: 'Directory to create configuration file in'
 
 property :cookbook, String,
-          default: 'syslog_ng'
+          default: 'syslog_ng',
+          description: 'Cookbook to source configuration file template from'
 
 property :template, String,
-          default: 'syslog-ng/destination.conf.erb'
+          default: 'syslog-ng/destination.conf.erb',
+          description: 'Template to use to generate the configuration file'
 
 property :owner, String,
-          default: lazy { syslog_ng_user }
+          default: lazy { syslog_ng_user },
+          description: 'Owner of the generated configuration file'
 
 property :group, String,
-          default: lazy { syslog_ng_group }
+          default: lazy { syslog_ng_group },
+          description: 'Group of the generated configuration file'
 
 property :mode, String,
-          default: '0640'
+          default: '0640',
+          description: 'Filemode of the generated configuration file'
+
+property :description, String,
+          description: 'Unparsed description to add to the configuration file'
 
 property :driver, [String, Array],
-          coerce: proc { |p| p.is_a?(Array) ? p : [p] }
+          coerce: proc { |p| p.is_a?(Array) ? p : [p] },
+          description: 'Destination driver(s) to use'
 
 property :path, [String, Array],
           default: [],
-          coerce: proc { |p| p.is_a?(Array) ? p : [p] }
+          coerce: proc { |p| p.is_a?(Array) ? p : [p] },
+          description: 'Path(s) for the destination driver(s) (if supported)'
 
 property :parameters, [Hash, Array],
           default: {},
-          coerce: proc { |p| p.is_a?(Array) ? p : [p] }
+          coerce: proc { |p| p.is_a?(Array) ? p : [p] },
+          description: 'Driver(s) parameters and options'
 
 property :configuration, [Hash, Array],
-          coerce: proc { |p| p.is_a?(Array) ? p : [p] }
-
-property :description, String
+          coerce: proc { |p| p.is_a?(Array) ? p : [p] },
+          description: 'Hash or Array of Hash containing raw driver(s) configuration'
 
 property :multiline, [true, false],
-          default: false
+          default: false,
+          description: 'Use multiline formatting'
 
 action_class do
   include SyslogNg::Cookbook::ConfigHelpers

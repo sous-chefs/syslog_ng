@@ -28,7 +28,7 @@ end
 
 syslog_ng_parser 'p_csv_parser' do
   parser 'csv-parser'
-  parser_options 'columns' => '"HOSTNAME.NAME", "HOSTNAME.ID"', 'delimiters' => '"-"', 'flags' => 'escape-none', 'template' => '"${HOST}"'
+  options 'columns' => '"HOSTNAME.NAME", "HOSTNAME.ID"', 'delimiters' => '"-"', 'flags' => 'escape-none', 'template' => '"${HOST}"'
   notifies :run, 'execute[syslog-ng-config-test]', :delayed
   notifies :reload, 'service[syslog-ng]', :delayed
   action :create
@@ -36,7 +36,7 @@ end
 
 syslog_ng_parser 'p_kv_parser' do
   parser 'kv-parser'
-  parser_options 'prefix' => '".kv."'
+  options 'prefix' => '".kv."'
   notifies :run, 'execute[syslog-ng-config-test]', :delayed
   notifies :reload, 'service[syslog-ng]', :delayed
   action :create
@@ -44,7 +44,7 @@ end
 
 syslog_ng_parser 'p_json_parser' do
   parser 'json-parser'
-  parser_options 'prefix' => '".json."', 'marker' => '"@json:"'
+  options 'prefix' => '".json."', 'marker' => '"@json:"'
   notifies :run, 'execute[syslog-ng-config-test]', :delayed
   notifies :reload, 'service[syslog-ng]', :delayed
   action :create

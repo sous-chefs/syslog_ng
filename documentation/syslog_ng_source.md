@@ -2,8 +2,6 @@
 
 [Back to resource list](../README.md#resources)
 
-See [usage](#source-usage) for examples.
-
 ## Actions
 
 - `create` - Create a syslog-ng source configuration file
@@ -11,16 +9,20 @@ See [usage](#source-usage) for examples.
 
 ## Properties
 
-| Property        | Optional? | Type           | Description                                                                  |
-|-----------------|-----------|---------------|------------------------------------------------------------------------------|
-| `config_dir`    | Yes       | String        | Directory to create config file, defaults to `/etc/syslog-ng/source.d`       |
-| `cookbook`      | Yes       | String        | Override cookbook to source the template file from                           |
-| `source`        | Yes       | String, Array | Override the template source file                                            |
-| `driver`        | No        | String, Array | The source driver to use                                                     |
-| `parameters`    | Yes       | Hash, Array   | Driver parameters and options                                                |
-| `configuration` | Yes       | Array         | Array of Hash containing raw driver(s) configuration                         |
-| `description`   | Yes       | String        | Source statement description                                                 |
-| `multiline`     | Yes       | True, False   | Use multiline formatting, default is false                                   |
+| Name                   | Type          | Default                          | Description                                                         | Allowed Values      |
+| ---------------------- | ------------- | -------------------------------- | ------------------------------------------------------------------- | ------------------- |
+| `config_dir`           | String        | /etc/syslog-ng/destionation.d    | Directory to create configuration file in                           |                     |
+| `cookbook`             | String        | syslog-ng                        | Cookbook to source configuration file template from                 |                     |
+| `template`             | String        | syslog-ng/destination.conf.erb   | Template to use to generate the configuration file                  |                     |
+| `owner`                | String        | root                             | Owner of the generated configuration file                           |                     |
+| `group`                | String        | root                             | Group of the generated configuration file                           |                     |
+| `mode`                 | String        | `'0640'`                         | Filemode of the generated configuration file                        |                     |
+| `description`          | String        |                                  | Unparsed description to add to the configuration file               |                     |
+| `driver`               | String, Array |                                  | Destination driver(s) to use                                        |                     |
+| `path`                 | String, Array |                                  | Path(s) for the destination driver(s) (if supported)                |                     |
+| `parameters`           | Hash, Array   |                                  | Driver(s) parameters and options                                    |                     |
+| `configuration`        | Hash, Array   |                                  | Hash or Array of Hash containing raw driver(s) configuration        |                     |
+| `multiline`            | True, False   | `false`                          | Use multiline formatting                                            |                     |
 
 ## Usage
 

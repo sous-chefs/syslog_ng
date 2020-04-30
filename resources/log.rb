@@ -19,45 +19,59 @@
 include SyslogNg::Cookbook::GeneralHelpers
 
 property :config_dir, String,
-          default: lazy { "#{syslog_ng_config_dir}/log.d" }
+          default: lazy { "#{syslog_ng_config_dir}/log.d" },
+          description: 'Directory to create configuration file in'
 
 property :cookbook, String,
-          default: 'syslog_ng'
+          default: 'syslog_ng',
+          description: 'Cookbook to source configuration file template from'
 
 property :template, String,
-          default: 'syslog-ng/log.conf.erb'
+          default: 'syslog-ng/log.conf.erb',
+          description: 'Template to use to generate the configuration file'
 
 property :owner, String,
-          default: lazy { syslog_ng_user }
+          default: lazy { syslog_ng_user },
+          description: 'Owner of the generated configuration file'
 
 property :group, String,
-          default: lazy { syslog_ng_group }
+          default: lazy { syslog_ng_group },
+          description: 'Group of the generated configuration file'
 
 property :mode, String,
-          default: '0640'
+          default: '0640',
+          description: 'Filemode of the generated configuration file'
+
+property :description, String,
+          description: 'Unparsed description to add to the configuration file'
 
 property :source, [String, Array, Hash],
-          default: []
+          default: [],
+          description: 'Source(s) to collect logs from'
 
 property :filter, [String, Array, Hash],
-          default: []
+          default: [],
+          description: 'Filter(s) to apply to logs'
 
 property :destination, [String, Array],
-          default: []
+          default: [],
+          description: 'Destination(s) to output logs'
 
 property :flags, [String, Array],
-          default: []
+          default: [],
+          description: 'Flag(s) to apply'
 
 property :parser, [String, Array],
-          default: []
+          default: [],
+          description: 'Parser(s) to apply'
 
 property :rewrite, [String, Array],
-          default: []
+          default: [],
+          description: 'Rewrite(s) to apply'
 
 property :junction, [Hash, Array],
-          default: []
-
-property :description, String
+          default: [],
+          description: 'Junction(s) to split/combine logs'
 
 action :create do
   template "#{new_resource.config_dir}/#{new_resource.name}.conf" do
