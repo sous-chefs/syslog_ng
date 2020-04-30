@@ -16,6 +16,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+include SyslogNg::Cookbook::GeneralHelpers
+
 property :config_dir, String,
           default: lazy { "#{syslog_ng_config_dir}/filter.d" }
 

@@ -19,7 +19,7 @@
 require 'spec_helper'
 
 describe 'syslog_ng_config' do
-  step_into :syslog_ng_config_global
+  step_into :syslog_ng_config
   platform 'centos'
 
   context 'create syslog-ng global config file' do

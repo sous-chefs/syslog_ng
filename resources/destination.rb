@@ -36,13 +36,19 @@ property :group, String,
 property :mode, String,
           default: '0640'
 
-property :driver, [String, Array]
+property :driver, [String, Array],
+          coerce: proc { |p| p.is_a?(Array) ? p : [p] }
 
-property :path, [String, Array]
+property :path, [String, Array],
+          default: [],
+          coerce: proc { |p| p.is_a?(Array) ? p : [p] }
 
-property :parameters, [Hash, Array]
+property :parameters, [Hash, Array],
+          default: {},
+          coerce: proc { |p| p.is_a?(Array) ? p : [p] }
 
-property :configuration, Array
+property :configuration, [Hash, Array],
+          coerce: proc { |p| p.is_a?(Array) ? p : [p] }
 
 property :description, String
 
@@ -50,7 +56,7 @@ property :multiline, [true, false],
           default: false
 
 action_class do
-  include SyslogNg::Cookbook::CommonHelpers
+  include SyslogNg::Cookbook::ConfigHelpers
 end
 
 action :create do
@@ -69,7 +75,7 @@ action :create do
       destination: parameter_builder(driver: new_resource.driver, path: new_resource.path, parameters: new_resource.parameters, configuration: new_resource.configuration),
       multiline: new_resource.multiline
     )
-    helpers(SyslogNg::Cookbook::DestinationHelpers)
+    helpers(SyslogNg::Cookbook::SourceDestinationHelpers)
 
     action :create
   end

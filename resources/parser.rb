@@ -16,6 +16,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+include SyslogNg::Cookbook::GeneralHelpers
+
 property :config_dir, String,
           default: lazy { "#{syslog_ng_config_dir}/parser.d" }
 
@@ -62,7 +64,7 @@ action :create do
       parser_options: new_resource.parser_options,
       additional_options: new_resource.additional_options
     )
-    helpers(SyslogNg::Cookbook::CommonHelpers)
+    helpers(SyslogNg::Cookbook::ConfigHelpers)
 
     action :create
   end

@@ -16,6 +16,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+include SyslogNg::Cookbook::GeneralHelpers
+
 property :config_dir, String,
           default: lazy { "#{syslog_ng_config_dir}/template.d" }
 
@@ -34,7 +36,7 @@ property :group, String,
 property :mode, String,
           default: '0640'
 
-property :template, String,
+property :template_expression, String,
           required: true
 
 property :template_escape, [true, false],
@@ -43,13 +45,13 @@ property :template_escape, [true, false],
 property :description, String
 
 action :create do
-  template = {
+  config = {
     new_resource.name => {
-      'template' => new_resource.template,
+      'template' => new_resource.template_expression,
     },
   }
 
-  template[new_resource.name]['template_escape'] = new_resource.template_escape ? 'yes' : 'no'
+  config[new_resource.name]['template_escape'] = new_resource.template_escape ? 'yes' : 'no'
 
   template "#{new_resource.config_dir}/#{new_resource.name}.conf" do
     cookbook new_resource.cookbook
@@ -62,9 +64,9 @@ action :create do
 
     variables(
       description: new_resource.description.nil? ? new_resource.name : new_resource.description,
-      template: template
+      template: config
     )
-    helpers(SyslogNg::Cookbook::CommonHelpers)
+    helpers(SyslogNg::Cookbook::ConfigHelpers)
 
     action :create
   end

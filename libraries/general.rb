@@ -16,6 +16,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+require 'mixlib/shellout'
+
 module SyslogNg
   module Cookbook
     module GeneralHelpers
@@ -46,6 +48,15 @@ module SyslogNg
           '/etc/syslog-ng/source.d',
           '/etc/syslog-ng/template.d',
         ]
+      end
+
+      def syslog_ng_installed_version
+        require 'mixlib/shellout'
+
+        version_cmd = Mixlib::ShellOut.new("syslog-ng --version | grep 'Installer-Version' | grep -Po '([0-9]\.?)+'").run_command
+        version_cmd.error!
+
+        /[0-9]+.[0-9]+/.match(version_cmd.stdout).to_s
       end
 
       def syslog_ng_default_config(section)

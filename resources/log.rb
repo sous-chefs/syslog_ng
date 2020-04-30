@@ -16,6 +16,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+include SyslogNg::Cookbook::GeneralHelpers
+
 property :config_dir, String,
           default: lazy { "#{syslog_ng_config_dir}/log.d" }
 
@@ -68,7 +70,7 @@ action :create do
     sensitive new_resource.sensitive
 
     variables(
-      description: property_is_set?(new_resource.description) ? new_resource.description : new_resource.name,
+      description: new_resource.description ? new_resource.description : new_resource.name,
       source: new_resource.source,
       filter: new_resource.filter,
       destination: new_resource.destination,
@@ -77,8 +79,7 @@ action :create do
       rewrite: new_resource.rewrite,
       junction: new_resource.junction
     )
-    helpers(SyslogNg::Cookbook::DestinationHelpers)
-    helpers(SyslogNg::Cookbook::SourceHelpers)
+    helpers(SyslogNg::Cookbook::SourceDestinationHelpers)
     helpers(SyslogNg::Cookbook::FilterHelpers)
 
     action :create

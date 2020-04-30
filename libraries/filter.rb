@@ -16,12 +16,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require_relative '_common'
+require_relative '_config'
 
 module SyslogNg
   module Cookbook
     module FilterHelpers
-      include SyslogNg::Cookbook::CommonHelpers
+      include SyslogNg::Cookbook::ConfigHelpers
       def filter_builder(parameters)
         raise ArgumentError, "filter_builder: Expected syslog-ng filter definition to be passed as a Hash, Array or String. Got a #{parameters.class}." unless parameters.is_a?(Hash) || parameters.is_a?(Array) || parameters.is_a?(String)
 

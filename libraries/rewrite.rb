@@ -16,12 +16,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require_relative '_common'
+require_relative '_config'
 
 module SyslogNg
   module Cookbook
     module RewriteHelpers
-      include SyslogNg::Cookbook::CommonHelpers
+      include SyslogNg::Cookbook::ConfigHelpers
       def rewrite_builder(parameters)
         raise ArgumentError, "config_rewrite_map: Expected syslog-ng rewrite configuration attribute block to be a Hash, got a #{parameters.class}." unless parameters.is_a?(Hash)
         raise ArgumentError, "config_rewrite_map: Invalid rewrite operator specified, got #{parameters['function']} which is not a valid syslog-ng rewrite operation." unless SYSLOG_NG_REWRITE_OPERATORS.include?(parameters['function'])

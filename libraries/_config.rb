@@ -23,7 +23,7 @@ module SyslogNg
     SYSLOG_NG_REWRITE_OPERATORS ||= %w(subst set unset groupset groupunset set-tag clear-tag credit-card-mask credit-card-hash).freeze
     SYSLOG_NG_REWRITE_PARAMETERS_UNNAMED ||= %w(match replacement field tags additional_options).freeze
 
-    module CommonHelpers
+    module ConfigHelpers
       def format_string_value(string)
         raise ArgumentError, "format_string_value: Expected a configuration String to format, got a #{string.class}." unless string.is_a?(String)
 
@@ -80,50 +80,23 @@ module SyslogNg
       end
 
       def parameter_builder(driver: nil, path: nil, parameters: nil, configuration: nil)
-        if !nil_or_empty?(configuration) && configuration.is_a?(Array)
-          configuration
-        elsif !nil_or_empty?(driver) && driver.is_a?(Array)
-          source_config = []
-          if !path.nil? && !parameters.nil?
-            driver.zip(path, parameters).each do |drv, pth, param|
-              hash = {}
-              hash[drv] = {}
-              hash[drv]['path'] = pth unless pth.nil?
-              hash[drv]['parameters'] = param unless param.nil?
-              source_config.push(hash.compact!)
-            end
-          elsif path.nil? && !parameters.nil?
-            driver.zip(parameters).each do |drv, param|
-              hash = {}
-              hash[drv] = {}
-              hash[drv]['parameters'] = param unless param.nil?
-              source_config.push(hash.compact!)
-            end
-          elsif !path.nil? && parameters.nil?
-            driver.zip(path).each do |drv, pth|
-              hash = {}
-              hash[drv] = {}
-              hash[drv]['path'] = pth unless pth.nil?
-              source_config.push(hash.compact!)
-            end
-          else
-            driver.zip(driver).each do |drv|
-              hash = {}
-              hash[drv] = {}
-              source_config.push(hash.compact!)
-            end
+        return configuration unless nil_or_empty?(configuration)
+
+        configs = []
+        if !nil_or_empty?(driver) && driver.is_a?(Array)
+          driver.zip(path, parameters).each do |drv, pth, param|
+            config = {}
+            config[drv] = {}
+            config[drv]['path'] = pth unless nil_or_empty?(pth)
+            config[drv]['parameters'] = param.compact unless nil_or_empty?(param)
+
+            configs.push(config.compact)
           end
-          source_config
-        elsif !nil_or_empty?(driver) && driver.is_a?(String)
-          [
-            driver => {
-              'path' => path,
-              'parameters' => parameters,
-            },
-          ]
         else
           raise ArgumentError, "parameter_builder: Invalid argument set given. driver: #{driver.class} | path: #{path.class} | parameters: #{parameters.class} | configuration: #{configuration.class}"
         end
+
+        configs
       end
 
       def nil_or_empty?(property)

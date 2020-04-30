@@ -1,6 +1,6 @@
 #
 # Cookbook:: syslog_ng
-# Spec:: destination_helpers_spec
+# Spec:: config_helpers_spec
 #
 # Copyright:: 2020, Ben Hughes <bmhughes@bmhughes.co.uk>
 #
@@ -18,8 +18,8 @@
 
 require 'spec_helper'
 
-describe 'SyslogNg::Cookbook::CommonHelpers' do
-  let(:dummy_class) { Class.new { include SyslogNg::Cookbook::CommonHelpers } }
+describe 'SyslogNg::Cookbook::ConfigHelpers' do
+  let(:dummy_class) { Class.new { include SyslogNg::Cookbook::ConfigHelpers } }
   describe '.parameter_builder' do
     context('given string driver with no path or parameters') do
       it 'returns array' do

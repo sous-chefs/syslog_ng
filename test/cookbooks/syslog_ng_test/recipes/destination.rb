@@ -49,8 +49,7 @@ end
 syslog_ng_destination 'd_test_mongo_params' do
   driver 'mongodb'
   parameters(
-    'servers' => '127.0.0.1:27017',
-    'database' => 'syslog',
+    'uri' => 'mongodb://127.0.0.1:27017/syslog',
     'collection' => 'messages',
     'value-pairs' => {
       'scope' => %w(selected-macros nv-pairs sdata),

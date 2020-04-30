@@ -1,6 +1,6 @@
 #
 # Cookbook:: syslog_ng
-# Library:: config
+# Library:: source_dest
 #
 # Copyright:: 2020, Ben Hughes <bmhughes@bmhughes.co.uk>
 #
@@ -16,15 +16,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require_relative '_common'
+require_relative '_config'
 
 module SyslogNg
   module Cookbook
-    module SourceHelpers
-      include SyslogNg::Cookbook::CommonHelpers
+    module SourceDestinationHelpers
+      include SyslogNg::Cookbook::ConfigHelpers
       def source_builder(driver:, parameters:, multiline: false)
-        raise ArgumentError, "source_builder: Expected syslog-ng destination driver name to be a String, got a #{driver.class}." unless driver.is_a?(String)
-        raise ArgumentError, "source_builder: Expected syslog-ng destination driver configuration attribute block to be a Hash, got a #{parameters.class}." unless parameters.is_a?(Hash)
+        raise ArgumentError, "source_builder: Expected syslog-ng driver name to be a String, got a #{driver.class}." unless driver.is_a?(String)
+        raise ArgumentError, "source_builder: Expected syslog-ng driver configuration attribute block to be a Hash, got a #{parameters.class}." unless parameters.is_a?(Hash)
 
         config = []
 
