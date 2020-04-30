@@ -46,7 +46,6 @@ property :description, String,
           description: 'Unparsed description to add to the configuration file'
 
 property :function, String,
-          required: true,
           equal_to: %w(subst set unset groupset groupunset credit-card-mask set-tag clear-tag),
           description: 'Rewrite function'
 
