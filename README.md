@@ -50,27 +50,6 @@ The following resources are provided:
 Parameter values can generally be passed as the expected format type for the parameter they configure, for example integers for number fields and strings for text parameters.
 There are some exceptions to this rule such as the `use-dns()` parameter which accepts either `yes, no or persist_only`. In this case `persist_only` options is not a string but a symbol and must be passed as such else it will be quoted as per normal strings and syslog-ng will fail with a configuration error.
 
-## Libraries
-
-### _common | destination | filter | rewrite | source
-
-Provides a set of helper methods to generate syslog-ng configuration stanzas, due to the variety and format they can be complex to construct so most of the
-heavy lifting is done by the libraries.
-
-### install
-
-#### `SyslogNg::Cookbook::InstallHelpers.installed_version_get`
-
-Returns the current installed version as a float to be used for the version directive in the global configuration file.
-
-#### `SyslogNg::Cookbook::InstallHelpers.repo_get_packages`
-
-Returns an array of the packages to install from the relevant package manager.
-
-#### `SyslogNg::Cookbook::InstallHelpers.installed_get_packages`
-
-Returns an array of install syslog-ng packages to remove as part of an uninstall.
-
 ## Contributors
 
 This project exists thanks to all the people who [contribute.](https://opencollective.com/sous-chefs/contributors.svg?width=890&button=false)
