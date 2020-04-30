@@ -2,11 +2,15 @@
 
 ## 1.0.0 (Unreleased)
 
-- Refactor install resource
+Version 1.0.0 has multiple breaking changes, please see [UPGRADING.md](./UPGRADING.md).
+
+- Rename install resource to package and refactor
   - The following functionality has been removed and will be required to be implemented by the integrator wrapper cookbook:
     - Remove installation from COPR/Latest repositories
     - Remove repoistory cleanup function
     - Remove rsyslog removal function
+- The `syslog_ng_template` resource `template` property has been renamed to `template_expression` to avoid a clash with the Chef template file override property
+- Renamed `syslog_ng_config_global` to `syslog_ng_config`
 
 ## 0.3.5 (2020-05-05)
 
