@@ -40,17 +40,14 @@ jobs:
     strategy:
       matrix:
         os:
-          - 'debian-10'
           - 'centos-7'
           - 'centos-8'
-          - 'ubuntu-2004'
           - 'fedora-31'
+          - 'debian-10'
           - 'ubuntu-1804'
+          - 'ubuntu-2004'
         suite:
           - 'default'
-          - 'latest'
-          - 'githead'
-          - 'manual'
           - 'config'
       fail-fast: false
 
