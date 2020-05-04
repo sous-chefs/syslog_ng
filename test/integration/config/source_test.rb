@@ -19,11 +19,11 @@ end
 end
 
 describe file('/etc/syslog-ng/source.d/s_test_tcpudp.conf') do
-  its('content') { should match /tcp\(ip\(127.0.0.1\) port\("5514"\)\)/ }
-  its('content') { should match /udp\(ip\(127.0.0.1\) port\("5514"\)\)/ }
+  its('content') { should match /tcp\(ip\(127.0.0.1\) port\(5514\)\)/ }
+  its('content') { should match /udp\(ip\(127.0.0.1\) port\(5514\)\)/ }
 end
 
 describe file('/etc/syslog-ng/source.d/s_test_network_multiline.conf') do
   its('content') { should match /[ ]+transport\("tcp"\)/ }
-  its('content') { should match /[ ]+port\("5518"\)/ }
+  its('content') { should match /[ ]+port\(5518\)/ }
 end

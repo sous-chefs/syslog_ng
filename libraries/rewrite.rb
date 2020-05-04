@@ -22,15 +22,16 @@ module SyslogNg
   module Cookbook
     module RewriteHelpers
       include SyslogNg::Cookbook::ConfigHelpers
+
       def rewrite_builder(parameters)
         raise ArgumentError, "config_rewrite_map: Expected syslog-ng rewrite configuration attribute block to be a Hash, got a #{parameters.class}." unless parameters.is_a?(Hash)
         raise ArgumentError, "config_rewrite_map: Invalid rewrite operator specified, got #{parameters['function']} which is not a valid syslog-ng rewrite operation." unless SYSLOG_NG_REWRITE_OPERATORS.include?(parameters['function'])
 
-        int_parameters = parameters.dup
+        params = parameters.dup
         config_string = ''
-        config_string.concat(int_parameters.delete('function') + '(')
-        config_string.concat(build_parameter_string(parameters: int_parameters, unnamed_parameters: SYSLOG_NG_REWRITE_PARAMETERS_UNNAMED))
 
+        config_string.concat(params.delete('function') + '(')
+        config_string.concat(build_parameter_string(:rewrite, params))
         config_string.rstrip!
         config_string = config_string[0...-1] if config_string.end_with?(',')
         config_string.concat(')')

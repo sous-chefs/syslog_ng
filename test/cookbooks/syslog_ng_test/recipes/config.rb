@@ -17,7 +17,7 @@
 # limitations under the License.
 
 syslog_ng_config '/etc/syslog-ng/syslog-ng.conf' do
-  sensitive true
+  sensitive false
   notifies :run, 'execute[syslog-ng-config-test]', :delayed
   notifies :restart, 'service[syslog-ng]', :delayed
   action :create

@@ -41,7 +41,7 @@ describe 'syslog_ng_source' do
       is_expected.to render_file('/etc/syslog-ng/source.d/s_test_syslog.conf')
         .with_content(/# Source - s_test_syslog/)
         .with_content(/source s_test_syslog {/)
-        .with_content(/syslog\(ip\(127.0.0.1\) port\("3381"\) max-connections\(100\) log_iw_size\(10000\) use_dns\(persist_only\)\);/)
+        .with_content(/syslog\(ip\(127.0.0.1\) port\(3381\) max-connections\(100\) log_iw_size\(10000\) use_dns\(persist_only\)\);/)
     end
   end
 end

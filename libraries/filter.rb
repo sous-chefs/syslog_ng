@@ -22,42 +22,49 @@ module SyslogNg
   module Cookbook
     module FilterHelpers
       include SyslogNg::Cookbook::ConfigHelpers
+
       def filter_builder(parameters)
-        raise ArgumentError, "filter_builder: Expected syslog-ng filter definition to be passed as a Hash, Array or String. Got a #{parameters.class}." unless parameters.is_a?(Hash) || parameters.is_a?(Array) || parameters.is_a?(String)
+        raise ArgumentError, "Expected syslog-ng filter definition to be passed as a Hash, Array or String. Got a #{parameters.class}." unless parameter_valid?(parameters)
 
         config_string = ''
-        if parameters.is_a?(Hash)
+
+        case parameters
+        when Hash
           parameters.each do |filter, parameter|
-            if (SYSLOG_NG_BOOLEAN_OPERATORS.include?(filter) || filter.match?('container')) && parameter.is_a?(Hash)
+            raise ArgumentError, "Invalid operator '#{filter}' specified in filter configuration. Object type #{parameter.class}." unless filter_operator_valid?(filter)
+
+            case parameter
+            when Hash
               if filter.match?('container')
                 config_string.concat(contained_group(parameter))
               else
-                config_string.concat(filter.tr('_', ' ') + ' ' + filter_builder(parameter) + ' ')
+                config_string.concat("#{filter.tr('_', ' ')} #{filter_builder(parameter)} ")
               end
-            elsif SYSLOG_NG_FILTER_FUNCTIONS.include?(filter) && (parameter.is_a?(String) || parameter.is_a?(Array))
-              if parameter.is_a?(String)
-                config_string.concat(filter + '(' + parameter + ') ')
-              elsif parameter.is_a?(Array)
-                parameter.each do |param|
-                  config_string.concat(filter + '(' + param + ') ')
-                end
-                config_string.rstrip!
-              end
-            else
-              raise ArgumentError, "filter_builder: Invalid operator '#{filter}' specified in filter configuration. Object type #{parameter.class}."
+            when Array
+              parameter.each { |param| config_string.concat("#{filter}(#{param}) ") }
+            when String
+              config_string.concat("#{filter}(#{parameter}) ")
             end
           end
-          config_string.rstrip!
-        elsif parameters.is_a?(Array)
+        when Array
           parameters.each do |parameter|
-            config_string.concat(parameter + ' ')
+            config_string.concat("#{parameter} ")
           end
-        elsif parameters.is_a?(String)
+        when String
           config_string.concat(parameters)
         end
-        config_string.rstrip!
 
-        config_string
+        config_string.rstrip
+      end
+
+      private
+
+      def parameter_valid?(parameter)
+        parameter.is_a?(Hash) || parameter.is_a?(Array) || parameter.is_a?(String)
+      end
+
+      def filter_operator_valid?(operator)
+        SYSLOG_NG_FILTER_FUNCTIONS.include?(operator) || SYSLOG_NG_BOOLEAN_OPERATORS.include?(operator) || operator.match?('container')
       end
     end
   end

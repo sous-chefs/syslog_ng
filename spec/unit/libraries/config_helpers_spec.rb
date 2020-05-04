@@ -20,58 +20,30 @@ require 'spec_helper'
 
 describe 'SyslogNg::Cookbook::ConfigHelpers' do
   let(:dummy_class) { Class.new { include SyslogNg::Cookbook::ConfigHelpers } }
-  describe 'parameter_builder' do
-    context('given driver with no path or parameters') do
-      it 'returns array' do
-        expect(dummy_class.new.parameter_builder(driver: ['file'], path: [], parameters: {})).to be_a(Array)
+
+  describe 'format_parameter_value' do
+    context('when given string that should be formatted') do
+      it 'return correctly formatted string' do
+        expect(dummy_class.new.format_parameter_value('formatme')).to be_a(String) & eql('"formatme"')
       end
     end
 
-    context('given driver with path and no parameters') do
-      it 'returns array' do
-        expect(dummy_class.new.parameter_builder(driver: ['file'], path: ['/file.log'], parameters: {})).to be_a(Array)
+    context('when given string that should not formatted') do
+      it 'return correctly unformatted string' do
+        expect(dummy_class.new.format_parameter_value('yes')).to be_a(String) & eql('yes')
+        expect(dummy_class.new.format_parameter_value('port(123)')).to be_a(String) & eql('port(123)')
       end
     end
 
-    context('given driver with path and parameters') do
-      it 'returns array' do
-        expect(dummy_class.new.parameter_builder(driver: ['file'], path: ['/file.log'], parameters: [{ 'flush_lines' => 10, 'create-dirs' => 'yes' }])).to be_a(Array)
+    context('when given IP address as string') do
+      it 'return unchanged IP address as string' do
+        expect(dummy_class.new.format_parameter_value('192.0.2.1')).to be_a(String) & eql('192.0.2.1')
       end
     end
 
-    context('given array of drivers with no path or parameters') do
-      it 'returns array' do
-        expect(dummy_class.new.parameter_builder(driver: %w(file file), path: [], parameters: {})).to be_a(Array)
-      end
-    end
-
-    context('given array of drivers with paths and no parameters') do
-      it 'returns array' do
-        expect(dummy_class.new.parameter_builder(driver: %w(file file), path: ['file1.log', 'file2.log'], parameters: {})).to be_a(Array)
-      end
-    end
-
-    context('given array of drivers with no path and parameters') do
-      it 'returns array' do
-        expect(dummy_class.new.parameter_builder(driver: %w(network network), path: [], parameters: [ { 'ip' => '127.0.0.1', 'port' => '5514' }, { 'ip' => '127.0.0.1', 'port' => '5514' } ])).to be_a(Array)
-      end
-    end
-
-    context('given array of drivers with paths and parameters') do
-      it 'returns array' do
-        expect(dummy_class.new.parameter_builder(driver: %w(file file), path: ['file1.log', 'file2.log'], parameters: [ { 'flush_lines' => 10, 'create-dirs' => 'yes' }, { 'flush_lines' => 20, 'create-dirs' => 'yes' } ])).to be_a(Array)
-      end
-    end
-
-    context('given raw configuration') do
-      it 'returns array' do
-        expect(dummy_class.new.parameter_builder(configuration: [ { 'tcp' => { 'parameters' => { 'ip' => '127.0.0.1', 'port' => '5514' } } }, { 'udp' => { 'parameters' => { 'ip' => '127.0.0.1', 'port' => '5514' } } } ])).to be_a(Array)
-      end
-    end
-
-    context('given invalid argument set') do
-      it 'raises ArgumentError' do
-        expect { dummy_class.new.parameter_builder() }.to raise_error(ArgumentError)
+    context('when given Integer') do
+      it 'return unchanged Integer' do
+        expect(dummy_class.new.format_parameter_value(123)).to be_a(Integer) & eql(123)
       end
     end
   end

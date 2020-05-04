@@ -135,3 +135,19 @@ syslog_ng_source 's_test_network_multiple' do
   notifies :reload, 'service[syslog-ng]', :delayed
   action :create
 end
+
+syslog_ng_source 's_test_array_non_string' do
+  driver 'network'
+  parameters(
+    'ip' => [
+      '127.0.0.1',
+    ],
+    'port' => [
+      5614,
+    ]
+  )
+  multiline true
+  notifies :run, 'execute[syslog-ng-config-test]', :delayed
+  notifies :reload, 'service[syslog-ng]', :delayed
+  action :create
+end

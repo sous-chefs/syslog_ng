@@ -68,7 +68,7 @@ property :multiline, [true, false],
           description: 'Use multiline formatting'
 
 action_class do
-  include SyslogNg::Cookbook::ConfigHelpers
+  include SyslogNg::Cookbook::SourceDestinationHelpers
 end
 
 action :create do
@@ -84,7 +84,12 @@ action :create do
     variables(
       name: new_resource.name,
       description: new_resource.description ? new_resource.description : new_resource.name,
-      destination: parameter_builder(driver: new_resource.driver, path: new_resource.path, parameters: new_resource.parameters, configuration: new_resource.configuration),
+      destination: source_dest_config_builder(
+        driver: new_resource.driver,
+        path: new_resource.path,
+        parameters: new_resource.parameters,
+        configuration: new_resource.configuration
+      ),
       multiline: new_resource.multiline
     )
     helpers(SyslogNg::Cookbook::SourceDestinationHelpers)
