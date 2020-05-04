@@ -34,8 +34,6 @@ Generates a syslog-ng [log](https://www.syslog-ng.com/technical-documents/doc/sy
 
 A log statement is the last part of a combination of `source`, `filter` and `destination` resources to create a completed log configuration with syslog-ng. Multiple source, filter and destination elements can be passed to the resource as a String Array.
 
-*The resource does not presently support embedded log statements, this will be added as a future development.*
-
 ### Example 1 - Basic Log
 
 ```ruby
@@ -59,7 +57,7 @@ log {
 };
 ```
 
-### Example 2 - Contained Log
+### Example 2 - Embedded Log
 
 ```ruby
 syslog_ng_log 'l_test_embedded' do

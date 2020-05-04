@@ -127,7 +127,7 @@ filter f_test_array_or {
 };
 ```
 
-### Example 4 - Pass a raw filter String or Array
+### Example 4 - Pass a raw filter String
 
 ```ruby
 syslog_ng_filter 'f_test_raw_string' do
@@ -144,7 +144,7 @@ filter f_test_raw_string {
 };
 ```
 
-- An Array
+### Example 5 - Pass a raw filter Array
 
 ```ruby
 syslog_ng_filter 'f_test_raw_string_array' do
