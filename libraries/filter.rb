@@ -23,6 +23,8 @@ module SyslogNg
     module FilterHelpers
       include SyslogNg::Cookbook::ConfigHelpers
 
+      SYSLOG_NG_FILTER_FUNCTIONS ||= %w(facility filter host inlist level priority match message netmask netmask6 program source tags operator).freeze
+
       def filter_builder(parameters)
         raise ArgumentError, "Expected syslog-ng filter definition to be passed as a Hash, Array or String. Got a #{parameters.class}." unless parameter_valid?(parameters)
 

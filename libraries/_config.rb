@@ -21,8 +21,6 @@ module SyslogNg
     SYSLOG_NG_PARAMETER_BUILD_TYPES ||= %i(source_dest rewrite).freeze
     SYSLOG_NG_PARAMETERS_UNNAMED ||= { rewrite: %w(match replacement field tags additional_options) }.freeze
     SYSLOG_NG_BOOLEAN_OPERATORS ||= %w(and or and_not or_not container).freeze # The __container__ 'operator' and __operator__ 'filter' are added here to allow nested boolean operation, syslog-ng doesn't know anything about it.
-    SYSLOG_NG_FILTER_FUNCTIONS ||= %w(facility filter host inlist level priority match message netmask netmask6 program source tags operator).freeze
-    SYSLOG_NG_REWRITE_OPERATORS ||= %w(subst set unset groupset groupunset set-tag clear-tag credit-card-mask credit-card-hash).freeze
     SYSLOG_NG_FORMATTED_PARAMETER_REGEX ||= /(('|").*('|"))|(.+\(.+\))|(^(\d+ ?)+$)/.freeze
 
     module ConfigHelpers

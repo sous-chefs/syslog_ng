@@ -23,6 +23,8 @@ module SyslogNg
     module RewriteHelpers
       include SyslogNg::Cookbook::ConfigHelpers
 
+      SYSLOG_NG_REWRITE_OPERATORS ||= %w(subst set unset groupset groupunset set-tag clear-tag credit-card-mask credit-card-hash).freeze
+
       def rewrite_config_builder
         if new_resource.configuration
           new_resource.configuration
@@ -92,8 +94,7 @@ module SyslogNg
       end
 
       def rewrite_builder(parameters)
-        raise ArgumentError, "config_rewrite_map: Expected syslog-ng rewrite configuration attribute block to be a Hash, got a #{parameters.class}." unless parameters.is_a?(Hash)
-        raise ArgumentError, "config_rewrite_map: Invalid rewrite operator specified, got #{parameters['function']} which is not a valid syslog-ng rewrite operation." unless SYSLOG_NG_REWRITE_OPERATORS.include?(parameters['function'])
+        raise ArgumentError, "Expected syslog-ng rewrite configuration attribute block to be a Hash, got a #{parameters.class}." unless parameters.is_a?(Hash)
 
         params = parameters.dup
         config_string = ''

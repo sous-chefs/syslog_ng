@@ -46,7 +46,7 @@ property :description, String,
           description: 'Unparsed description to add to the configuration file'
 
 property :function, String,
-          equal_to: %w(subst set unset groupset groupunset credit-card-mask set-tag clear-tag),
+          equal_to: SyslogNg::Cookbook::RewriteHelpers::SYSLOG_NG_REWRITE_OPERATORS,
           description: 'Rewrite function'
 
 property :match, String,
