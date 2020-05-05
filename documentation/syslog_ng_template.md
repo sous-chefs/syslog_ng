@@ -13,12 +13,12 @@ See [usage](#template-usage) for examples.
 
 | Name                   | Type          | Default                          | Description                                                         | Allowed Values      |
 | ---------------------- | ------------- | -------------------------------- | ------------------------------------------------------------------- | ------------------- |
-| `config_dir`           | String        | /etc/syslog-ng/destionation.d    | Directory to create configuration file in                           |                     |
-| `cookbook`             | String        | syslog-ng                        | Cookbook to source configuration file template from                 |                     |
-| `template`             | String        | syslog-ng/destination.conf.erb   | Template to use to generate the configuration file                  |                     |
-| `owner`                | String        | root                             | Owner of the generated configuration file                           |                     |
-| `group`                | String        | root                             | Group of the generated configuration file                           |                     |
-| `mode`                 | String        | `'0640'`                         | Filemode of the generated configuration file                        |                     |
+| `config_dir`           | String        | `/etc/syslog-ng/destionation.d`  | Directory to create configuration file in                           |                     |
+| `cookbook`             | String        | `syslog-ng`                      | Cookbook to source configuration file template from                 |                     |
+| `template`             | String        | `syslog-ng/destination.conf.erb` | Template to use to generate the configuration file                  |                     |
+| `owner`                | String        | `root`                           | Owner of the generated configuration file                           |                     |
+| `group`                | String        | `root`                           | Group of the generated configuration file                           |                     |
+| `mode`                 | String        | `0640`                           | Filemode of the generated configuration file                        |                     |
 | `description`          | String        |                                  | Unparsed description to add to the configuration file               |                     |
 | `template_expression`  | String, Array |                                  | Template expression                                                 |                     |
 | `template_escape`      | True, False   | `false`                          | Escape the `'`, `"`, and `\` characters from the messages           |                     |
