@@ -4,8 +4,8 @@
 
 ## Actions
 
-- `create` - Create a syslog-ng parser configuration file
-- `delete` - Remove a syslog-ng parser configuration file
+- `:create` - Create a syslog-ng parser configuration file
+- `:delete` - Remove a syslog-ng parser configuration file
 
 ## Properties
 

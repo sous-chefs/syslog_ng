@@ -1,6 +1,6 @@
 # Upgrading
 
-This document will give you help on upgrading major versions of syslog_ng
+This document will give you help on upgrading major versions of `syslog_ng`.
 
 ## 1.0.0
 
@@ -15,11 +15,13 @@ This document will give you help on upgrading major versions of syslog_ng
 
 ### Added
 
+- Resource `syslog_ng_block` - [Documentation](./documentation/syslog_ng_block.md)
 - Resource `syslog_ng_package` - [Documentation](./documentation/syslog_ng_package.md)
+- Resource `syslog_ng_service` - [Documentation](./documentation/syslog_ng_service.md)
 
 ### Changed
 
-- Resource `syslog_ng_config`  - [Documentation](./documentation/syslog_ng_config.md)
+- Resource `syslog_ng_config` - [Documentation](./documentation/syslog_ng_config.md)
   - Renamed `syslog_ng_config_global` to `syslog_ng_config`
 
 - Resource `syslog_ng_template` - [Documentation](./documentation/syslog_ng_template.md)

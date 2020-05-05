@@ -4,8 +4,8 @@
 
 ## Actions
 
-- `create` - Create a syslog-ng block configuration file
-- `delete` - Remove a syslog-ng block configuration file
+- `:create` - Create a syslog-ng block configuration file
+- `:delete` - Remove a syslog-ng block configuration file
 
 ## Properties
 

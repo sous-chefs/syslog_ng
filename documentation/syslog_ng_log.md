@@ -2,12 +2,10 @@
 
 [Back to resource list](../README.md#resources)
 
-See [usage](#log-usage) for examples.
-
 ## Actions
 
-- `create` - Create a syslog-ng log configuration file
-- `delete` - Remove a syslog-ng log configuration file
+- `:create` - Create a syslog-ng log configuration file
+- `:delete` - Remove a syslog-ng log configuration file
 
 ## Properties
 

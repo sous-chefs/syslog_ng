@@ -4,12 +4,12 @@
 
 ## Actions
 
-- `start`
-- `stop`
-- `restart`
-- `reload`
-- `enable`
-- `disable`
+- `:start`
+- `:stop`
+- `:restart`
+- `:reload`
+- `:enable`
+- `:disable`
 
 ## Properties
 

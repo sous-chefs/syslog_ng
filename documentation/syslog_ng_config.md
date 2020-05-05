@@ -2,14 +2,12 @@
 
 [Back to resource list](../README.md#resources)
 
-Generates the `syslog-ng.conf` file from node attributes containing the global configuration.
-
-See [usage](#config_global-usage) for examples.
+Generates the `syslog-ng.conf` file containing the global configuration.
 
 ## Actions
 
-- `create` - Create the syslog-ng global configuration file
-- `delete` - Remove the syslog-ng global configuration file
+- `:create` - Create the syslog-ng global configuration file
+- `:delete` - Remove the syslog-ng global configuration file
 
 ## Properties
 

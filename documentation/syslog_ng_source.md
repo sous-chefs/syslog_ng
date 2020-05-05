@@ -4,8 +4,8 @@
 
 ## Actions
 
-- `create` - Create a syslog-ng source configuration file
-- `delete` - Remove a syslog-ng source configuration file
+- `:create` - Create a syslog-ng source configuration file
+- `:delete` - Remove a syslog-ng source configuration file
 
 ## Properties
 
@@ -26,7 +26,7 @@
 
 ## Usage
 
-Generates a syslog-ng [source](https://www.syslog-ng.com/technical-documents/doc/syslog-ng-open-source-edition/3.22/administration-guide/16#TOPIC-1209125) configuration statement.
+Generates a syslog-ng [source](https://www.syslog-ng.com/technical-documents/doc/syslog-ng-open-source-edition/3.25/administration-guide/17#TOPIC-1349351) configuration statement.
 
 ### Example 1 - TCP source
 

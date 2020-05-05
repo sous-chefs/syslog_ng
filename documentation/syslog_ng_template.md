@@ -2,12 +2,10 @@
 
 [Back to resource list](../README.md#resources)
 
-See [usage](#template-usage) for examples.
-
 ## Actions
 
-- `create` - Create a syslog-ng template configuration file
-- `delete` - Remove a syslog-ng template configuration file
+- `:create` - Create a syslog-ng template configuration file
+- `:delete` - Remove a syslog-ng template configuration file
 
 ## Properties
 

@@ -4,8 +4,8 @@
 
 ## Actions
 
-- `create` - Create a syslog-ng filter configuration file
-- `delete` - Remove a syslog-ng filter configuration file
+- `:create` - Create a syslog-ng filter configuration file
+- `:delete` - Remove a syslog-ng filter configuration file
 
 ## Properties
 

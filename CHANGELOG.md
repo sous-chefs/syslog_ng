@@ -12,6 +12,8 @@ Version 1.0.0 has multiple breaking changes, please see [UPGRADING.md](./UPGRADI
 - The `syslog_ng_template` resource `template` property has been renamed to `template_expression` to avoid a clash with the Chef template file override property
 - Renamed `syslog_ng_config_global` to `syslog_ng_config`
 - Multiple resource properties renamed
+- Refactoring of helper modules
+- Added the `syslog_ng_service` and `syslog_ng_block` resources
 
 ## 0.3.5 (2020-05-05)
 

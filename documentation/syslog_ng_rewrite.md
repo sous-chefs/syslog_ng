@@ -4,8 +4,8 @@
 
 ## Actions
 
-- `create` - Create a syslog-ng rewrite configuration file
-- `delete` - Remove a syslog-ng rewrite configuration file
+- `:create` - Create a syslog-ng rewrite configuration file
+- `:delete` - Remove a syslog-ng rewrite configuration file
 
 ## Properties
 
