@@ -2,7 +2,7 @@
 # Cookbook:: syslog_ng_test
 # Recipe:: rewrite
 #
-# Copyright:: 2020, Ben Hughes <bmhughes@bmhughes.co.uk>
+# Copyright:: Ben Hughes <bmhughes@bmhughes.co.uk>
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
