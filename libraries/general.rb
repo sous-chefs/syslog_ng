@@ -21,11 +21,11 @@ require 'mixlib/shellout'
 module SyslogNg
   module Cookbook
     module GeneralHelpers
-      def syslog_ng_user
+      def default_syslog_ng_user
         'root'
       end
 
-      def syslog_ng_group
+      def default_syslog_ng_group
         'root'
       end
 

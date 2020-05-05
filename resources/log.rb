@@ -31,11 +31,11 @@ property :template, String,
           description: 'Template to use to generate the configuration file'
 
 property :owner, String,
-          default: lazy { syslog_ng_user },
+          default: lazy { default_syslog_ng_user },
           description: 'Owner of the generated configuration file'
 
 property :group, String,
-          default: lazy { syslog_ng_group },
+          default: lazy { default_syslog_ng_group },
           description: 'Group of the generated configuration file'
 
 property :mode, String,
@@ -53,7 +53,7 @@ property :filter, [String, Array, Hash],
           default: [],
           description: 'Filter(s) to apply to logs'
 
-property :destination, [String, Array],
+property :destination, [String, Array, Hash],
           default: [],
           description: 'Destination(s) to output logs'
 
