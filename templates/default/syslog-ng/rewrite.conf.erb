@@ -6,8 +6,8 @@
 # Rewrite - <%= @description %>
 <% unless nil_or_empty?(@rewrite) -%>
 rewrite <%= @name -%> {
-    <% @rewrite.each do |config| -%>
-    <%= rewrite_builder(config) %>;
-    <% end -%>
+  <% @rewrite.each do |config| -%>
+  <%= rewrite_builder(config) %>;
+  <% end -%>
 };
 <% end -%>

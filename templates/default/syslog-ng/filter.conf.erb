@@ -6,6 +6,6 @@
 # Filter - <%= @description %>
 <% unless nil_or_empty?(@filter) -%>
 filter <%= @name %> {
-    <%= filter_builder(@filter) %>;
+  <%= filter_builder(@filter) %>;
 };
 <% end -%>

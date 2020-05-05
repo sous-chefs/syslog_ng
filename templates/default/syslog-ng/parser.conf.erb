@@ -6,10 +6,10 @@
 # Parser - <%= @description %>
 <% unless nil_or_empty?(@parser) -%>
 parser <%= @name -%> {
-    <%= @parser -%>(
-        <% @options.each do |name, config| -%>
-        <%= name -%>(<%= config -%>)
-        <% end -%>
-    );
+  <%= @parser -%>(
+    <% @options.each do |name, config| -%>
+    <%= name -%>(<%= config -%>)
+    <% end -%>
+  );
 };
 <% end -%>

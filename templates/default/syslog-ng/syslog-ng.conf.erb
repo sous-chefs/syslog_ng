@@ -23,9 +23,9 @@
 <% unless nil_or_empty?(@options) -%>
 # Options
 options {
-    <% @options.each do |key, value| -%>
-    <%= key %> (<%= value %>);
-    <% end -%>
+  <% @options.each do |key, value| -%>
+  <%= key %> (<%= value %>);
+  <% end -%>
 };
 <% end -%>
 <% unless nil_or_empty?(@source) -%>
@@ -33,9 +33,9 @@ options {
 # Sources
 <% @source.each do |name, config| -%>
 source <%= name -%> {
-    <% config.each do |driver, parameters| -%>
-    <%= source_builder(driver: driver, parameters: parameters) %>
-    <% end -%>
+  <% config.each do |driver, parameters| -%>
+  <%= source_builder(driver: driver, parameters: parameters) %>
+  <% end -%>
 };
 <% end -%>
 <% end -%>
@@ -44,9 +44,9 @@ source <%= name -%> {
 # Destinations
 <% @destination.each do |name, config| -%>
 destination <%= name -%> {
-    <% config.each do |driver, parameters| -%>
-    <%= destination_builder(driver: driver, parameters: parameters) %>
-    <% end -%>
+  <% config.each do |driver, parameters| -%>
+  <%= destination_builder(driver: driver, parameters: parameters) %>
+  <% end -%>
 };
 <% end -%>
 <% end -%>
@@ -55,7 +55,7 @@ destination <%= name -%> {
 # Filters
 <% @filter.each do |name, config| -%>
 filter <%= name %> {
-    <%= filter_builder(config) %>;
+  <%= filter_builder(config) %>;
 };
 <% end -%>
 <% end -%>
@@ -64,11 +64,11 @@ filter <%= name %> {
 # Logs
 <% @log.each do |name, config| -%>
 log {
-    <% config.each do |element, values| -%>
-    <% values.each do |value| -%>
-    <%= element %>(<%= value %>);
-    <% end -%>
-    <% end -%>
+  <% config.each do |element, values| -%>
+  <% values.each do |value| -%>
+  <%= element %>(<%= value %>);
+  <% end -%>
+  <% end -%>
 };
 <% end -%>
 <% end -%>
