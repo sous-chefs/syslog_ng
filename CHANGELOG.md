@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## Unreleased
+## 0.3.5 (2020-05-05)
 
 - resolved cookstyle error: resources/install.rb:58:28 refactor: `ChefStyle/UsePlatformHelpers`
 - resolved cookstyle error: resources/install.rb:93:26 refactor: `ChefStyle/UsePlatformHelpers`

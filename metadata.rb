@@ -6,7 +6,7 @@ description       'Installs/Configures syslog_ng'
 source_url        'https://github.com/sous-chefs/syslog_ng'
 issues_url        'https://github.com/sous-chefs/syslog_ng/issues'
 chef_version      '>= 13.0'
-version           '0.3.4'
+version           '0.3.5'
 
 supports 'debian'
 supports 'ubuntu'
