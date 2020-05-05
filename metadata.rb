@@ -17,4 +17,4 @@ supports 'amazon'
 supports 'scientific'
 supports 'oracle'
 
-depends 'yum-epel', '~> 3.3.0'
+depends 'yum-epel', '>= 3.3.0'
