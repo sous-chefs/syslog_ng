@@ -18,24 +18,10 @@
 
 syslog_ng_config '/etc/syslog-ng/syslog-ng.conf' do
   sensitive false
-  notifies :run, 'execute[syslog-ng-config-test]', :delayed
-  notifies :restart, 'service[syslog-ng]', :delayed
+  notifies :restart, 'syslog_ng_service[syslog-ng]', :delayed
   action :create
 end
 
-if platform_family?('amazon')
-  execute 'syslog-ng-config-test' do
-    command '/sbin/syslog-ng -s'
-    action :nothing
-  end
-else
-  execute 'syslog-ng-config-test' do
-    command '/usr/sbin/syslog-ng -s'
-    action :nothing
-  end
-end
-
-service 'syslog-ng' do
-  action :nothing
-  delayed_action [:enable, :start]
+syslog_ng_service 'syslog-ng' do
+  action [:enable, :start]
 end

@@ -17,11 +17,7 @@
 # limitations under the License.
 
 with_run_context :root do
-  find_resource(:execute, 'syslog-ng-config-test') do
-    command '/sbin/syslog-ng -s'
-    action :nothing
-  end
-  find_resource(:service, 'syslog-ng') do
+  find_resource(:syslog_ng_service, 'syslog-ng') do
     action :nothing
   end
 end
@@ -39,8 +35,7 @@ syslog_ng_block 'b_test_tcp_source_block' do
       'flags' => '`flags`',
     }
   )
-  notifies :run, 'execute[syslog-ng-config-test]', :delayed
-  notifies :restart, 'service[syslog-ng]', :delayed
+  notifies :restart, 'syslog_ng_service[syslog-ng]', :delayed
   action :create
 end
 
@@ -56,7 +51,6 @@ syslog_ng_block 'b_test_file_destination_block' do
       'create-dirs' => 'yes',
     }
   )
-  notifies :run, 'execute[syslog-ng-config-test]', :delayed
-  notifies :restart, 'service[syslog-ng]', :delayed
+  notifies :restart, 'syslog_ng_service[syslog-ng]', :delayed
   action :create
 end

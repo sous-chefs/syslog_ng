@@ -17,25 +17,19 @@
 # limitations under the License.
 
 with_run_context :root do
-  find_resource(:execute, 'syslog-ng-config-test') do
-    command '/sbin/syslog-ng -s'
-    action :nothing
-  end
-  find_resource(:service, 'syslog-ng') do
+  find_resource(:syslog_ng_service, 'syslog-ng') do
     action :nothing
   end
 end
 
 syslog_ng_template 't_first_template' do
   template_expression 'sample-text'
-  notifies :run, 'execute[syslog-ng-config-test]', :delayed
-  notifies :restart, 'service[syslog-ng]', :delayed
+  notifies :restart, 'syslog_ng_service[syslog-ng]', :delayed
   action :create
 end
 
 syslog_ng_template 't_second_template' do
   template_expression 'The result of the first-template is: $(template t_first_template)'
-  notifies :run, 'execute[syslog-ng-config-test]', :delayed
-  notifies :restart, 'service[syslog-ng]', :delayed
+  notifies :restart, 'syslog_ng_service[syslog-ng]', :delayed
   action :create
 end

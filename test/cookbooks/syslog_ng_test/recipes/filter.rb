@@ -17,11 +17,7 @@
 # limitations under the License.
 
 with_run_context :root do
-  find_resource(:execute, 'syslog-ng-config-test') do
-    command '/sbin/syslog-ng -s'
-    action :nothing
-  end
-  find_resource(:service, 'syslog-ng') do
+  find_resource(:syslog_ng_service, 'syslog-ng') do
     action :nothing
   end
 end
@@ -33,8 +29,7 @@ syslog_ng_filter 'f_test' do
       'facility' => %w(mail authpriv cron),
     }
   )
-  notifies :run, 'execute[syslog-ng-config-test]', :delayed
-  notifies :restart, 'service[syslog-ng]', :delayed
+  notifies :restart, 'syslog_ng_service[syslog-ng]', :delayed
   action :create
 end
 
@@ -51,8 +46,7 @@ syslog_ng_filter 'f_test_contained' do
       },
     }
   )
-  notifies :run, 'execute[syslog-ng-config-test]', :delayed
-  notifies :restart, 'service[syslog-ng]', :delayed
+  notifies :restart, 'syslog_ng_service[syslog-ng]', :delayed
   action :create
 end
 
@@ -62,8 +56,7 @@ syslog_ng_filter 'f_test_array_and' do
       'facility' => %w(mail authpriv cron),
     }
   )
-  notifies :run, 'execute[syslog-ng-config-test]', :delayed
-  notifies :restart, 'service[syslog-ng]', :delayed
+  notifies :restart, 'syslog_ng_service[syslog-ng]', :delayed
   action :create
 end
 
@@ -74,21 +67,18 @@ syslog_ng_filter 'f_test_array_or' do
       'facility' => %w(mail authpriv cron),
     }
   )
-  notifies :run, 'execute[syslog-ng-config-test]', :delayed
-  notifies :restart, 'service[syslog-ng]', :delayed
+  notifies :restart, 'syslog_ng_service[syslog-ng]', :delayed
   action :create
 end
 
 syslog_ng_filter 'f_test_raw_string' do
   parameters 'host("example") and match("deny" value("MESSAGE"))'
-  notifies :run, 'execute[syslog-ng-config-test]', :delayed
-  notifies :restart, 'service[syslog-ng]', :delayed
+  notifies :restart, 'syslog_ng_service[syslog-ng]', :delayed
   action :create
 end
 
 syslog_ng_filter 'f_test_raw_string_array' do
   parameters ['host("example1")', 'or host("example2")', 'or (host("example3") and not match("test" value("NOT_ME_MESSAGE")))']
-  notifies :run, 'execute[syslog-ng-config-test]', :delayed
-  notifies :restart, 'service[syslog-ng]', :delayed
+  notifies :restart, 'syslog_ng_service[syslog-ng]', :delayed
   action :create
 end

@@ -17,11 +17,7 @@
 # limitations under the License.
 
 with_run_context :root do
-  find_resource(:execute, 'syslog-ng-config-test') do
-    command '/sbin/syslog-ng -s'
-    action :nothing
-  end
-  find_resource(:service, 'syslog-ng') do
+  find_resource(:syslog_ng_service, 'syslog-ng') do
     action :nothing
   end
 end
@@ -29,30 +25,26 @@ end
 syslog_ng_parser 'p_csv_parser' do
   parser 'csv-parser'
   options 'columns' => '"HOSTNAME.NAME", "HOSTNAME.ID"', 'delimiters' => '"-"', 'flags' => 'escape-none', 'template' => '"${HOST}"'
-  notifies :run, 'execute[syslog-ng-config-test]', :delayed
-  notifies :restart, 'service[syslog-ng]', :delayed
+  notifies :restart, 'syslog_ng_service[syslog-ng]', :delayed
   action :create
 end
 
 syslog_ng_parser 'p_kv_parser' do
   parser 'kv-parser'
   options 'prefix' => '".kv."'
-  notifies :run, 'execute[syslog-ng-config-test]', :delayed
-  notifies :restart, 'service[syslog-ng]', :delayed
+  notifies :restart, 'syslog_ng_service[syslog-ng]', :delayed
   action :create
 end
 
 syslog_ng_parser 'p_json_parser' do
   parser 'json-parser'
   options 'prefix' => '".json."', 'marker' => '"@json:"'
-  notifies :run, 'execute[syslog-ng-config-test]', :delayed
-  notifies :restart, 'service[syslog-ng]', :delayed
+  notifies :restart, 'syslog_ng_service[syslog-ng]', :delayed
   action :create
 end
 
 syslog_ng_parser 'p_iptables_parser' do
   parser 'iptables-parser'
-  notifies :run, 'execute[syslog-ng-config-test]', :delayed
-  notifies :restart, 'service[syslog-ng]', :delayed
+  notifies :restart, 'syslog_ng_service[syslog-ng]', :delayed
   action :create
 end

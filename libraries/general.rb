@@ -29,6 +29,10 @@ module SyslogNg
         'root'
       end
 
+      def default_syslog_ng_service_name
+        'syslog-ng'
+      end
+
       def syslog_ng_config_dir
         '/etc/syslog-ng'
       end

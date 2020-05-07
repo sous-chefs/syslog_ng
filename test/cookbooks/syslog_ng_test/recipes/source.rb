@@ -17,11 +17,7 @@
 # limitations under the License.
 
 with_run_context :root do
-  find_resource(:execute, 'syslog-ng-config-test') do
-    command '/sbin/syslog-ng -s'
-    action :nothing
-  end
-  find_resource(:service, 'syslog-ng') do
+  find_resource(:syslog_ng_service, 'syslog-ng') do
     action :nothing
   end
 end
@@ -35,8 +31,7 @@ syslog_ng_source 's_test_syslog' do
     'log_iw_size' => 10000,
     'use_dns' => :persist_only
   )
-  notifies :run, 'execute[syslog-ng-config-test]', :delayed
-  notifies :restart, 'service[syslog-ng]', :delayed
+  notifies :restart, 'syslog_ng_service[syslog-ng]', :delayed
   action :create
 end
 
@@ -46,8 +41,7 @@ syslog_ng_source 's_test_tcp' do
     'ip' => '127.0.0.1',
     'port' => '5514'
   )
-  notifies :run, 'execute[syslog-ng-config-test]', :delayed
-  notifies :restart, 'service[syslog-ng]', :delayed
+  notifies :restart, 'syslog_ng_service[syslog-ng]', :delayed
   action :create
 end
 
@@ -58,8 +52,7 @@ syslog_ng_source 's_test_pipe' do
     'pad-size' => 2048
   )
   description 'pipe source testing'
-  notifies :run, 'execute[syslog-ng-config-test]', :delayed
-  notifies :restart, 'service[syslog-ng]', :delayed
+  notifies :restart, 'syslog_ng_service[syslog-ng]', :delayed
   action :create
 end
 
@@ -80,8 +73,7 @@ syslog_ng_source 's_test_tcpudp' do
       },
     ]
   )
-  notifies :run, 'execute[syslog-ng-config-test]', :delayed
-  notifies :restart, 'service[syslog-ng]', :delayed
+  notifies :restart, 'syslog_ng_service[syslog-ng]', :delayed
   action :create
 end
 
@@ -109,8 +101,7 @@ syslog_ng_source 's_test_network_multiline' do
     ]
   )
   multiline true
-  notifies :run, 'execute[syslog-ng-config-test]', :delayed
-  notifies :restart, 'service[syslog-ng]', :delayed
+  notifies :restart, 'syslog_ng_service[syslog-ng]', :delayed
   action :create
 end
 
@@ -131,8 +122,7 @@ syslog_ng_source 's_test_network_multiple' do
     ]
   )
   multiline true
-  notifies :run, 'execute[syslog-ng-config-test]', :delayed
-  notifies :restart, 'service[syslog-ng]', :delayed
+  notifies :restart, 'syslog_ng_service[syslog-ng]', :delayed
   action :create
 end
 
@@ -147,8 +137,7 @@ syslog_ng_source 's_test_array_non_string' do
     ]
   )
   multiline true
-  notifies :run, 'execute[syslog-ng-config-test]', :delayed
-  notifies :restart, 'service[syslog-ng]', :delayed
+  notifies :restart, 'syslog_ng_service[syslog-ng]', :delayed
   action :create
 end
 
@@ -159,7 +148,6 @@ syslog_ng_source 's_block_test' do
       'flags' => 'no-parse',
     }
   )
-  notifies :run, 'execute[syslog-ng-config-test]', :delayed
-  notifies :restart, 'service[syslog-ng]', :delayed
+  notifies :restart, 'syslog_ng_service[syslog-ng]', :delayed
   action :create
 end

@@ -35,6 +35,7 @@ The following platforms are supported and tested with Test Kitchen:
 
 The following resources are provided:
 
+- [syslog_ng_block](documentation/syslog_ng_block.md)
 - [syslog_ng_config](documentation/syslog_ng_config.md)
 - [syslog_ng_destination](documentation/syslog_ng_destination.md)
 - [syslog_ng_filter](documentation/syslog_ng_filter.md)
@@ -42,6 +43,7 @@ The following resources are provided:
 - [syslog_ng_package](documentation/syslog_ng_package.md)
 - [syslog_ng_parser](documentation/syslog_ng_parser.md)
 - [syslog_ng_rewrite](documentation/syslog_ng_rewrite.md)
+- [syslog_ng_service](documentation/syslog_ng_service.md)
 - [syslog_ng_source](documentation/syslog_ng_source.md)
 - [syslog_ng_template](documentation/syslog_ng_template.md)
 
