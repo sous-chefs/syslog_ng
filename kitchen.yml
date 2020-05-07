@@ -40,6 +40,7 @@ suites:
       - recipe[syslog_ng_test::selinux]
       - recipe[syslog_ng_test::package_copr]
       - recipe[syslog_ng_test::config]
+      - recipe[syslog_ng_test::block]
       - recipe[syslog_ng_test::destination]
       - recipe[syslog_ng_test::source]
       - recipe[syslog_ng_test::filter]

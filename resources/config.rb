@@ -22,6 +22,9 @@ property :config_file, String,
           default: lazy { "#{syslog_ng_config_dir}/syslog-ng.conf" },
           description: 'The path to the Syslog-NG server configuration on disk'
 
+property :config_directory, String,
+          default: lazy { syslog_ng_config_dir }
+
 property :config_version, [String, Float],
           default: lazy { syslog_ng_installed_version },
           coerce: proc { |p| p.is_a?(String) ? p : p.to_s },
@@ -46,6 +49,9 @@ property :group, String,
 property :mode, String,
           default: '0640',
           description: 'Filemode of the generated configuration file'
+
+property :blocks, Hash,
+          description: 'SyslogNG reusable configuration blocks'
 
 property :options, Hash,
           default: lazy { syslog_ng_default_config(:options) },
@@ -75,9 +81,12 @@ property :include, Array,
           default: [],
           description: 'Files to include in the global configuration file'
 
+property :blocks, [Hash, Array],
+          description: 'Array of blocks to reference without parameters or a Hash of blocks to reference with parameters'
+
 action :create do
   syslog_ng_config_dirs.each do |directory|
-    directory directory do
+    directory "#{new_resource.config_directory}/#{directory}" do
       owner new_resource.owner
       group new_resource.group
 
@@ -96,6 +105,7 @@ action :create do
 
     variables(
       version: new_resource.config_version,
+      blocks: new_resource.blocks,
       options: new_resource.options,
       source: new_resource.source,
       destination: new_resource.destination,

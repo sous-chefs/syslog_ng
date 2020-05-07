@@ -8,4 +8,9 @@ rewrite <%= @name -%> {
   <% @rewrite.each do |config| -%>
   <%= rewrite_builder(config) %>;
   <% end -%>
+  <% unless nil_or_empty?(@blocks) -%>
+  <% @blocks.each do |block, config| -%>
+  <%= block -%>(<%= build_parameter_string(:block, config) -%>)
+  <% end -%>
+  <% end -%>
 };

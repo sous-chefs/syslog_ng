@@ -18,23 +18,30 @@
 
 module SyslogNg
   module Cookbook
-    SYSLOG_NG_PARAMETER_BUILD_TYPES ||= %i(source_dest rewrite).freeze
-    SYSLOG_NG_PARAMETERS_UNNAMED ||= { rewrite: %w(match replacement field tags additional_options) }.freeze
+    SYSLOG_NG_PARAMETER_BUILD_TYPES ||= %i(source source_dest destination rewrite block).freeze
+    SYSLOG_NG_PARAMETERS_UNNAMED ||= {
+      destination: %w(path),
+      rewrite: %w(match replacement field tags additional_options),
+      source: %w(path),
+    }.freeze
     SYSLOG_NG_BOOLEAN_OPERATORS ||= %w(and or and_not or_not container).freeze # The __container__ 'operator' and __operator__ 'filter' are added here to allow nested boolean operation, syslog-ng doesn't know anything about it.
-    SYSLOG_NG_FORMATTED_PARAMETER_REGEX ||= /(('|").*('|"))|(.+\(.+\))|(^(\d+ ?)+$)/.freeze
+    SYSLOG_NG_FORMATTED_PARAMETER_REGEX ||= /(('|"|`).*('|"|`))|(.+\(.+\))|(^(\d+ ?)+$)/.freeze
 
     module ConfigHelpers
       def format_parameter_value(value)
         log_chef(:debug, "Receieved value to format: #{value} as #{value.class}.")
         if value.is_a?(String)
-          if %w(yes YES no NO).include?(value) || value.match?(SYSLOG_NG_FORMATTED_PARAMETER_REGEX) || ip_address?(value)
+          if %w(yes YES no NO on ON off OFF).include?(value) || value.empty? || value.match?(SYSLOG_NG_FORMATTED_PARAMETER_REGEX) || ip_address?(value)
             log_chef(:debug, "Returning unformatted value string '#{value}'.")
-            return value
+            value
           else
             formatted = "\"#{value}\""
             log_chef(:debug, "Formatted parameter value to: #{formatted}}.")
             formatted
           end
+        elsif value.is_a?(Symbol) && value.eql?(:empty)
+          log_chef(:debug, "Returning empty value string for :#{value}.")
+          ''
         else
           log_chef(:debug, "Returning unformatted parameter value '#{value}' as #{value.class}.")
           value
@@ -42,9 +49,9 @@ module SyslogNg
       end
 
       def build_parameter_string(type, parameters)
-        raise ArgumentError, "Unknown parameter type #{type} to build." unless SYSLOG_NG_PARAMETER_BUILD_TYPES.include?(type)
+        raise ArgumentError, "build_parameter_string: Unknown parameter type #{type} to build." unless SYSLOG_NG_PARAMETER_BUILD_TYPES.include?(type)
 
-        return '' if parameters.empty?
+        return '' if nil_or_empty?(parameters)
 
         parameter_string = ''
 
@@ -53,7 +60,10 @@ module SyslogNg
         case parameters
         when Hash
           parameters.each do |parameter, value|
-            next if nil_or_empty?(value)
+            if nil_or_empty?(value)
+              log_chef(:debug, "Parameter '#{parameter}' has nil or empty value '#{value}', skipping.")
+              next
+            end
 
             log_chef(:debug, "Processing parameter: '#{parameter}' with value '#{value}'.")
             if value.is_a?(Hash) || value.is_a?(Array)
@@ -67,7 +77,7 @@ module SyslogNg
         when String
           parameter_string.concat("#{parameters} ")
         else
-          raise ArgumentError, "Expected configuration parameters to be passed as a Hash, Array or String. Got a #{parameters.class}."
+          raise ArgumentError, "build_parameter_string: Expected configuration parameters to be passed as a Hash, Array or String. Got a #{parameters.class}."
         end
         parameter_string.rstrip!
         log_chef(:debug, "Generated parameter string is: #{parameter_string}.")
@@ -76,7 +86,7 @@ module SyslogNg
       end
 
       def array_join(array)
-        raise unless array.is_a?(Array)
+        raise ArgumentError, "array_join: Expected Array, got #{array.class}." unless array.is_a?(Array)
 
         return '' if array.empty?
 
@@ -84,7 +94,13 @@ module SyslogNg
       end
 
       def nil_or_empty?(property)
-        return true if property.nil? || (property.respond_to?(:empty?) && property.empty?)
+        return true if property.nil? || safe_empty?(property)
+
+        false
+      end
+
+      def safe_empty?(property)
+        return true if property.respond_to?(:empty?) && property.empty?
 
         false
       end
@@ -96,7 +112,7 @@ module SyslogNg
       private
 
       def format_parameter_pairing(parameter:, value:, named: true)
-        raise ArgumentError, "Type error, got #{parameter.class} and #{value.class}. Expected String and String/Integer/Symbol." unless parameter.is_a?(String) && (value.is_a?(String) || value.is_a?(Integer) || value.is_a?(Symbol))
+        raise ArgumentError, "format_parameter_pairing: Type error, got #{parameter.class} and #{value.class}. Expected String and String/Integer/Symbol." unless parameter.is_a?(String) && (value.is_a?(String) || value.is_a?(Integer) || value.is_a?(Symbol))
 
         parameter_string = ''
         parameter_string.concat(parameter) if named
@@ -115,7 +131,7 @@ module SyslogNg
       end
 
       def parameter_value_array(parameter_array)
-        raise ArgumentError, "Excepted configuration parameters to be passed as an Array, got #{parameter_array.class}." unless parameter_array.is_a?(Array)
+        raise ArgumentError, "parameter_value_array: Excepted configuration parameters to be passed as an Array, got #{parameter_array.class}." unless parameter_array.is_a?(Array)
 
         if parameter_array.empty?
           log_chef(:info, 'Empty parameter value array passed.')
@@ -142,7 +158,7 @@ module SyslogNg
       end
 
       def contained_group(hash)
-        raise ArgumentError, "Expected configuration parameters to be passed as a Hash, got a #{hash.class}." unless hash.is_a?(Hash)
+        raise ArgumentError, "contained_group: Expected configuration parameters to be passed as a Hash, got a #{hash.class}." unless hash.is_a?(Hash)
 
         return '' if hash.empty?
 
@@ -152,7 +168,7 @@ module SyslogNg
         # Get operator from configuration hash if one is specified
         if group_hash.key?('operator')
           boolean_operator = group_hash.delete('operator')
-          raise ArgumentError, "Invalid combining operator '#{boolean_operator}' specified." unless SYSLOG_NG_BOOLEAN_OPERATORS.include?(boolean_operator)
+          raise ArgumentError, "contained_group: Invalid combining operator '#{boolean_operator}' specified." unless SYSLOG_NG_BOOLEAN_OPERATORS.include?(boolean_operator)
           log_chef(:debug, "Contained group operator is '#{boolean_operator}'.")
         else
           boolean_operator = 'and'
@@ -172,7 +188,7 @@ module SyslogNg
               config_string.concat("#{contained_group(value)} ")
             end
           else
-            raise "Invalid value class found, support String, Array and Hash. Got a #{value.class}."
+            raise "contained_group: Invalid value class found, support String, Array and Hash. Got a #{value.class}."
           end
           log_chef(:debug, "Hash pass constructed config string: '#{config_string}'.")
         end

@@ -67,6 +67,9 @@ property :multiline, [true, false],
           default: false,
           description: 'Use multiline formatting'
 
+property :blocks, [Hash, Array],
+          description: 'Array of blocks to reference without parameters or a Hash of blocks to reference with parameters'
+
 action_class do
   include SyslogNg::Cookbook::SourceDestinationHelpers
 end
@@ -90,6 +93,7 @@ action :create do
         parameters: new_resource.parameters,
         configuration: new_resource.configuration
       ),
+      blocks: new_resource.blocks,
       multiline: new_resource.multiline
     )
     helpers(SyslogNg::Cookbook::SourceDestinationHelpers)

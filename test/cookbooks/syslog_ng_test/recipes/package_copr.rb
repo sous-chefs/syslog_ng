@@ -16,6 +16,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+log node['platform_family']
+
 case node['platform_family']
 when 'rhel', 'centos'
   yum_repository 'copr:copr.fedorainfracloud.org:czanik:syslog-ng326' do

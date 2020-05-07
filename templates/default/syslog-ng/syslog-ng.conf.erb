@@ -19,14 +19,21 @@
 #
 # Note: it also sources additional configuration files (*.conf)
 #       located in /etc/syslog_ng/conf.d/
-
 <% unless nil_or_empty?(@options) -%>
+
 # Options
 options {
   <% @options.each do |key, value| -%>
-  <%= key %> (<%= value %>);
+  <%= key %>(<%= format_parameter_value(value) %>);
   <% end -%>
 };
+<% end -%>
+<% unless nil_or_empty?(@blocks) -%>
+
+# Blocks
+<% @blocks.each do |block, config| -%>
+<%= block -%>(<%= build_parameter_string(:block, config) -%>)
+<% end -%>
 <% end -%>
 <% unless nil_or_empty?(@source) -%>
 

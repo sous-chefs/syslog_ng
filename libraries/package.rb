@@ -16,9 +16,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+require_relative '_config'
+
 module SyslogNg
   module Cookbook
     module PackageHelpers
+      include SyslogNg::Cookbook::ConfigHelpers
+
       def default_packages(repo_include: nil, repo_exclude: nil)
         filter_output = " | grep -i 'syslog-ng' | awk '{print $1}' | grep -Po '(syslog-ng)((-[a-zA-Z0-9]+)?)+' | sort -u".freeze
 
@@ -31,12 +35,14 @@ module SyslogNg
           command.concat(" --disablerepo=#{repo_exclude.join(',')}") if repo_exclude
           command.concat(filter_output)
 
-          Chef::Log.info("RHEL selected, command will be '#{command}'")
+          log_chef(:info, "RHEL selected, command will be '#{command}'")
         when 'debian'
+          log_chef(:warn, 'Repository inclusion and exclusion is not supported with APT') if repo_include || repo_exclude
+
           command = 'apt-cache search syslog-ng'
           command.concat(filter_output)
 
-          Chef::Log.info("Debian selected, command will be '#{command}'")
+          log_chef(:info, "Debian selected, command will be '#{command}'")
         else
           raise "repo_get_packages: Unsupported platform #{node['platform_family']}."
         end
@@ -47,8 +53,8 @@ module SyslogNg
 
         raise 'No packages found to install' if packages.empty?
 
-        Chef::Log.info("Found #{packages.count} packages to install")
-        Chef::Log.debug("Packages to install are: #{packages.join(', ')}.")
+        log_chef(:info, "Found #{packages.count} packages to install")
+        log_chef(:debug, "Packages to install are: #{packages.join(', ')}.")
 
         packages
       end

@@ -69,9 +69,10 @@ describe 'SyslogNg::Cookbook::SourceDestinationHelpers' do
       end
     end
 
-    context('given invalid argument set') do
-      it 'raises ArgumentError' do
-        expect { dummy_class.new.source_dest_config_builder() }.to raise_error(ArgumentError)
+    context('given nil/block argument set') do
+      it 'returns empty array' do
+        expect(dummy_class.new.source_dest_config_builder()).to be_a(Array)
+        expect(dummy_class.new.source_dest_config_builder()).to eql([])
       end
     end
   end

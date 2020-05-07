@@ -24,13 +24,18 @@ module SyslogNg
       include SyslogNg::Cookbook::ConfigHelpers
 
       def source_dest_config_builder(driver: nil, path: nil, parameters: nil, configuration: nil)
-        return configuration unless nil_or_empty?(configuration) # Given raw configuration
+        unless nil_or_empty?(configuration)
+          log_chef(:debug, "Given raw configuration. Returning '#{configuration}'.")
+          return configuration
+        end
 
         log_chef(:debug, "Building source/destination config. Driver: #{driver} | Path: #{path} | Parameters: #{parameters} | Configuration: #{configuration}")
 
         # Build configuration from properties
         configs = []
-        if !nil_or_empty?(driver) && driver.is_a?(Array)
+        if nil_or_empty?(driver)
+          log_chef(:debug, 'Nil configuration given, presumably being used with a Block. Returning empty array.')
+        else
           driver.zip(path, parameters).each do |drv, pth, param|
             log_chef(:debug, "Zipped configuration set. Driver: #{drv} | Path: #{pth} | Parameters: #{param}.")
 
@@ -42,17 +47,16 @@ module SyslogNg
             log_chef(:debug, "Built configuration: '#{config.compact}'.")
             configs.push(config.compact)
           end
-        else
-          raise ArgumentError, "Invalid argument set given. Driver: #{driver.class} | Path: #{path.class} | Parameters: #{parameters.class} | Configuration: #{configuration.class}"
         end
 
         log_chef(:debug, "Complete source/destination configuration build: '#{configs}'.")
+
         configs
       end
 
       def source_builder(driver:, parameters:, multiline: false)
-        raise ArgumentError, "Expected syslog-ng driver name to be a String, got a #{driver.class}." unless driver.is_a?(String)
-        raise ArgumentError, "Expected syslog-ng driver configuration attribute block to be a Hash, got a #{parameters.class}." unless parameters.is_a?(Hash)
+        raise ArgumentError, "source_builder: Expected syslog-ng driver name to be a String, got a #{driver.class}." unless driver.is_a?(String)
+        raise ArgumentError, "source_builder: Expected syslog-ng driver configuration attribute block to be a Hash, got a #{parameters.class}." unless parameters.is_a?(Hash)
 
         log_chef(:debug, "Building source/destination statement. Driver: #{driver} | Parameters: #{parameters} | Multiline: #{multiline}")
         config = []

@@ -156,6 +156,7 @@ syslog_ng_source 's_block_test' do
   blocks(
     'b_test_tcp_source_block' => {
       'localport' => 8080,
+      'flags' => 'no-parse',
     }
   )
   notifies :run, 'execute[syslog-ng-config-test]', :delayed

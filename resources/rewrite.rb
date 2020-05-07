@@ -81,6 +81,9 @@ property :configuration, [Hash, Array],
           coerce: proc { |p| p.is_a?(Array) ? p : [p] },
           description: 'Hash or Array of Hash containing raw rewrite(s) configuration'
 
+property :blocks, [Hash, Array],
+          description: 'Array of blocks to reference without parameters or a Hash of blocks to reference with parameters'
+
 action_class do
   include SyslogNg::Cookbook::RewriteHelpers
 end
@@ -98,7 +101,8 @@ action :create do
     variables(
       name: new_resource.name,
       description: new_resource.description ? new_resource.description : new_resource.name,
-      rewrite: rewrite_config_builder
+      rewrite: rewrite_config_builder,
+      blocks: new_resource.blocks
     )
     helpers(SyslogNg::Cookbook::RewriteHelpers)
 

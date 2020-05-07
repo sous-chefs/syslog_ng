@@ -63,6 +63,9 @@ property :configuration, [Hash, Array],
           coerce: proc { |p| p.is_a?(Array) ? p : [p] },
           description: 'Hash or Array of Hash containing raw driver(s) configuration'
 
+property :blocks, [Hash, Array],
+          description: 'Array of blocks to reference without parameters or a Hash of blocks to reference with parameters'
+
 property :multiline, [true, false],
           default: false,
           description: 'Use multiline formatting'
@@ -90,6 +93,7 @@ action :create do
         parameters: new_resource.parameters,
         configuration: new_resource.configuration
       ),
+      blocks: new_resource.blocks,
       multiline: new_resource.multiline
     )
     helpers(SyslogNg::Cookbook::SourceDestinationHelpers)

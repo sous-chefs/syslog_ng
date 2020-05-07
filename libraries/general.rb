@@ -38,16 +38,7 @@ module SyslogNg
       end
 
       def syslog_ng_config_dirs
-        [
-          '/etc/syslog-ng/conf.d',
-          '/etc/syslog-ng/destination.d',
-          '/etc/syslog-ng/filter.d',
-          '/etc/syslog-ng/log.d',
-          '/etc/syslog-ng/parser.d',
-          '/etc/syslog-ng/rewrite.d',
-          '/etc/syslog-ng/source.d',
-          '/etc/syslog-ng/template.d',
-        ]
+        %w(block.d conf.d destination.d filter.d log.d parser.d rewrite.d source.d template.d)
       end
 
       def syslog_ng_installed_version
@@ -69,6 +60,7 @@ module SyslogNg
             'log_fifo_size' => 1000,
             'chain_hostnames' => 'off',
             'use_dns' => 'no',
+            'dns-cache' => 'no',
             'use_fqdn' => 'no',
             'create_dirs' => 'no',
             'keep_hostname' => 'yes',

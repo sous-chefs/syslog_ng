@@ -5,7 +5,7 @@
 
 # Block - <%= @description %>
 block <%= @type %> <%= @name -%>(<%= build_parameter_string(:block, @parameters) unless nil_or_empty?(@parameters) -%>) {
-  <% block_builder(@definition).each do |line| -%>
+  <% block_builder(@type, @definition).each do |line| -%>
   <%= line %>
   <% end -%>
 };

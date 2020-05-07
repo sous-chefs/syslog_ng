@@ -4,8 +4,8 @@
 #
 
 # Source - <%= @description %>
-<% unless nil_or_empty?(@source) -%>
 source <%= @name -%> {
+  <% unless nil_or_empty?(@source) -%>
   <% @source.each do |config| -%>
   <% config.each do |driver, parameters| -%>
   <% result = source_builder(driver: driver, parameters: parameters, multiline: @multiline) -%>
@@ -18,5 +18,10 @@ source <%= @name -%> {
   <% end -%>
   <% end -%>
   <% end -%>
+  <% end -%>
+  <% unless nil_or_empty?(@blocks) -%>
+  <% @blocks.each do |block, config| -%>
+  <%= block -%>(<%= build_parameter_string(:block, config) -%>)
+  <% end -%>
+  <% end -%>
 };
-<% end -%>

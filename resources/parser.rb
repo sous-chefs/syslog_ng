@@ -53,6 +53,9 @@ property :options, Hash,
           default: {},
           description: 'Parser driver configuration options'
 
+property :blocks, [Hash, Array],
+          description: 'Array of blocks to reference without parameters or a Hash of blocks to reference with parameters'
+
 action :create do
   template "#{new_resource.config_dir}/#{new_resource.name}.conf" do
     cookbook new_resource.cookbook
@@ -67,7 +70,8 @@ action :create do
       name: new_resource.name,
       description: new_resource.description ? new_resource.description : new_resource.name,
       parser: new_resource.parser,
-      options: new_resource.options
+      options: new_resource.options,
+      blocks: new_resource.blocks
     )
     helpers(SyslogNg::Cookbook::ConfigHelpers)
 

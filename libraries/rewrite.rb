@@ -52,7 +52,7 @@ module SyslogNg
                 'additional_options' => new_resource.additional_options,
               },
             ]
-          when 'unset groupunset'
+          when 'unset', 'groupunset'
             [
               {
                 'function' => new_resource.function,
@@ -73,7 +73,7 @@ module SyslogNg
                 'additional_options' => new_resource.additional_options,
               },
             ]
-          when 'set-tag clear-tag'
+          when 'set-tag', 'clear-tag'
             [
               {
                 'function' => new_resource.function,
@@ -89,17 +89,19 @@ module SyslogNg
                 'additional_options' => new_resource.additional_options,
               },
             ]
+          else
+            raise ArgumentError, "Unsupported rewrite function '#{new_resource.function}' passed, should be one of: #{SYSLOG_NG_REWRITE_OPERATORS}."
           end
         end
       end
 
       def rewrite_builder(parameters)
-        raise ArgumentError, "Expected syslog-ng rewrite configuration attribute block to be a Hash, got a #{parameters.class}." unless parameters.is_a?(Hash)
+        raise ArgumentError, "rewrite_builder: Expected syslog-ng rewrite configuration attribute block to be a Hash, got a #{parameters.class}." unless parameters.is_a?(Hash)
 
         params = parameters.dup
         config_string = ''
 
-        config_string.concat(params.delete('function') + '(')
+        config_string.concat("#{params.delete('function')}(")
         config_string.concat(build_parameter_string(:rewrite, params))
         config_string.rstrip!
         config_string = config_string[0...-1] if config_string.end_with?(',')

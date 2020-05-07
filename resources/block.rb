@@ -1,6 +1,6 @@
 #
 # Cookbook:: syslog_ng
-# Resource:: template
+# Resource:: block
 #
 # Copyright:: Ben Hughes <bmhughes@bmhughes.co.uk>
 #
@@ -19,7 +19,7 @@
 include SyslogNg::Cookbook::GeneralHelpers
 
 property :config_dir, String,
-          default: lazy { "#{syslog_ng_config_dir}/template.d" },
+          default: lazy { "#{syslog_ng_config_dir}/block.d" },
           description: 'Directory to create configuration file in'
 
 property :cookbook, String,
@@ -27,7 +27,7 @@ property :cookbook, String,
           description: 'Cookbook to source configuration file template from'
 
 property :template, String,
-          default: 'syslog-ng/template.conf.erb',
+          default: 'syslog-ng/block.conf.erb',
           description: 'Template to use to generate the configuration file'
 
 property :owner, String,
@@ -45,26 +45,17 @@ property :mode, String,
 property :description, String,
           description: 'Unparsed description to add to the configuration file'
 
-property :template_expression, String,
-          required: true,
-          description: 'Template expression'
+property :type, Symbol,
+          equal_to: SyslogNg::Cookbook::BlockHelpers::SYSLOG_NG_BLOCK_TYPES
 
-property :template_escape, [true, false],
-          default: false,
-          description: 'Escape the `\'`, `"`, and `\` characters from the messages'
+property :parameters, Hash,
+          description: 'Parameters to be used within the block'
 
-property :blocks, [Hash, Array],
-          description: 'Array of blocks to reference without parameters or a Hash of blocks to reference with parameters'
+property :definition, Hash,
+          description: 'Definition of the block contents'
 
 action_class do
-  def template_config
-    {
-      new_resource.name => {
-        'template' => new_resource.template_expression,
-        'template_escape' => new_resource.template_escape ? 'yes' : 'no',
-      },
-    }
-  end
+  include SyslogNg::Cookbook::RewriteHelpers
 end
 
 action :create do
@@ -78,11 +69,13 @@ action :create do
     sensitive new_resource.sensitive
 
     variables(
-      description: new_resource.description.nil? ? new_resource.name : new_resource.description,
-      template: template_config,
-      blocks: new_resource.blocks
+      name: new_resource.name,
+      description: new_resource.description ? new_resource.description : new_resource.name,
+      type: new_resource.type,
+      parameters: new_resource.parameters,
+      definition: new_resource.definition
     )
-    helpers(SyslogNg::Cookbook::ConfigHelpers)
+    helpers(SyslogNg::Cookbook::BlockHelpers)
 
     action :create
   end

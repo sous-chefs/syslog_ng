@@ -26,14 +26,14 @@ module SyslogNg
       SYSLOG_NG_FILTER_FUNCTIONS ||= %w(facility filter host inlist level priority match message netmask netmask6 program source tags operator).freeze
 
       def filter_builder(parameters)
-        raise ArgumentError, "Expected syslog-ng filter definition to be passed as a Hash, Array or String. Got a #{parameters.class}." unless parameter_valid?(parameters)
+        raise ArgumentError, "filter_builder: Expected syslog-ng filter definition to be passed as a Hash, Array or String. Got a #{parameters.class}." unless parameter_valid?(parameters)
 
         config_string = ''
 
         case parameters
         when Hash
           parameters.each do |filter, parameter|
-            raise ArgumentError, "Invalid operator '#{filter}' specified in filter configuration. Object type #{parameter.class}." unless filter_operator_valid?(filter)
+            raise ArgumentError, "filter_builder: Invalid operator '#{filter}' specified in filter configuration. Object type #{parameter.class}." unless filter_operator_valid?(filter)
 
             case parameter
             when Hash
