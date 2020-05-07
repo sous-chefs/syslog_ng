@@ -32,7 +32,7 @@ syslog_ng_rewrite 'r_test_ip' do
   replacement 'IP-Address'
   value 'MESSAGE'
   notifies :run, 'execute[syslog-ng-config-test]', :delayed
-  notifies :reload, 'service[syslog-ng]', :delayed
+  notifies :restart, 'service[syslog-ng]', :delayed
   action :create
 end
 
@@ -41,7 +41,7 @@ syslog_ng_rewrite 'r_test_set' do
   replacement 'myhost'
   value 'HOST'
   notifies :run, 'execute[syslog-ng-config-test]', :delayed
-  notifies :reload, 'service[syslog-ng]', :delayed
+  notifies :restart, 'service[syslog-ng]', :delayed
   action :create
 end
 
@@ -51,7 +51,7 @@ syslog_ng_rewrite 'r_test_set_additional' do
   value 'HOST'
   additional_options 'on-error' => 'fallback-to-string'
   notifies :run, 'execute[syslog-ng-config-test]', :delayed
-  notifies :reload, 'service[syslog-ng]', :delayed
+  notifies :restart, 'service[syslog-ng]', :delayed
   action :create
 end
 
@@ -59,7 +59,7 @@ syslog_ng_rewrite 'r_test_unset' do
   function 'unset'
   value 'HOST'
   notifies :run, 'execute[syslog-ng-config-test]', :delayed
-  notifies :reload, 'service[syslog-ng]', :delayed
+  notifies :restart, 'service[syslog-ng]', :delayed
   action :create
 end
 
@@ -67,7 +67,7 @@ syslog_ng_rewrite 'r_test_groupunset' do
   function 'groupunset'
   values '.SDATA.*'
   notifies :run, 'execute[syslog-ng-config-test]', :delayed
-  notifies :reload, 'service[syslog-ng]', :delayed
+  notifies :restart, 'service[syslog-ng]', :delayed
   action :create
 end
 
@@ -76,7 +76,7 @@ syslog_ng_rewrite 'r_test_groupset_single' do
   field 'nobody'
   values '.USER.*'
   notifies :run, 'execute[syslog-ng-config-test]', :delayed
-  notifies :reload, 'service[syslog-ng]', :delayed
+  notifies :restart, 'service[syslog-ng]', :delayed
   action :create
 end
 
@@ -85,7 +85,7 @@ syslog_ng_rewrite 'r_test_groupset_array' do
   field 'myhost'
   values %w(HOST FULLHOST)
   notifies :run, 'execute[syslog-ng-config-test]', :delayed
-  notifies :reload, 'service[syslog-ng]', :delayed
+  notifies :restart, 'service[syslog-ng]', :delayed
   action :create
 end
 
@@ -95,7 +95,7 @@ syslog_ng_rewrite 'r_test_set_condition' do
   value 'HOST'
   condition 'program("myapplication")'
   notifies :run, 'execute[syslog-ng-config-test]', :delayed
-  notifies :reload, 'service[syslog-ng]', :delayed
+  notifies :restart, 'service[syslog-ng]', :delayed
   action :create
 end
 
@@ -103,7 +103,7 @@ syslog_ng_rewrite 'r_test_set_tag' do
   function 'set-tag'
   tags 'tag-to-add-1'
   notifies :run, 'execute[syslog-ng-config-test]', :delayed
-  notifies :reload, 'service[syslog-ng]', :delayed
+  notifies :restart, 'service[syslog-ng]', :delayed
   action :create
 end
 
@@ -111,7 +111,7 @@ syslog_ng_rewrite 'r_test_clear_tag' do
   function 'clear-tag'
   tags 'tag-to-delete'
   notifies :run, 'execute[syslog-ng-config-test]', :delayed
-  notifies :reload, 'service[syslog-ng]', :delayed
+  notifies :restart, 'service[syslog-ng]', :delayed
   action :create
 end
 
@@ -119,7 +119,7 @@ syslog_ng_rewrite 'r_test_credit_card_mask' do
   function 'credit-card-mask'
   value 'cc-field'
   notifies :run, 'execute[syslog-ng-config-test]', :delayed
-  notifies :reload, 'service[syslog-ng]', :delayed
+  notifies :restart, 'service[syslog-ng]', :delayed
   action :create
 end
 
@@ -142,6 +142,6 @@ syslog_ng_rewrite 'r_test_multiple' do
     ]
   )
   notifies :run, 'execute[syslog-ng-config-test]', :delayed
-  notifies :reload, 'service[syslog-ng]', :delayed
+  notifies :restart, 'service[syslog-ng]', :delayed
   action :create
 end

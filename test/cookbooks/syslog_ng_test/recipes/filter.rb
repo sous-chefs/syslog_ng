@@ -34,7 +34,7 @@ syslog_ng_filter 'f_test' do
     }
   )
   notifies :run, 'execute[syslog-ng-config-test]', :delayed
-  notifies :reload, 'service[syslog-ng]', :delayed
+  notifies :restart, 'service[syslog-ng]', :delayed
   action :create
 end
 
@@ -52,7 +52,7 @@ syslog_ng_filter 'f_test_contained' do
     }
   )
   notifies :run, 'execute[syslog-ng-config-test]', :delayed
-  notifies :reload, 'service[syslog-ng]', :delayed
+  notifies :restart, 'service[syslog-ng]', :delayed
   action :create
 end
 
@@ -63,7 +63,7 @@ syslog_ng_filter 'f_test_array_and' do
     }
   )
   notifies :run, 'execute[syslog-ng-config-test]', :delayed
-  notifies :reload, 'service[syslog-ng]', :delayed
+  notifies :restart, 'service[syslog-ng]', :delayed
   action :create
 end
 
@@ -75,20 +75,20 @@ syslog_ng_filter 'f_test_array_or' do
     }
   )
   notifies :run, 'execute[syslog-ng-config-test]', :delayed
-  notifies :reload, 'service[syslog-ng]', :delayed
+  notifies :restart, 'service[syslog-ng]', :delayed
   action :create
 end
 
 syslog_ng_filter 'f_test_raw_string' do
   parameters 'host("example") and match("deny" value("MESSAGE"))'
   notifies :run, 'execute[syslog-ng-config-test]', :delayed
-  notifies :reload, 'service[syslog-ng]', :delayed
+  notifies :restart, 'service[syslog-ng]', :delayed
   action :create
 end
 
 syslog_ng_filter 'f_test_raw_string_array' do
   parameters ['host("example1")', 'or host("example2")', 'or (host("example3") and not match("test" value("NOT_ME_MESSAGE")))']
   notifies :run, 'execute[syslog-ng-config-test]', :delayed
-  notifies :reload, 'service[syslog-ng]', :delayed
+  notifies :restart, 'service[syslog-ng]', :delayed
   action :create
 end

@@ -29,13 +29,13 @@ end
 syslog_ng_template 't_first_template' do
   template_expression 'sample-text'
   notifies :run, 'execute[syslog-ng-config-test]', :delayed
-  notifies :reload, 'service[syslog-ng]', :delayed
+  notifies :restart, 'service[syslog-ng]', :delayed
   action :create
 end
 
 syslog_ng_template 't_second_template' do
   template_expression 'The result of the first-template is: $(template t_first_template)'
   notifies :run, 'execute[syslog-ng-config-test]', :delayed
-  notifies :reload, 'service[syslog-ng]', :delayed
+  notifies :restart, 'service[syslog-ng]', :delayed
   action :create
 end

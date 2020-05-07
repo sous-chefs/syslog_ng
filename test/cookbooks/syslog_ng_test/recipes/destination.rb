@@ -30,7 +30,7 @@ syslog_ng_destination 'd_test_file' do
   driver 'file'
   path '/var/log/test.log'
   notifies :run, 'execute[syslog-ng-config-test]', :delayed
-  notifies :reload, 'service[syslog-ng]', :delayed
+  notifies :restart, 'service[syslog-ng]', :delayed
   action :create
 end
 
@@ -42,7 +42,7 @@ syslog_ng_destination 'd_test_file_params' do
     'create-dirs' => 'yes'
   )
   notifies :run, 'execute[syslog-ng-config-test]', :delayed
-  notifies :reload, 'service[syslog-ng]', :delayed
+  notifies :restart, 'service[syslog-ng]', :delayed
   action :create
 end
 
@@ -56,7 +56,7 @@ syslog_ng_destination 'd_test_mongo_params' do
     }
   )
   notifies :run, 'execute[syslog-ng-config-test]', :delayed
-  notifies :reload, 'service[syslog-ng]', :delayed
+  notifies :restart, 'service[syslog-ng]', :delayed
   action :create
 end
 
@@ -84,7 +84,7 @@ syslog_ng_destination 'd_test_multi_file' do
     ]
   )
   notifies :run, 'execute[syslog-ng-config-test]', :delayed
-  notifies :reload, 'service[syslog-ng]', :delayed
+  notifies :restart, 'service[syslog-ng]', :delayed
   action :create
 end
 
@@ -113,7 +113,7 @@ syslog_ng_destination 'd_test_multi_file_multiline' do
   )
   multiline true
   notifies :run, 'execute[syslog-ng-config-test]', :delayed
-  notifies :reload, 'service[syslog-ng]', :delayed
+  notifies :restart, 'service[syslog-ng]', :delayed
   action :create
 end
 
@@ -133,6 +133,17 @@ syslog_ng_destination 'd_test_multi_file_alternative' do
     ]
   )
   notifies :run, 'execute[syslog-ng-config-test]', :delayed
-  notifies :reload, 'service[syslog-ng]', :delayed
+  notifies :restart, 'service[syslog-ng]', :delayed
+  action :create
+end
+
+syslog_ng_destination 'd_block_test' do
+  blocks(
+    'b_test_file_destination_block' => {
+      'file' => '/var/log/test/test_file_block.log',
+    }
+  )
+  notifies :run, 'execute[syslog-ng-config-test]', :delayed
+  notifies :restart, 'service[syslog-ng]', :delayed
   action :create
 end

@@ -32,7 +32,7 @@ syslog_ng_log 'l_test' do
   destination 'd_test_file'
   rewrite 'r_test_ip'
   notifies :run, 'execute[syslog-ng-config-test]', :delayed
-  notifies :reload, 'service[syslog-ng]', :delayed
+  notifies :restart, 'service[syslog-ng]', :delayed
   action :create
 end
 
@@ -42,7 +42,7 @@ syslog_ng_log 'l_test_2' do
   destination 'd_test_file'
   rewrite %w(r_test_ip r_test_set)
   notifies :run, 'execute[syslog-ng-config-test]', :delayed
-  notifies :reload, 'service[syslog-ng]', :delayed
+  notifies :restart, 'service[syslog-ng]', :delayed
   action :create
 end
 
@@ -98,7 +98,7 @@ syslog_ng_log 'l_test_embedded' do
     ]
   )
   notifies :run, 'execute[syslog-ng-config-test]', :delayed
-  notifies :reload, 'service[syslog-ng]', :delayed
+  notifies :restart, 'service[syslog-ng]', :delayed
   action :create
 end
 
@@ -141,6 +141,6 @@ syslog_ng_log 'l_test_junction' do
     ]
   )
   notifies :run, 'execute[syslog-ng-config-test]', :delayed
-  notifies :reload, 'service[syslog-ng]', :delayed
+  notifies :restart, 'service[syslog-ng]', :delayed
   action :create
 end

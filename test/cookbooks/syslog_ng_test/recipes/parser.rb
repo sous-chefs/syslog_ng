@@ -30,7 +30,7 @@ syslog_ng_parser 'p_csv_parser' do
   parser 'csv-parser'
   options 'columns' => '"HOSTNAME.NAME", "HOSTNAME.ID"', 'delimiters' => '"-"', 'flags' => 'escape-none', 'template' => '"${HOST}"'
   notifies :run, 'execute[syslog-ng-config-test]', :delayed
-  notifies :reload, 'service[syslog-ng]', :delayed
+  notifies :restart, 'service[syslog-ng]', :delayed
   action :create
 end
 
@@ -38,7 +38,7 @@ syslog_ng_parser 'p_kv_parser' do
   parser 'kv-parser'
   options 'prefix' => '".kv."'
   notifies :run, 'execute[syslog-ng-config-test]', :delayed
-  notifies :reload, 'service[syslog-ng]', :delayed
+  notifies :restart, 'service[syslog-ng]', :delayed
   action :create
 end
 
@@ -46,13 +46,13 @@ syslog_ng_parser 'p_json_parser' do
   parser 'json-parser'
   options 'prefix' => '".json."', 'marker' => '"@json:"'
   notifies :run, 'execute[syslog-ng-config-test]', :delayed
-  notifies :reload, 'service[syslog-ng]', :delayed
+  notifies :restart, 'service[syslog-ng]', :delayed
   action :create
 end
 
 syslog_ng_parser 'p_iptables_parser' do
   parser 'iptables-parser'
   notifies :run, 'execute[syslog-ng-config-test]', :delayed
-  notifies :reload, 'service[syslog-ng]', :delayed
+  notifies :restart, 'service[syslog-ng]', :delayed
   action :create
 end

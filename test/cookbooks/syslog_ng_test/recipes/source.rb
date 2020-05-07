@@ -36,7 +36,7 @@ syslog_ng_source 's_test_syslog' do
     'use_dns' => :persist_only
   )
   notifies :run, 'execute[syslog-ng-config-test]', :delayed
-  notifies :reload, 'service[syslog-ng]', :delayed
+  notifies :restart, 'service[syslog-ng]', :delayed
   action :create
 end
 
@@ -47,7 +47,7 @@ syslog_ng_source 's_test_tcp' do
     'port' => '5514'
   )
   notifies :run, 'execute[syslog-ng-config-test]', :delayed
-  notifies :reload, 'service[syslog-ng]', :delayed
+  notifies :restart, 'service[syslog-ng]', :delayed
   action :create
 end
 
@@ -59,7 +59,7 @@ syslog_ng_source 's_test_pipe' do
   )
   description 'pipe source testing'
   notifies :run, 'execute[syslog-ng-config-test]', :delayed
-  notifies :reload, 'service[syslog-ng]', :delayed
+  notifies :restart, 'service[syslog-ng]', :delayed
   action :create
 end
 
@@ -81,7 +81,7 @@ syslog_ng_source 's_test_tcpudp' do
     ]
   )
   notifies :run, 'execute[syslog-ng-config-test]', :delayed
-  notifies :reload, 'service[syslog-ng]', :delayed
+  notifies :restart, 'service[syslog-ng]', :delayed
   action :create
 end
 
@@ -110,7 +110,7 @@ syslog_ng_source 's_test_network_multiline' do
   )
   multiline true
   notifies :run, 'execute[syslog-ng-config-test]', :delayed
-  notifies :reload, 'service[syslog-ng]', :delayed
+  notifies :restart, 'service[syslog-ng]', :delayed
   action :create
 end
 
@@ -132,7 +132,7 @@ syslog_ng_source 's_test_network_multiple' do
   )
   multiline true
   notifies :run, 'execute[syslog-ng-config-test]', :delayed
-  notifies :reload, 'service[syslog-ng]', :delayed
+  notifies :restart, 'service[syslog-ng]', :delayed
   action :create
 end
 
@@ -148,6 +148,17 @@ syslog_ng_source 's_test_array_non_string' do
   )
   multiline true
   notifies :run, 'execute[syslog-ng-config-test]', :delayed
-  notifies :reload, 'service[syslog-ng]', :delayed
+  notifies :restart, 'service[syslog-ng]', :delayed
+  action :create
+end
+
+syslog_ng_source 's_block_test' do
+  blocks(
+    'b_test_tcp_source_block' => {
+      'localport' => 8080,
+    }
+  )
+  notifies :run, 'execute[syslog-ng-config-test]', :delayed
+  notifies :restart, 'service[syslog-ng]', :delayed
   action :create
 end

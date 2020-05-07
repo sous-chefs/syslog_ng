@@ -1,6 +1,6 @@
 #
 # Cookbook:: syslog_ng_test
-# Recipe:: package_distro
+# Recipe:: config
 #
 # Copyright:: Ben Hughes <bmhughes@bmhughes.co.uk>
 #

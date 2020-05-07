@@ -16,6 +16,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+service 'rsyslog' do
+  action [:stop, :disable]
+end
+
 syslog_ng_package 'syslog-ng' do
   packages_exclude %w(syslog-ng-debuginfo syslog-ng-devel)
   action :install

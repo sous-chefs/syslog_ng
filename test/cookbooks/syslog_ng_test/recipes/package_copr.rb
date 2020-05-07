@@ -41,6 +41,10 @@ when 'fedora'
   end
 end
 
+service 'rsyslog' do
+  action [:stop, :disable]
+end
+
 syslog_ng_package 'syslog-ng' do
   package_repository 'copr:copr.fedorainfracloud.org:czanik:syslog-ng326'
   packages_exclude %w(syslog-ng-debuginfo syslog-ng-devel)
