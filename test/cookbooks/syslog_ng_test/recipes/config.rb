@@ -1,8 +1,8 @@
 #
 # Cookbook:: syslog_ng_test
-# Recipe:: package_latest
+# Recipe:: config
 #
-# Copyright:: 2019, Ben Hughes <bmhughes@bmhughes.co.uk>
+# Copyright:: Ben Hughes <bmhughes@bmhughes.co.uk>
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,8 +16,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-syslog_ng_install '' do
-  package_source 'latest'
-  packages_exclude 'syslog-ng-debugsource'
-  action :install
+syslog_ng_config '/etc/syslog-ng/syslog-ng.conf' do
+  sensitive false
+  notifies :restart, 'syslog_ng_service[syslog-ng]', :delayed
+  action :create
+end
+
+syslog_ng_service 'syslog-ng' do
+  action [:enable, :start]
 end

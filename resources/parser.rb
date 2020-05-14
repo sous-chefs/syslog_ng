@@ -2,7 +2,7 @@
 # Cookbook:: syslog_ng
 # Resource:: parser
 #
-# Copyright:: 2019, Ben Hughes <bmhughes@bmhughes.co.uk>
+# Copyright:: Ben Hughes <bmhughes@bmhughes.co.uk>
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,30 +16,65 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-property :config_dir, String, default: '/etc/syslog-ng/parser.d'
-property :cookbook, String
-property :template_source, String
-property :parser, String, required: true
-property :parser_options, Hash, default: {}
-property :additional_options, Hash, default: {}
-property :description, String
+include SyslogNg::Cookbook::GeneralHelpers
+
+property :config_dir, String,
+          default: lazy { "#{syslog_ng_config_dir}/parser.d" },
+          description: 'Directory to create configuration file in'
+
+property :cookbook, String,
+          default: 'syslog_ng',
+          description: 'Cookbook to source configuration file template from'
+
+property :template, String,
+          default: 'syslog-ng/parser.conf.erb',
+          description: 'Template to use to generate the configuration file'
+
+property :owner, String,
+          default: lazy { default_syslog_ng_user },
+          description: 'Owner of the generated configuration file'
+
+property :group, String,
+          default: lazy { default_syslog_ng_group },
+          description: 'Group of the generated configuration file'
+
+property :mode, String,
+          default: '0640',
+          description: 'Filemode of the generated configuration file'
+
+property :description, String,
+          description: 'Unparsed description to add to the configuration file'
+
+property :parser, String,
+          required: true,
+          description: 'Parser driver'
+
+property :options, Hash,
+          default: {},
+          description: 'Parser driver configuration options'
+
+property :blocks, [Hash, Array],
+          description: 'Array of blocks to reference without parameters or a Hash of blocks to reference with parameters'
 
 action :create do
   template "#{new_resource.config_dir}/#{new_resource.name}.conf" do
-    source new_resource.template_source || 'syslog-ng/parser.conf.erb'
-    cookbook new_resource.cookbook || node['syslog_ng']['config']['config_template_cookbook']
-    owner 'root'
-    group 'root'
-    mode '0755'
+    cookbook new_resource.cookbook
+    source new_resource.template
+
+    owner new_resource.owner
+    group new_resource.group
+    mode new_resource.mode
     sensitive new_resource.sensitive
+
     variables(
       name: new_resource.name,
-      description: new_resource.description.nil? ? new_resource.name : new_resource.description,
+      description: new_resource.description ? new_resource.description : new_resource.name,
       parser: new_resource.parser,
-      parser_options: new_resource.parser_options,
-      additional_options: new_resource.additional_options
+      options: new_resource.options,
+      blocks: new_resource.blocks
     )
-    helpers(SyslogNg::CommonHelpers)
+    helpers(SyslogNg::Cookbook::ConfigHelpers)
+
     action :create
   end
 end

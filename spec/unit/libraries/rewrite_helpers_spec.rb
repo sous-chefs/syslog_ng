@@ -2,7 +2,7 @@
 # Cookbook:: syslog_ng
 # Spec:: rewrite_helpers_spec
 #
-# Copyright:: 2018, Ben Hughes <bmhughes@bmhughes.co.uk>
+# Copyright:: Ben Hughes <bmhughes@bmhughes.co.uk>
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,10 +18,10 @@
 
 require 'spec_helper'
 
-describe 'SyslogNg::RewriteHelpers' do
-  let(:dummy_class) { Class.new { include SyslogNg::RewriteHelpers } }
+describe 'SyslogNg::Cookbook::RewriteHelpers' do
+  let(:dummy_class) { Class.new { include SyslogNg::Cookbook::RewriteHelpers } }
 
-  describe '.rewrite_builder' do
+  describe 'rewrite_builder' do
     context('given subst rewrite') do
       param = {
         'function' => 'subst',

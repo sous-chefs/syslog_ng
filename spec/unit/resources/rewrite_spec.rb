@@ -2,7 +2,7 @@
 # Cookbook:: syslog_ng
 # Spec:: rewrite_spec
 #
-# Copyright:: 2018, Ben Hughes <bmhughes@bmhughes.co.uk>
+# Copyright:: Ben Hughes <bmhughes@bmhughes.co.uk>
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,47 +18,26 @@
 
 require 'spec_helper'
 
-describe 'syslog_ng_test::rewrite' do
-  platforms = {
-    'CentOS' => '8',
-    'Fedora' => '30',
-    'Amazon' => '2',
-    'Debian' => '10',
-    'Ubuntu' => '18.04',
-  }
+describe 'syslog_ng_rewrite' do
+  step_into :syslog_ng_rewrite
+  platform 'centos'
 
-  platforms.each do |platform, version|
-    context "With test recipe, on #{platform} #{version}" do
-      let(:chef_run) do
-        runner = ChefSpec::SoloRunner.new(platform: platform.dup.downcase!, version: version)
-        runner.converge(described_recipe)
+  context 'create syslog-ng rewrite config file' do
+    recipe do
+      syslog_ng_rewrite 'r_test_ip' do
+        function 'subst'
+        match 'IP'
+        replacement 'IP-Address'
+        value 'MESSAGE'
+        action :create
       end
+    end
 
-      it 'converges successfully' do
-        expect { chef_run }.to_not raise_error
-      end
-
-      %w(
-        r_test_ip
-        r_test_set
-        r_test_set_additional
-        r_test_unset
-        r_test_groupunset
-        r_test_groupset_single
-        r_test_groupset_array
-        r_test_set_condition
-        r_test_set_tag
-        r_test_clear_tag
-        r_test_credit_card_mask
-        r_test_multiple).each do |testrewrite|
-        it "creates rewrite #{testrewrite}" do
-          expect(chef_run).to create_syslog_ng_rewrite(testrewrite)
-
-          dest = chef_run.syslog_ng_rewrite(testrewrite)
-          expect(dest).to notify('execute[syslog-ng-config-test]').to(:run).delayed
-          expect(dest).to notify('service[syslog-ng]').to(:reload).delayed
-        end
-      end
+    it 'Creates the rewrite config file correctly' do
+      is_expected.to render_file('/etc/syslog-ng/rewrite.d/r_test_ip.conf')
+        .with_content(/# Rewrite - r_test_ip/)
+        .with_content(/rewrite r_test_ip {/)
+        .with_content(/subst\("IP", "IP-Address", value\("MESSAGE"\)\);/)
     end
   end
 end

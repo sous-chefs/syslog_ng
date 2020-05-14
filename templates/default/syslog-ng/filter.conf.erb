@@ -4,8 +4,11 @@
 #
 
 # Filter - <%= @description %>
-<% if parameter_defined?(@filter) -%>
 filter <%= @name %> {
-    <%= filter_builder(@filter) %>;
+  <%= filter_builder(@filter) %>;
+  <% unless nil_or_empty?(@blocks) -%>
+  <% @blocks.each do |block, config| -%>
+  <%= block -%>(<%= build_parameter_string(:block, config) -%>)
+  <% end -%>
+  <% end -%>
 };
-<% end -%>

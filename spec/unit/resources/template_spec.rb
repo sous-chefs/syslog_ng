@@ -2,7 +2,7 @@
 # Cookbook:: syslog_ng
 # Spec:: template_spec
 #
-# Copyright:: 2018, Ben Hughes <bmhughes@bmhughes.co.uk>
+# Copyright:: Ben Hughes <bmhughes@bmhughes.co.uk>
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,35 +18,23 @@
 
 require 'spec_helper'
 
-describe 'syslog_ng_test::template' do
-  platforms = {
-    'CentOS' => '8',
-    'Fedora' => '30',
-    'Amazon' => '2',
-    'Debian' => '10',
-    'Ubuntu' => '18.04',
-  }
+describe 'syslog_ng_template' do
+  step_into :syslog_ng_template
+  platform 'centos'
 
-  platforms.each do |platform, version|
-    context "With test recipe, on #{platform} #{version}" do
-      let(:chef_run) do
-        runner = ChefSpec::SoloRunner.new(platform: platform.dup.downcase!, version: version)
-        runner.converge(described_recipe)
+  context 'create syslog-ng template config file' do
+    recipe do
+      syslog_ng_template 't_first_template' do
+        template_expression 'sample-text'
+        action :create
       end
+    end
 
-      it 'converges successfully' do
-        expect { chef_run }.to_not raise_error
-      end
-
-      %w(t_first_template t_second_template).each do |testtemplate|
-        it "creates template #{testtemplate}" do
-          expect(chef_run).to create_syslog_ng_template(testtemplate)
-
-          dest = chef_run.syslog_ng_template(testtemplate)
-          expect(dest).to notify('execute[syslog-ng-config-test]').to(:run).delayed
-          expect(dest).to notify('service[syslog-ng]').to(:reload).delayed
-        end
-      end
+    it 'Creates the template config file correctly' do
+      is_expected.to render_file('/etc/syslog-ng/template.d/t_first_template.conf')
+        .with_content(/# Template - t_first_template/)
+        .with_content(/template t_first_template {/)
+        .with_content(/template\("sample-text"\); template-escape\(no\);/)
     end
   end
 end

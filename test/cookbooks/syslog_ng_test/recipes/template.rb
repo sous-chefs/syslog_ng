@@ -2,7 +2,7 @@
 # Cookbook:: syslog_ng_test
 # Recipe:: template
 #
-# Copyright:: 2019, Ben Hughes <bmhughes@bmhughes.co.uk>
+# Copyright:: Ben Hughes <bmhughes@bmhughes.co.uk>
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,25 +17,19 @@
 # limitations under the License.
 
 with_run_context :root do
-  find_resource(:execute, 'syslog-ng-config-test') do
-    command '/sbin/syslog-ng -s'
-    action :nothing
-  end
-  find_resource(:service, 'syslog-ng') do
+  find_resource(:syslog_ng_service, 'syslog-ng') do
     action :nothing
   end
 end
 
 syslog_ng_template 't_first_template' do
-  template 'sample-text'
-  notifies :run, 'execute[syslog-ng-config-test]', :delayed
-  notifies :reload, 'service[syslog-ng]', :delayed
+  template_expression 'sample-text'
+  notifies :restart, 'syslog_ng_service[syslog-ng]', :delayed
   action :create
 end
 
 syslog_ng_template 't_second_template' do
-  template 'The result of the first-template is: $(template t_first_template)'
-  notifies :run, 'execute[syslog-ng-config-test]', :delayed
-  notifies :reload, 'service[syslog-ng]', :delayed
+  template_expression 'The result of the first-template is: $(template t_first_template)'
+  notifies :restart, 'syslog_ng_service[syslog-ng]', :delayed
   action :create
 end

@@ -4,12 +4,15 @@
 #
 
 # Parser - <%= @description %>
-<% if parameter_defined?(@parser) -%>
 parser <%= @name -%> {
-    <%= @parser -%>(
-        <% @parser_options.each do |name, config| -%>
-        <%= name -%>(<%= config -%>)
-        <% end -%>
-    );
+  <%= @parser -%>(
+    <% @options.each do |name, config| -%>
+    <%= name -%>(<%= config -%>)
+    <% end -%>
+  );
+  <% unless nil_or_empty?(@blocks) -%>
+  <% @blocks.each do |block, config| -%>
+  <%= block -%>(<%= build_parameter_string(:block, config) -%>)
+  <% end -%>
+  <% end -%>
 };
-<% end -%>

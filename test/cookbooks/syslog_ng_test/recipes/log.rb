@@ -2,7 +2,7 @@
 # Cookbook:: syslog_ng_test
 # Recipe:: log
 #
-# Copyright:: 2018, Ben Hughes <bmhughes@bmhughes.co.uk>
+# Copyright:: Ben Hughes <bmhughes@bmhughes.co.uk>
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,11 +17,7 @@
 # limitations under the License.
 
 with_run_context :root do
-  find_resource(:execute, 'syslog-ng-config-test') do
-    command '/sbin/syslog-ng -s'
-    action :nothing
-  end
-  find_resource(:service, 'syslog-ng') do
+  find_resource(:syslog_ng_service, 'syslog-ng') do
     action :nothing
   end
 end
@@ -31,8 +27,7 @@ syslog_ng_log 'l_test' do
   filter 'f_test'
   destination 'd_test_file'
   rewrite 'r_test_ip'
-  notifies :run, 'execute[syslog-ng-config-test]', :delayed
-  notifies :reload, 'service[syslog-ng]', :delayed
+  notifies :restart, 'syslog_ng_service[syslog-ng]', :delayed
   action :create
 end
 
@@ -41,8 +36,7 @@ syslog_ng_log 'l_test_2' do
   filter 'f_test'
   destination 'd_test_file'
   rewrite %w(r_test_ip r_test_set)
-  notifies :run, 'execute[syslog-ng-config-test]', :delayed
-  notifies :reload, 'service[syslog-ng]', :delayed
+  notifies :restart, 'syslog_ng_service[syslog-ng]', :delayed
   action :create
 end
 
@@ -97,8 +91,7 @@ syslog_ng_log 'l_test_embedded' do
       },
     ]
   )
-  notifies :run, 'execute[syslog-ng-config-test]', :delayed
-  notifies :reload, 'service[syslog-ng]', :delayed
+  notifies :restart, 'syslog_ng_service[syslog-ng]', :delayed
   action :create
 end
 
@@ -140,7 +133,6 @@ syslog_ng_log 'l_test_junction' do
       },
     ]
   )
-  notifies :run, 'execute[syslog-ng-config-test]', :delayed
-  notifies :reload, 'service[syslog-ng]', :delayed
+  notifies :restart, 'syslog_ng_service[syslog-ng]', :delayed
   action :create
 end

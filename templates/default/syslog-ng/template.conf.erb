@@ -4,10 +4,13 @@
 #
 
 # Template - <%= @description %>
-<% if parameter_defined?(@template) -%>
 <% @template.each do |name, config| -%>
 template <%= name -%> {
-    template("<%= config['template'] -%>"); template-escape(<%= config['template_escape'] -%>);
+  template("<%= config['template'] -%>"); template-escape(<%= config['template_escape'] -%>);
+  <% unless nil_or_empty?(@blocks) -%>
+  <% @blocks.each do |block, config| -%>
+  <%= block -%>(<%= build_parameter_string(:block, config) -%>)
+  <% end -%>
+  <% end -%>
 };
-<% end -%>
 <% end -%>

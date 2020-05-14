@@ -2,7 +2,7 @@
 # Cookbook:: syslog_ng_test
 # Recipe:: destination
 #
-# Copyright:: 2018, Ben Hughes <bmhughes@bmhughes.co.uk>
+# Copyright:: Ben Hughes <bmhughes@bmhughes.co.uk>
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,11 +17,7 @@
 # limitations under the License.
 
 with_run_context :root do
-  find_resource(:execute, 'syslog-ng-config-test') do
-    command '/sbin/syslog-ng -s'
-    action :nothing
-  end
-  find_resource(:service, 'syslog-ng') do
+  find_resource(:syslog_ng_service, 'syslog-ng') do
     action :nothing
   end
 end
@@ -29,8 +25,7 @@ end
 syslog_ng_destination 'd_test_file' do
   driver 'file'
   path '/var/log/test.log'
-  notifies :run, 'execute[syslog-ng-config-test]', :delayed
-  notifies :reload, 'service[syslog-ng]', :delayed
+  notifies :restart, 'syslog_ng_service[syslog-ng]', :delayed
   action :create
 end
 
@@ -41,23 +36,20 @@ syslog_ng_destination 'd_test_file_params' do
     'flush_lines' => 10,
     'create-dirs' => 'yes'
   )
-  notifies :run, 'execute[syslog-ng-config-test]', :delayed
-  notifies :reload, 'service[syslog-ng]', :delayed
+  notifies :restart, 'syslog_ng_service[syslog-ng]', :delayed
   action :create
 end
 
 syslog_ng_destination 'd_test_mongo_params' do
   driver 'mongodb'
   parameters(
-    'servers' => '127.0.0.1:27017',
-    'database' => 'syslog',
+    'uri' => 'mongodb://127.0.0.1:27017/syslog',
     'collection' => 'messages',
     'value-pairs' => {
       'scope' => %w(selected-macros nv-pairs sdata),
     }
   )
-  notifies :run, 'execute[syslog-ng-config-test]', :delayed
-  notifies :reload, 'service[syslog-ng]', :delayed
+  notifies :restart, 'syslog_ng_service[syslog-ng]', :delayed
   action :create
 end
 
@@ -84,8 +76,7 @@ syslog_ng_destination 'd_test_multi_file' do
       },
     ]
   )
-  notifies :run, 'execute[syslog-ng-config-test]', :delayed
-  notifies :reload, 'service[syslog-ng]', :delayed
+  notifies :restart, 'syslog_ng_service[syslog-ng]', :delayed
   action :create
 end
 
@@ -113,8 +104,7 @@ syslog_ng_destination 'd_test_multi_file_multiline' do
     ]
   )
   multiline true
-  notifies :run, 'execute[syslog-ng-config-test]', :delayed
-  notifies :reload, 'service[syslog-ng]', :delayed
+  notifies :restart, 'syslog_ng_service[syslog-ng]', :delayed
   action :create
 end
 
@@ -133,7 +123,16 @@ syslog_ng_destination 'd_test_multi_file_alternative' do
       },
     ]
   )
-  notifies :run, 'execute[syslog-ng-config-test]', :delayed
-  notifies :reload, 'service[syslog-ng]', :delayed
+  notifies :restart, 'syslog_ng_service[syslog-ng]', :delayed
+  action :create
+end
+
+syslog_ng_destination 'd_block_test' do
+  blocks(
+    'b_test_file_destination_block' => {
+      'file' => '/var/log/test/test_file_block.log',
+    }
+  )
+  notifies :restart, 'syslog_ng_service[syslog-ng]', :delayed
   action :create
 end

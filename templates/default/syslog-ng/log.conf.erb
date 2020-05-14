@@ -5,63 +5,68 @@
 
 # Log - <%= @description %>
 log {
-    <% if @source.is_a?(Array) -%>
-    <% @source.each do |source| -%>
-    <% if source.is_a?(Hash) -%>
-    <% source.each do |driver, parameters| -%>
-    source { <%= source_builder(driver: driver, parameters: parameters) %> };
-    <% end -%>
-    <% else -%>
-    source(<%= source %>);
-    <% end -%>
-    <% end -%>
-    <% else -%>
-    source(<%= @source %>);
-    <% end -%>
-    <% if @filter.is_a?(Hash) -%>
-    filter { <%= filter_builder(@filter) %> }; 
-    <% elsif @filter.is_a?(Array) -%>
-    <% @filter.each do |filter| -%>
-    filter(<%= filter %>);
-    <% end -%>    
-    <% else -%>
-    filter(<%= @filter %>);
-    <% end -%>
-    <% if @parser.is_a?(Array) -%>
-    <% @parser.each do |parser| -%>
-    parser(<%= parser %>);
-    <% end -%>
-    <% else -%>
-    parser(<%= @parser %>);
-    <% end -%>
-    <% if @rewrite.is_a?(Array) -%>
-    <% @rewrite.each do |rewrite| -%>
-    rewrite(<%= rewrite %>);
-    <% end -%>
-    <% else -%>
-    rewrite(<%= @rewrite %>);
-    <% end -%>    
-    <% if parameter_defined?(@junction) -%>
-    <%= render('syslog-ng/log.junction.partial.erb', :variables => {:junction => @junction}, :cookbook => 'syslog_ng') %>
-    <% end -%>
-    <% if @destination.is_a?(Array) -%>
-    <% @destination.each do |destination| -%>
-    <% if destination.is_a?(Hash) -%>
-    <% destination.each do |driver, parameters| -%>
-    destination { <%= destination_builder(driver: driver, parameters: parameters) %> };
-    <% end -%>
-    <% else -%>
-    destination(<%= destination %>);
-    <% end -%>
-    <% end -%>
-    <% else -%>
-    destination(<%= @destination %>);
-    <% end -%>
-    <% if @flags.is_a?(Array) -%>
-    <% @flags.each do |flags| -%>
-    flags(<%= flags %>);
-    <% end -%>
-    <% else -%>
-    flags(<%= @flags %>);
-    <% end -%>
+  <% if @source.is_a?(Array) -%>
+  <% @source.each do |source| -%>
+  <% if source.is_a?(Hash) -%>
+  <% source.each do |driver, parameters| -%>
+  source { <%= source_builder(driver: driver, parameters: parameters) %> };
+  <% end -%>
+  <% else -%>
+  source(<%= source %>);
+  <% end -%>
+  <% end -%>
+  <% else -%>
+  source(<%= @source %>);
+  <% end -%>
+  <% if @filter.is_a?(Hash) -%>
+  filter { <%= filter_builder(@filter) %> };
+  <% elsif @filter.is_a?(Array) -%>
+  <% @filter.each do |filter| -%>
+  filter(<%= filter %>);
+  <% end -%>
+  <% else -%>
+  filter(<%= @filter %>);
+  <% end -%>
+  <% if @parser.is_a?(Array) -%>
+  <% @parser.each do |parser| -%>
+  parser(<%= parser %>);
+  <% end -%>
+  <% else -%>
+  parser(<%= @parser %>);
+  <% end -%>
+  <% if @rewrite.is_a?(Array) -%>
+  <% @rewrite.each do |rewrite| -%>
+  rewrite(<%= rewrite %>);
+  <% end -%>
+  <% else -%>
+  rewrite(<%= @rewrite %>);
+  <% end -%>
+  <% unless nil_or_empty?(@junction) -%>
+  <%= render('syslog-ng/log.junction.partial.erb', :variables => {:junction => @junction}, :cookbook => 'syslog_ng') %>
+  <% end -%>
+  <% if @destination.is_a?(Array) -%>
+  <% @destination.each do |destination| -%>
+  <% if destination.is_a?(Hash) -%>
+  <% destination.each do |driver, parameters| -%>
+  destination { <%= destination_builder(driver: driver, parameters: parameters) %> };
+  <% end -%>
+  <% else -%>
+  destination(<%= destination %>);
+  <% end -%>
+  <% end -%>
+  <% else -%>
+  destination(<%= @destination %>);
+  <% end -%>
+  <% if @flags.is_a?(Array) -%>
+  <% @flags.each do |flags| -%>
+  flags(<%= flags %>);
+  <% end -%>
+  <% else -%>
+  flags(<%= @flags %>);
+  <% end -%>
+  <% unless nil_or_empty?(@blocks) -%>
+  <% @blocks.each do |block, config| -%>
+  <%= block -%>(<%= build_parameter_string(:block, config) -%>)
+  <% end -%>
+  <% end -%>
 };

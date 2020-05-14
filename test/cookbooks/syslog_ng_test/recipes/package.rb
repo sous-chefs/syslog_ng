@@ -1,8 +1,8 @@
 #
-# Cookbook:: syslog_ng
-# Library:: config
+# Cookbook:: syslog_ng_test
+# Recipe:: package
 #
-# Copyright:: 2018, Ben Hughes <bmhughes@bmhughes.co.uk>, All Rights Reserved.
+# Copyright:: Ben Hughes <bmhughes@bmhughes.co.uk>
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,10 +16,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require_relative 'source'
+service 'rsyslog' do
+  action [:stop, :disable]
+end
 
-module SyslogNg
-  module DestinationHelpers
-    include SyslogNg::SourceHelpers
-  end
+syslog_ng_package 'syslog-ng' do
+  packages_exclude %w(syslog-ng-debuginfo syslog-ng-devel)
+  action :install
 end

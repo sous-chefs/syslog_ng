@@ -2,7 +2,7 @@
 # Cookbook:: syslog_ng
 # Spec:: filter_helpers_spec
 #
-# Copyright:: 2018, Ben Hughes <bmhughes@bmhughes.co.uk>
+# Copyright:: Ben Hughes <bmhughes@bmhughes.co.uk>
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,10 +18,10 @@
 
 require 'spec_helper'
 
-describe 'SyslogNg::FilterHelpers' do
-  let(:dummy_class) { Class.new { include SyslogNg::FilterHelpers } }
+describe 'SyslogNg::Cookbook::FilterHelpers' do
+  let(:dummy_class) { Class.new { include SyslogNg::Cookbook::FilterHelpers } }
 
-  describe '.filter_builder' do
+  describe 'filter_builder' do
     context('given basic filter') do
       param = {
         'facility' => 'kern',

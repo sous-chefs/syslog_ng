@@ -2,7 +2,7 @@
 # Cookbook:: syslog_ng
 # Spec:: parser_spec
 #
-# Copyright:: 2018, Ben Hughes <bmhughes@bmhughes.co.uk>
+# Copyright:: Ben Hughes <bmhughes@bmhughes.co.uk>
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,35 +18,25 @@
 
 require 'spec_helper'
 
-describe 'syslog_ng_test::parser' do
-  platforms = {
-    'CentOS' => '8',
-    'Fedora' => '30',
-    'Amazon' => '2',
-    'Debian' => '10',
-    'Ubuntu' => '18.04',
-  }
+describe 'syslog_ng_parser' do
+  step_into :syslog_ng_parser
+  platform 'centos'
 
-  platforms.each do |platform, version|
-    context "With test recipe, on #{platform} #{version}" do
-      let(:chef_run) do
-        runner = ChefSpec::SoloRunner.new(platform: platform.dup.downcase!, version: version)
-        runner.converge(described_recipe)
+  context 'create syslog-ng parser config file' do
+    recipe do
+      syslog_ng_parser 'p_csv_parser' do
+        parser 'csv-parser'
+        options 'columns' => '"HOSTNAME.NAME", "HOSTNAME.ID"', 'delimiters' => '"-"', 'flags' => 'escape-none', 'template' => '"${HOST}"'
+        action :create
       end
+    end
 
-      it 'converges successfully' do
-        expect { chef_run }.to_not raise_error
-      end
-
-      %w(p_csv_parser p_kv_parser p_json_parser p_iptables_parser).each do |testparser|
-        it "creates parser #{testparser}" do
-          expect(chef_run).to create_syslog_ng_parser(testparser)
-
-          dest = chef_run.syslog_ng_parser(testparser)
-          expect(dest).to notify('execute[syslog-ng-config-test]').to(:run).delayed
-          expect(dest).to notify('service[syslog-ng]').to(:reload).delayed
-        end
-      end
+    it 'Creates the parser config file correctly' do
+      is_expected.to render_file('/etc/syslog-ng/parser.d/p_csv_parser.conf')
+        .with_content(/# Parser - p_csv_parser/)
+        .with_content(/parser p_csv_parser {/)
+        .with_content(/columns\("HOSTNAME.NAME", "HOSTNAME.ID"\)/)
+        .with_content(/template\("\$\{HOST\}"\)/)
     end
   end
 end

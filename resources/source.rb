@@ -2,7 +2,7 @@
 # Cookbook:: syslog_ng
 # Resource:: source
 #
-# Copyright:: 2018, Ben Hughes <bmhughes@bmhughes.co.uk>
+# Copyright:: Ben Hughes <bmhughes@bmhughes.co.uk>
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,44 +16,88 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-property :config_dir, String, default: '/etc/syslog-ng/source.d'
-property :cookbook, String
-property :source, String
-property :driver, [String, Array]
-property :path, [String, Array]
-property :parameters, [Hash, Array]
-property :configuration, Array
-property :description, String
-property :multiline, [true, false], default: false
+include SyslogNg::Cookbook::GeneralHelpers
+
+property :config_dir, String,
+          default: lazy { "#{syslog_ng_config_dir}/source.d" },
+          description: 'Directory to create configuration file in'
+
+property :cookbook, String,
+          default: 'syslog_ng',
+          description: 'Cookbook to source configuration file template from'
+
+property :template, String,
+          default: 'syslog-ng/source.conf.erb',
+          description: 'Template to use to generate the configuration file'
+
+property :owner, String,
+          default: lazy { default_syslog_ng_user },
+          description: 'Owner of the generated configuration file'
+
+property :group, String,
+          default: lazy { default_syslog_ng_group },
+          description: 'Group of the generated configuration file'
+
+property :mode, String,
+          default: '0640',
+          description: 'Filemode of the generated configuration file'
+
+property :description, String,
+          description: 'Unparsed description to add to the configuration file'
+
+property :driver, [String, Array],
+          coerce: proc { |p| p.is_a?(Array) ? p : [p] },
+          description: 'Source driver(s) to use'
+
+property :path, [String, Array],
+          default: [],
+          coerce: proc { |p| p.is_a?(Array) ? p : [p] },
+          description: 'Path(s) for the source driver(s) (if supported)'
+
+property :parameters, [Hash, Array],
+          default: {},
+          coerce: proc { |p| p.is_a?(Array) ? p : [p] },
+          description: 'Driver(s) parameters and options'
+
+property :configuration, [Hash, Array],
+          coerce: proc { |p| p.is_a?(Array) ? p : [p] },
+          description: 'Hash or Array of Hash containing raw driver(s) configuration'
+
+property :blocks, [Hash, Array],
+          description: 'Array of blocks to reference without parameters or a Hash of blocks to reference with parameters'
+
+property :multiline, [true, false],
+          default: false,
+          description: 'Use multiline formatting'
+
+action_class do
+  include SyslogNg::Cookbook::SourceDestinationHelpers
+end
 
 action :create do
-  extend SyslogNg::CommonHelpers
-
-  source = parameter_builder(driver: new_resource.driver, path: new_resource.path, parameters: new_resource.parameters, configuration: new_resource.configuration).each do |config|
-    unless config.is_a?(Hash)
-      Chef::Log.error(source)
-      Chef::Log.error(config)
-      raise "source: Expected driver configuration to be a Hash, got #{config.class}"
-    end
-    config.each do |_, b|
-      b.compact!
-    end
-  end
-
   template "#{new_resource.config_dir}/#{new_resource.name}.conf" do
-    source new_resource.source || 'syslog-ng/source.conf.erb'
-    cookbook new_resource.cookbook || node['syslog_ng']['config']['config_template_cookbook']
+    cookbook new_resource.cookbook
+    source new_resource.template
+
+    owner new_resource.owner
+    group new_resource.group
+    mode new_resource.mode
     sensitive new_resource.sensitive
-    owner 'root'
-    group 'root'
-    mode '0755'
+
     variables(
       name: new_resource.name,
-      description: new_resource.description.nil? ? new_resource.name : new_resource.description,
-      source: source,
+      description: new_resource.description ? new_resource.description : new_resource.name,
+      source: source_dest_config_builder(
+        driver: new_resource.driver,
+        path: new_resource.path,
+        parameters: new_resource.parameters,
+        configuration: new_resource.configuration
+      ),
+      blocks: new_resource.blocks,
       multiline: new_resource.multiline
     )
-    helpers(SyslogNg::SourceHelpers)
+    helpers(SyslogNg::Cookbook::SourceDestinationHelpers)
+
     action :create
   end
 end

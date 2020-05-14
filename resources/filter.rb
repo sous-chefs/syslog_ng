@@ -2,7 +2,7 @@
 # Cookbook:: syslog_ng
 # Resource:: filter
 #
-# Copyright:: 2018, Ben Hughes <bmhughes@bmhughes.co.uk>
+# Copyright:: Ben Hughes <bmhughes@bmhughes.co.uk>
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,26 +16,59 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-property :config_dir, String, default: '/etc/syslog-ng/filter.d'
-property :cookbook, String
-property :source, String
-property :parameters, [Hash, String, Array], default: {}
-property :description, String
+include SyslogNg::Cookbook::GeneralHelpers
+
+property :config_dir, String,
+          default: lazy { "#{syslog_ng_config_dir}/filter.d" },
+          description: 'Directory to create configuration file in'
+
+property :cookbook, String,
+          default: 'syslog_ng',
+          description: 'Cookbook to source configuration file template from'
+
+property :template, String,
+          default: 'syslog-ng/filter.conf.erb',
+          description: 'Template to use to generate the configuration file'
+
+property :owner, String,
+          default: lazy { default_syslog_ng_user },
+          description: 'Owner of the generated configuration file'
+
+property :group, String,
+          default: lazy { default_syslog_ng_group },
+          description: 'Group of the generated configuration file'
+
+property :mode, String,
+          default: '0640',
+          description: 'Filemode of the generated configuration file'
+
+property :description, String,
+          description: 'Unparsed description to add to the configuration file'
+
+property :parameters, [Hash, String, Array],
+          default: {},
+          description: 'Filter(s) parameters and options'
+
+property :blocks, [Hash, Array],
+          description: 'Array of blocks to reference without parameters or a Hash of blocks to reference with parameters'
 
 action :create do
   template "#{new_resource.config_dir}/#{new_resource.name}.conf" do
-    source new_resource.source || 'syslog-ng/filter.conf.erb'
-    cookbook new_resource.cookbook || node['syslog_ng']['config']['config_template_cookbook']
-    owner 'root'
-    group 'root'
-    mode '0755'
+    cookbook new_resource.cookbook
+    source new_resource.template
+
+    owner new_resource.owner
+    group new_resource.group
+    mode new_resource.mode
     sensitive new_resource.sensitive
+
     variables(
       name: new_resource.name,
-      description: new_resource.description.nil? ? new_resource.name : new_resource.description,
-      filter: new_resource.parameters
+      description: new_resource.description ? new_resource.description : new_resource.name,
+      filter: new_resource.parameters,
+      blocks: new_resource.blocks
     )
-    helpers(SyslogNg::FilterHelpers)
+    helpers(SyslogNg::Cookbook::FilterHelpers)
     action :create
   end
 end
