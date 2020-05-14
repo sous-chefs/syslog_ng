@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 1.0.0 (Unreleased)
+## UNRELEASED
 
 Version 1.0.0 has multiple breaking changes, please see [UPGRADING.md](./UPGRADING.md).
 
