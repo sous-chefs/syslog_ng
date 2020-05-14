@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## UNRELEASED
+## 1.0.0 (2020-05-14)
 
 Version 1.0.0 has multiple breaking changes, please see [UPGRADING.md](./UPGRADING.md).
 
