@@ -22,22 +22,28 @@ property :service_name, String,
           default: lazy { default_syslog_ng_service_name },
           description: 'The service name to perform actions upon'
 
+property :config_file, String,
+          default: lazy { "#{syslog_ng_config_dir}/syslog-ng.conf" },
+          description: 'The path to the Syslog-NG server configuration on disk'
+
 property :config_test, [true, false],
           default: true,
           description: 'Perform a configuration file test before performing service action'
 
 action_class do
   def do_service_action(resource_action)
-    if new_resource.config_test && %w(start restart reload).include?(resource_action)
-      command_path = platform_family?('amazon') ? '/sbin/syslog-ng' : '/usr/sbin/syslog-ng'
-      execute 'syslog-ng-config-test' do
-        command "#{command_path} -s"
-        action :run
-      end
-    end
-
     with_run_context(:root) do
+      edit_resource(:execute, "Run pre service #{resource_action} Syslog-NG configuration test.") do
+        command "#{platform_family?('amazon') ? '/sbin/syslog-ng' : '/usr/sbin/syslog-ng'} -s"
+        only_if { new_resource.config_test && %i(start restart reload).include?(resource_action) && ::File.exist?(new_resource.config_file) }
+
+        action :nothing
+      end
+
       edit_resource(:service, new_resource.service_name) do
+        notifies :run, "execute[Run pre service #{resource_action} Syslog-NG configuration test.]", :before
+
+        action :nothing
         delayed_action resource_action
       end
     end
