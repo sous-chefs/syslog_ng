@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## Unreleased
+
+- resolved cookstyle error: test/cookbooks/syslog_ng_test/recipes/package_copr.rb:22:14 refactor: `ChefCorrectness/InvalidPlatformFamilyInCase`
+
 ## 1.0.0 (2020-05-14)
 
 Version 1.0.0 has multiple breaking changes, please see [UPGRADING.md](./UPGRADING.md).

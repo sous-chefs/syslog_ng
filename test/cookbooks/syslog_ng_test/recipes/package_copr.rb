@@ -19,7 +19,7 @@
 log node['platform_family']
 
 case node['platform_family']
-when 'rhel', 'centos'
+when 'rhel'
   yum_repository 'copr:copr.fedorainfracloud.org:czanik:syslog-ng326' do
     baseurl "https://download.copr.fedorainfracloud.org/results/czanik/syslog-ng326/epel-#{node['platform_version'].to_i}-$basearch/"
     skip_if_unavailable true
