@@ -47,7 +47,7 @@ module SyslogNg
           raise "repo_get_packages: Unsupported platform #{node['platform_family']}."
         end
 
-        package_search_cmd = Mixlib::ShellOut.new(command).run_command
+        package_search_cmd = shell_out(command)
         package_search_cmd.error!
         packages = package_search_cmd.stdout.split(/\n+/)
 
