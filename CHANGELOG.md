@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## Unreleased
+## 1.0.1 (2020-09-16)
 
 - resolved cookstyle error: test/cookbooks/syslog_ng_test/recipes/package_copr.rb:22:14 refactor: `ChefCorrectness/InvalidPlatformFamilyInCase`
 - Fix configuration test running every Chef run regardless of service action - [@bmhughes](https://github.com/bmhughes)
