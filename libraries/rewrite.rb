@@ -26,73 +26,69 @@ module SyslogNg
       SYSLOG_NG_REWRITE_OPERATORS ||= %w(subst set unset groupset groupunset set-tag clear-tag credit-card-mask credit-card-hash).freeze
 
       def rewrite_config_builder
-        if new_resource.configuration
-          new_resource.configuration
-        else
-          case new_resource.function
-          when 'subst'
-            [
-              {
-                'function' => new_resource.function,
-                'match' => new_resource.match,
-                'replacement' => new_resource.replacement,
-                'value' => new_resource.value,
-                'flags' => new_resource.flags,
-                'condition' => new_resource.condition,
-                'additional_options' => new_resource.additional_options,
-              },
-            ]
-          when 'set'
-            [
-              {
-                'function' => new_resource.function,
-                'replacement' => new_resource.replacement,
-                'value' => new_resource.value,
-                'condition' => new_resource.condition,
-                'additional_options' => new_resource.additional_options,
-              },
-            ]
-          when 'unset', 'groupunset'
-            [
-              {
-                'function' => new_resource.function,
-                'field' => new_resource.field,
-                'value' => new_resource.value,
-                'values' => new_resource.values,
-                'condition' => new_resource.condition,
-                'additional_options' => new_resource.additional_options,
-              },
-            ]
-          when 'groupset'
-            [
-              {
-                'function' => new_resource.function,
-                'field' => new_resource.field,
-                'values' => new_resource.values,
-                'condition' => new_resource.condition,
-                'additional_options' => new_resource.additional_options,
-              },
-            ]
-          when 'set-tag', 'clear-tag'
-            [
-              {
-                'function' => new_resource.function,
-                'tags' => new_resource.tags,
-              },
-            ]
-          when 'credit-card-mask'
-            [
-              {
-                'function' => new_resource.function,
-                'value' => new_resource.value,
-                'condition' => new_resource.condition,
-                'additional_options' => new_resource.additional_options,
-              },
-            ]
-          else
-            raise ArgumentError, "Unsupported rewrite function '#{new_resource.function}' passed, should be one of: #{SYSLOG_NG_REWRITE_OPERATORS}."
-          end
-        end
+        new_resource.configuration || case new_resource.function
+                                      when 'subst'
+                                        [
+                                          {
+                                            'function' => new_resource.function,
+                                            'match' => new_resource.match,
+                                            'replacement' => new_resource.replacement,
+                                            'value' => new_resource.value,
+                                            'flags' => new_resource.flags,
+                                            'condition' => new_resource.condition,
+                                            'additional_options' => new_resource.additional_options,
+                                          },
+                                        ]
+                                      when 'set'
+                                        [
+                                          {
+                                            'function' => new_resource.function,
+                                            'replacement' => new_resource.replacement,
+                                            'value' => new_resource.value,
+                                            'condition' => new_resource.condition,
+                                            'additional_options' => new_resource.additional_options,
+                                          },
+                                        ]
+                                      when 'unset', 'groupunset'
+                                        [
+                                          {
+                                            'function' => new_resource.function,
+                                            'field' => new_resource.field,
+                                            'value' => new_resource.value,
+                                            'values' => new_resource.values,
+                                            'condition' => new_resource.condition,
+                                            'additional_options' => new_resource.additional_options,
+                                          },
+                                        ]
+                                      when 'groupset'
+                                        [
+                                          {
+                                            'function' => new_resource.function,
+                                            'field' => new_resource.field,
+                                            'values' => new_resource.values,
+                                            'condition' => new_resource.condition,
+                                            'additional_options' => new_resource.additional_options,
+                                          },
+                                        ]
+                                      when 'set-tag', 'clear-tag'
+                                        [
+                                          {
+                                            'function' => new_resource.function,
+                                            'tags' => new_resource.tags,
+                                          },
+                                        ]
+                                      when 'credit-card-mask'
+                                        [
+                                          {
+                                            'function' => new_resource.function,
+                                            'value' => new_resource.value,
+                                            'condition' => new_resource.condition,
+                                            'additional_options' => new_resource.additional_options,
+                                          },
+                                        ]
+                                      else
+                                        raise ArgumentError, "Unsupported rewrite function '#{new_resource.function}' passed, should be one of: #{SYSLOG_NG_REWRITE_OPERATORS}."
+                                      end
       end
 
       def rewrite_builder(parameters)

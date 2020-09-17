@@ -64,7 +64,7 @@ action :create do
 
     variables(
       name: new_resource.name,
-      description: new_resource.description ? new_resource.description : new_resource.name,
+      description: new_resource.description || new_resource.name,
       filter: new_resource.parameters,
       blocks: new_resource.blocks
     )
