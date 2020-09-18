@@ -70,7 +70,7 @@ action :create do
 
     variables(
       name: new_resource.name,
-      description: new_resource.description ? new_resource.description : new_resource.name,
+      description: new_resource.description || new_resource.name,
       type: new_resource.type,
       parameters: new_resource.parameters,
       definition: new_resource.definition

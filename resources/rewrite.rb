@@ -100,7 +100,7 @@ action :create do
 
     variables(
       name: new_resource.name,
-      description: new_resource.description ? new_resource.description : new_resource.name,
+      description: new_resource.description || new_resource.name,
       rewrite: rewrite_config_builder,
       blocks: new_resource.blocks
     )
