@@ -1,5 +1,41 @@
 # CHANGELOG
 
+## Unreleased
+
+- resolved cookstyle error: libraries/rewrite.rb:29:9 convention: `Style/RedundantCondition`
+- resolved cookstyle error: libraries/rewrite.rb:30:11 convention: `Layout/CaseIndentation`
+- resolved cookstyle error: libraries/rewrite.rb:31:13 convention: `Layout/IndentationWidth`
+- resolved cookstyle error: libraries/rewrite.rb:42:11 convention: `Layout/CaseIndentation`
+- resolved cookstyle error: libraries/rewrite.rb:43:13 convention: `Layout/IndentationWidth`
+- resolved cookstyle error: libraries/rewrite.rb:52:11 convention: `Layout/CaseIndentation`
+- resolved cookstyle error: libraries/rewrite.rb:53:13 convention: `Layout/IndentationWidth`
+- resolved cookstyle error: libraries/rewrite.rb:63:11 convention: `Layout/CaseIndentation`
+- resolved cookstyle error: libraries/rewrite.rb:64:13 convention: `Layout/IndentationWidth`
+- resolved cookstyle error: libraries/rewrite.rb:73:11 convention: `Layout/CaseIndentation`
+- resolved cookstyle error: libraries/rewrite.rb:74:13 convention: `Layout/IndentationWidth`
+- resolved cookstyle error: libraries/rewrite.rb:80:11 convention: `Layout/CaseIndentation`
+- resolved cookstyle error: libraries/rewrite.rb:81:13 convention: `Layout/IndentationWidth`
+- resolved cookstyle error: libraries/rewrite.rb:89:11 convention: `Layout/ElseAlignment`
+- resolved cookstyle error: libraries/rewrite.rb:90:13 convention: `Layout/IndentationWidth`
+- resolved cookstyle error: libraries/rewrite.rb:91:11 warning: `Layout/EndAlignment`
+- resolved cookstyle error: resources/block.rb:73:45 convention: `Style/RedundantCondition`
+- resolved cookstyle error: resources/destination.rb:89:45 convention: `Style/RedundantCondition`
+- resolved cookstyle error: resources/filter.rb:67:45 convention: `Style/RedundantCondition`
+- resolved cookstyle error: resources/log.rb:90:45 convention: `Style/RedundantCondition`
+- resolved cookstyle error: resources/parser.rb:71:45 convention: `Style/RedundantCondition`
+- resolved cookstyle error: resources/rewrite.rb:103:45 convention: `Style/RedundantCondition`
+- resolved cookstyle error: resources/source.rb:89:45 convention: `Style/RedundantCondition`
+- resolved cookstyle error: test/integration/config/block_test.rb:1:1 convention: `Style/Encoding`
+- resolved cookstyle error: test/integration/config/destination_test.rb:1:1 convention: `Style/Encoding`
+- resolved cookstyle error: test/integration/config/filter_test.rb:1:1 convention: `Style/Encoding`
+- resolved cookstyle error: test/integration/config/log_test.rb:1:1 convention: `Style/Encoding`
+- resolved cookstyle error: test/integration/config/package_test.rb:1:1 convention: `Style/Encoding`
+- resolved cookstyle error: test/integration/config/parser_test.rb:1:1 convention: `Style/Encoding`
+- resolved cookstyle error: test/integration/config/rewrite_test.rb:1:1 convention: `Style/Encoding`
+- resolved cookstyle error: test/integration/config/source_test.rb:1:1 convention: `Style/Encoding`
+- resolved cookstyle error: test/integration/config/template_test.rb:1:1 convention: `Style/Encoding`
+- resolved cookstyle error: test/integration/default/default_test.rb:1:1 convention: `Style/Encoding`
+
 ## 1.0.1 (2020-09-16)
 
 - resolved cookstyle error: test/cookbooks/syslog_ng_test/recipes/package_copr.rb:22:14 refactor: `ChefCorrectness/InvalidPlatformFamilyInCase`

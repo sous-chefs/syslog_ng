@@ -87,7 +87,7 @@ action :create do
     sensitive new_resource.sensitive
 
     variables(
-      description: new_resource.description ? new_resource.description : new_resource.name,
+      description: new_resource.description || new_resource.name,
       source: new_resource.source,
       filter: new_resource.filter,
       destination: new_resource.destination,
