@@ -16,7 +16,9 @@
 | Name                   | Type          | Default                          | Description                                                         | Allowed Values      |
 | ---------------------- | ------------- | -------------------------------- | ------------------------------------------------------------------- | ------------------- |
 | `service_name`         | String        | `syslog-ng`                      | The service name to perform actions upon                            |                     |
+| `config_file`          | String        | `/etc/syslog-ng/syslog-ng.conf`  | The full path to the syslog-ng server configuration on disk         |                     |
 | `config_test`          | True, False   | `true`                           | Perform a configuration file test before performing service action  |                     |
+| `config_test_fail_action` | Symbol     | `:raise`                         | Action to perform upon a configuration test failure                 | `:raise`, `:log`    |
 
 ### Example
 
