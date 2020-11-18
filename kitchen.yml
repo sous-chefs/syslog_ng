@@ -1,16 +1,15 @@
 ---
 driver:
   name: vagrant
-  chef_version: <%= ENV['CHEF_VERSION'] || 'current' %>
 
 provisioner:
   name: chef_zero
-  always_update_cookbooks: true
   deprecations_as_errors: true
   chef_license: accept
-  chef_log_level: <%= ENV['CHEF_LOG_LEVEL'] || 'auto' %>
   product_name: chef
-  product_version: latest
+  product_version: <%= ENV['CHEF_VERSION'] || 'latest' %>
+  install_strategy: always
+  chef_log_level: <%= ENV['CHEF_LOG_LEVEL'] || 'auto' %>
 
 verifier:
   name: inspec
@@ -18,7 +17,7 @@ verifier:
 platforms:
   - name: centos-7
   - name: centos-8
-  - name: fedora-31
+  - name: fedora-32
   - name: ubuntu-18.04
   - name: ubuntu-20.04
   - name: debian-10

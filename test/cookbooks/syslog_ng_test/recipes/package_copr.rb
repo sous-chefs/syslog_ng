@@ -16,26 +16,24 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-log node['platform_family']
-
 case node['platform_family']
 when 'rhel'
-  yum_repository 'copr:copr.fedorainfracloud.org:czanik:syslog-ng326' do
-    baseurl "https://download.copr.fedorainfracloud.org/results/czanik/syslog-ng326/epel-#{node['platform_version'].to_i}-$basearch/"
+  yum_repository 'copr:copr.fedorainfracloud.org:czanik:syslog-ng329' do
+    baseurl "https://download.copr.fedorainfracloud.org/results/czanik/syslog-ng329/epel-#{node['platform_version'].to_i}-$basearch/"
     skip_if_unavailable true
     gpgcheck true
-    gpgkey 'https://download.copr.fedorainfracloud.org/results/czanik/syslog-ng326/pubkey.gpg'
+    gpgkey 'https://download.copr.fedorainfracloud.org/results/czanik/syslog-ng329/pubkey.gpg'
     repo_gpgcheck false
     enabled true
 
     action :create
   end
 when 'fedora'
-  yum_repository 'copr:copr.fedorainfracloud.org:czanik:syslog-ng326' do
-    baseurl 'https://download.copr.fedorainfracloud.org/results/czanik/syslog-ng326/fedora-$releasever-$basearch/'
+  yum_repository 'copr:copr.fedorainfracloud.org:czanik:syslog-ng329' do
+    baseurl 'https://download.copr.fedorainfracloud.org/results/czanik/syslog-ng329/fedora-$releasever-$basearch/'
     skip_if_unavailable true
     gpgcheck true
-    gpgkey 'https://download.copr.fedorainfracloud.org/results/czanik/syslog-ng326/pubkey.gpg'
+    gpgkey 'https://download.copr.fedorainfracloud.org/results/czanik/syslog-ng329/pubkey.gpg'
     repo_gpgcheck false
     enabled true
 
@@ -48,7 +46,7 @@ service 'rsyslog' do
 end
 
 syslog_ng_package 'syslog-ng' do
-  package_repository 'copr:copr.fedorainfracloud.org:czanik:syslog-ng326'
+  package_repository 'copr:copr.fedorainfracloud.org:czanik:syslog-ng329'
   packages_exclude %w(syslog-ng-debuginfo syslog-ng-devel)
   action :install
 end
