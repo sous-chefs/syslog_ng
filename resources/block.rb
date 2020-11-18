@@ -54,10 +54,6 @@ property :parameters, Hash,
 property :definition, Hash,
           description: 'Definition of the block contents'
 
-action_class do
-  include SyslogNg::Cookbook::RewriteHelpers
-end
-
 action :create do
   template "#{new_resource.config_dir}/#{new_resource.name}.conf" do
     cookbook new_resource.cookbook
