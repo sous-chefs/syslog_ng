@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## Unreleased
+## 1.0.2 - *2020-11-20*
 
 - resolved cookstyle error: libraries/rewrite.rb:29:9 convention: `Style/RedundantCondition`
 - resolved cookstyle error: libraries/rewrite.rb:30:11 convention: `Layout/CaseIndentation`
