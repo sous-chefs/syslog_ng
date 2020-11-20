@@ -16,55 +16,33 @@ platforms:
     driver:
       image: dokken/centos-7
       pid_one_command: /usr/lib/systemd/systemd
-      intermediate_instructions:
-        - RUN /usr/bin/yum makecache -y -q
-        - RUN /usr/bin/yum install rsync -y
-        - RUN /usr/bin/yum install libselinux-utils -y
   - name: centos-8
     driver:
       image: dokken/centos-8
       pid_one_command: /usr/lib/systemd/systemd
-      intermediate_instructions:
-        - RUN /usr/bin/yum makecache -y -q
-        - RUN /usr/bin/yum install rsync -y
-        - RUN /usr/bin/yum install libselinux-utils -y
-  - name: fedora-31
+  - name: fedora-32
     driver:
-      image: dokken/fedora-31
+      image: dokken/fedora-32
       pid_one_command: /usr/lib/systemd/systemd
-      intermediate_instructions:
-        - RUN /usr/bin/yum makecache -y -q
-        - RUN /usr/bin/yum install rsync -y
-        - RUN /usr/bin/yum install libselinux-utils -y
   - name: ubuntu-18.04
     driver:
       image: dokken/ubuntu-18.04
       pid_one_command: /bin/systemd
       intermediate_instructions:
         - RUN /usr/bin/apt-get update
-        - RUN /usr/bin/apt-get install rsync -y -q
-        - RUN /usr/bin/apt-get install selinux-utils -y
   - name: ubuntu-20.04
     driver:
       image: dokken/ubuntu-20.04
       pid_one_command: /bin/systemd
       intermediate_instructions:
         - RUN /usr/bin/apt-get update
-        - RUN /usr/bin/apt-get install rsync -y -q
-        - RUN /usr/bin/apt-get install selinux-utils -y
   - name: debian-10
     driver:
       image: dokken/debian-10
       pid_one_command: /bin/systemd
       intermediate_instructions:
         - RUN /usr/bin/apt-get update
-        - RUN /usr/bin/apt-get install rsync -y -q
-        - RUN /usr/bin/apt-get install selinux-utils -y
   - name: amazonlinux-2
     driver:
       image: dokken/amazonlinux-2
       pid_one_command: /usr/lib/systemd/systemd
-      intermediate_instructions:
-        - RUN /usr/bin/yum makecache -y -q
-        - RUN /usr/bin/yum install rsync -y
-        - RUN /usr/bin/yum install libselinux-utils -y

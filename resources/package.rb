@@ -41,7 +41,7 @@ action_class do
       block do
         packages = new_resource.packages
         log "Found #{packages.count} packages to #{action}."
-        if new_resource.packages_exclude
+        unless new_resource.packages_exclude.nil? || new_resource.packages_exclude.empty?
           log "Excluding packages: #{new_resource.packages_exclude.join(', ')}."
           packages.delete_if { |package| new_resource.packages_exclude.include?(package) }
           log "There are #{packages.count} packages to #{action} after exclusion."

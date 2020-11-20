@@ -35,6 +35,8 @@
 - resolved cookstyle error: test/integration/config/source_test.rb:1:1 convention: `Style/Encoding`
 - resolved cookstyle error: test/integration/config/template_test.rb:1:1 convention: `Style/Encoding`
 - resolved cookstyle error: test/integration/default/default_test.rb:1:1 convention: `Style/Encoding`
+- Fix the pre-service action configuration test to remove compile/converge bug - [@bmhughes](https://github.com/bmhughes)
+- Fix `syslog_ng_package` reporting excluded packages even when there are none - [@bmhughes](https://github.com/bmhughes)
 
 ## 1.0.1 (2020-09-16)
 

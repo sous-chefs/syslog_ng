@@ -33,6 +33,10 @@ module SyslogNg
         'syslog-ng'
       end
 
+      def syslog_ng_binary
+        platform_family?('amazon') ? '/sbin/syslog-ng' : '/usr/sbin/syslog-ng'
+      end
+
       def syslog_ng_config_dir
         '/etc/syslog-ng'
       end
