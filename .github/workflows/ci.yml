@@ -42,7 +42,7 @@ jobs:
         os:
           - 'centos-7'
           - 'centos-8'
-          - 'fedora-32'
+          - 'fedora'
           - 'debian-10'
           - 'ubuntu-1804'
           - 'ubuntu-2004'
