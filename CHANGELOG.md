@@ -42,12 +42,12 @@
 - Fix the pre-service action configuration test to remove compile/converge bug - [@bmhughes](https://github.com/bmhughes)
 - Fix `syslog_ng_package` reporting excluded packages even when there are none - [@bmhughes](https://github.com/bmhughes)
 
-## 1.0.1 (2020-09-16)
+## 1.0.1 - *2020-09-16*
 
 - resolved cookstyle error: test/cookbooks/syslog_ng_test/recipes/package_copr.rb:22:14 refactor: `ChefCorrectness/InvalidPlatformFamilyInCase`
 - Fix configuration test running every Chef run regardless of service action - [@bmhughes](https://github.com/bmhughes)
 
-## 1.0.0 (2020-05-14)
+## 1.0.0 - *2020-05-14*
 
 Version 1.0.0 has multiple breaking changes, please see [UPGRADING.md](./UPGRADING.md).
 
@@ -62,41 +62,41 @@ Version 1.0.0 has multiple breaking changes, please see [UPGRADING.md](./UPGRADI
 - Refactoring of helper modules
 - Added the `syslog_ng_service` and `syslog_ng_block` resources
 
-## 0.3.5 (2020-05-05)
+## 0.3.5 - *2020-05-05*
 
 - resolved cookstyle error: resources/install.rb:58:28 refactor: `ChefStyle/UsePlatformHelpers`
 - resolved cookstyle error: resources/install.rb:93:26 refactor: `ChefStyle/UsePlatformHelpers`
 
-## v0.3.4 (2020-01-14)
+## v0.3.4 - *2020-01-14*
 
 - Update default COPR versions to 3.25
 - Foodcritic fixes
 - Update Kitchen platforms
 
-## v0.3.3 (2019-11-16)
+## v0.3.3 - *2019-11-16*
 
 - #25 - Fix Debian/Ubuntu latest package repository
 
-## v0.3.2 (2019-08-20)
+## v0.3.2 - *2019-08-20*
 
 - Add the ability to specify unquoted parameter string values as symbols.
 
-## v0.3.1 (2019-07-09)
+## v0.3.1 - *2019-07-09*
 
 - Add package exclude option to install resource
 - Add `githead` installation option
 
-## v0.3.0 (2019-07-04)
+## v0.3.0 - *2019-07-04*
 
 - Default COPR repository updated to v3.22
 - Add log junction/channel support
 
-## v0.2.1 (2019-04-29)
+## v0.2.1 - *2019-04-29*
 
 - Add missing rewrite property to log resource
 - Add multi function support to rewrite resource
 
-## v0.2.0 (2019-04-26)
+## v0.2.0 - *2019-04-26*
 
 - Default COPR repository updated to v3.20
 - Added resources to create:
@@ -112,9 +112,7 @@ Version 1.0.0 has multiple breaking changes, please see [UPGRADING.md](./UPGRADI
 - Helper libraries refactored
 - Various bug fixes
 
-## v0.1.0 (2019-02-08)
-
-## Initial release
+## v0.1.0 - *2019-02-08*
 
 - Installs syslog-ng from distro packages or COPR on CentOS/Fedora.
 - Generates global configuration file from node attributes.
