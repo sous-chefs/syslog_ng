@@ -6,6 +6,8 @@
 
 - `:create` - Create a syslog-ng parser configuration file
 - `:delete` - Remove a syslog-ng parser configuration file
+- `:enable` - Enable a pre-existing syslog-ng parser configuration file
+- `:disable` - Disable a pre-existing syslog-ng parser configuration file
 
 ## Properties
 

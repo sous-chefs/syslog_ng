@@ -1,6 +1,6 @@
 #
 # Cookbook:: syslog_ng
-# Library:: helpers
+# Library:: general
 #
 # Copyright:: Ben Hughes <bmhughes@bmhughes.co.uk>
 #

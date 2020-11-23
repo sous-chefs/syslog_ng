@@ -6,6 +6,8 @@
 
 - `:create` - Create a syslog-ng log configuration file
 - `:delete` - Remove a syslog-ng log configuration file
+- `:enable` - Enable a pre-existing syslog-ng log configuration file
+- `:disable` - Disable a pre-existing syslog-ng log configuration file
 
 ## Properties
 

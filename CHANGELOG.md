@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Add enable/disable actions to control a configuration item whilst leaving the configuration file in place - [@bmhughes](https://github.com/bmhughes)
+
 ## 1.0.2 - *2020-11-20*
 
 - resolved cookstyle error: libraries/rewrite.rb:29:9 convention: `Style/RedundantCondition`

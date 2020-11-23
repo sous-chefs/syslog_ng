@@ -151,3 +151,24 @@ syslog_ng_source 's_block_test' do
   notifies :restart, 'syslog_ng_service[syslog-ng]', :delayed
   action :create
 end
+
+syslog_ng_source 's_test_network_multiple_disabled' do
+  driver %w(network network)
+  parameters(
+    [
+      {
+        'transport' => 'tcp',
+        'ip' => '127.0.0.1',
+        'port' => '5518',
+      },
+      {
+        'transport' => 'udp',
+        'ip' => '127.0.0.1',
+        'port' => '5518',
+      },
+    ]
+  )
+  multiline true
+  notifies :restart, 'syslog_ng_service[syslog-ng]', :delayed
+  action [:create, :disable]
+end
