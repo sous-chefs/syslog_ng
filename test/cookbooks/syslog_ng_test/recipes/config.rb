@@ -23,5 +23,6 @@ syslog_ng_config '/etc/syslog-ng/syslog-ng.conf' do
 end
 
 syslog_ng_service 'syslog-ng' do
-  action [:enable, :start]
+  action :enable
+  delayed_action :start
 end
