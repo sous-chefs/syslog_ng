@@ -19,7 +19,6 @@ end
 
 describe file('/etc/syslog-ng/syslog-ng.conf') do
   it { should exist }
-
   it { should be_file }
   it { should_not be_directory }
 end
