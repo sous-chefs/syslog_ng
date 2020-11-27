@@ -1,5 +1,7 @@
 # CHANGELOG
 
+## Unreleased
+
 ## 1.1.0 - *2020-11-27*
 
 - Add enable/disable actions to control a configuration item whilst leaving the configuration file in place - [@bmhughes](https://github.com/bmhughes)
