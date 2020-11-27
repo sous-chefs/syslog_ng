@@ -22,7 +22,6 @@ end
   r_test_multiple).each do |file|
   describe file("/etc/syslog-ng/rewrite.d/#{file}.conf") do
     it { should exist }
-    its('type') { should cmp 'file' }
     it { should be_file }
     it { should_not be_directory }
   end

@@ -10,7 +10,6 @@ end
 %w(d_test_file d_test_file_params d_test_mongo_params d_test_multi_file d_test_multi_file_multiline d_test_multi_file_alternative).each do |file|
   describe file("/etc/syslog-ng/destination.d/#{file}.conf") do
     it { should exist }
-    its('type') { should cmp 'file' }
     it { should be_file }
     it { should_not be_directory }
   end
