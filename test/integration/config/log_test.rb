@@ -10,7 +10,6 @@ end
 %w(l_test l_test_2 l_test_embedded l_test_embedded).each do |file|
   describe file("/etc/syslog-ng/log.d/#{file}.conf") do
     it { should exist }
-    its('type') { should cmp 'file' }
     it { should be_file }
     it { should_not be_directory }
   end

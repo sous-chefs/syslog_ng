@@ -13,7 +13,6 @@ end
 ).each do |file|
   describe file("/etc/syslog-ng/block.d/#{file}.conf") do
     it { should exist }
-    its('type') { should cmp 'file' }
     it { should be_file }
     it { should_not be_directory }
   end

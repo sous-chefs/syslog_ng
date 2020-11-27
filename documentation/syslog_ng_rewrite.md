@@ -6,6 +6,8 @@
 
 - `:create` - Create a syslog-ng rewrite configuration file
 - `:delete` - Remove a syslog-ng rewrite configuration file
+- `:enable` - Enable a pre-existing syslog-ng rewrite configuration file
+- `:disable` - Disable a pre-existing syslog-ng rewrite configuration file
 
 ## Properties
 

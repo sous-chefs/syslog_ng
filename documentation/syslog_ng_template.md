@@ -6,6 +6,8 @@
 
 - `:create` - Create a syslog-ng template configuration file
 - `:delete` - Remove a syslog-ng template configuration file
+- `:enable` - Enable a pre-existing syslog-ng template configuration file
+- `:disable` - Disable a pre-existing syslog-ng template configuration file
 
 ## Properties
 

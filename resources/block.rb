@@ -54,8 +54,12 @@ property :parameters, Hash,
 property :definition, Hash,
           description: 'Definition of the block contents'
 
+action_class do
+  include SyslogNg::Cookbook::ResourceHelpers
+end
+
 action :create do
-  template "#{new_resource.config_dir}/#{new_resource.name}.conf" do
+  template config_file do
     cookbook new_resource.cookbook
     source new_resource.template
 
@@ -78,7 +82,19 @@ action :create do
 end
 
 action :delete do
-  file "#{new_resource.config_dir}/#{new_resource.name}.conf" do
+  file config_file do
     action :delete
   end
+end
+
+action :enable do
+  converge_by "Disable #{new_resource.declared_type} #{new_resource.name}" do
+    enable_config_file
+  end if ::File.exist?(config_file_disabled)
+end
+
+action :disable do
+  converge_by "Disable #{new_resource.declared_type} #{new_resource.name}" do
+    disable_config_file
+  end if ::File.exist?(config_file)
 end

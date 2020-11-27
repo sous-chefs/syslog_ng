@@ -6,6 +6,8 @@
 
 - `:create` - Create a syslog-ng filter configuration file
 - `:delete` - Remove a syslog-ng filter configuration file
+- `:enable` - Enable a pre-existing syslog-ng filter configuration file
+- `:disable` - Disable a pre-existing syslog-ng filter configuration file
 
 ## Properties
 

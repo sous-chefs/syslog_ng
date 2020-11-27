@@ -10,7 +10,14 @@ end
 %w(s_test_tcp s_test_pipe s_test_tcpudp s_test_network_multiline s_test_network_multiple).each do |file|
   describe file("/etc/syslog-ng/source.d/#{file}.conf") do
     it { should exist }
-    its('type') { should cmp 'file' }
+    it { should be_file }
+    it { should_not be_directory }
+  end
+end
+
+%w(s_test_network_multiple_disabled).each do |file|
+  describe file("/etc/syslog-ng/source.d/#{file}.conf.disabled") do
+    it { should exist }
     it { should be_file }
     it { should_not be_directory }
   end
