@@ -1,5 +1,7 @@
 # CHANGELOG
 
+## Unreleased
+
 ## 1.1.1 - *2020-11-28*
 
 - Remove service action from ruby_block - [@bmhughes](https://github.com/bmhughes)
