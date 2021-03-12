@@ -19,10 +19,10 @@
 case node['platform_family']
 when 'rhel'
   yum_repository 'copr:copr.fedorainfracloud.org:czanik:syslog-ng329' do
-    baseurl "https://download.copr.fedorainfracloud.org/results/czanik/syslog-ng329/epel-#{node['platform_version'].to_i}-$basearch/"
+    baseurl "https://download.copr.fedorainfracloud.org/results/czanik/syslog-ng331/epel-#{node['platform_version'].to_i}-$basearch/"
     skip_if_unavailable true
     gpgcheck true
-    gpgkey 'https://download.copr.fedorainfracloud.org/results/czanik/syslog-ng329/pubkey.gpg'
+    gpgkey 'https://download.copr.fedorainfracloud.org/results/czanik/syslog-ng331/pubkey.gpg'
     repo_gpgcheck false
     enabled true
 
@@ -30,10 +30,10 @@ when 'rhel'
   end
 when 'fedora'
   yum_repository 'copr:copr.fedorainfracloud.org:czanik:syslog-ng329' do
-    baseurl 'https://download.copr.fedorainfracloud.org/results/czanik/syslog-ng329/fedora-$releasever-$basearch/'
+    baseurl 'https://download.copr.fedorainfracloud.org/results/czanik/syslog-ng331/fedora-$releasever-$basearch/'
     skip_if_unavailable true
     gpgcheck true
-    gpgkey 'https://download.copr.fedorainfracloud.org/results/czanik/syslog-ng329/pubkey.gpg'
+    gpgkey 'https://download.copr.fedorainfracloud.org/results/czanik/syslog-ng331/pubkey.gpg'
     repo_gpgcheck false
     enabled true
 
