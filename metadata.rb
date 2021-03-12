@@ -5,7 +5,7 @@ license           'Apache-2.0'
 description       'Installs and Configures syslog_ng'
 source_url        'https://github.com/sous-chefs/syslog_ng'
 issues_url        'https://github.com/sous-chefs/syslog_ng/issues'
-chef_version      '>= 14.0'
+chef_version      '>= 15.3'
 version           '1.1.1'
 
 supports 'debian'
