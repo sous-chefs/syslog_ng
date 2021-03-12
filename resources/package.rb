@@ -48,6 +48,8 @@ action_class do
       log "There are #{packages.count} packages to #{action} after exclusion."
     end
 
+    raise 'No packages found for installation!' if packages.empty?
+
     package 'syslog-ng' do
       package_name lazy { packages }
       action action
