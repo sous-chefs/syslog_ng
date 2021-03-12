@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Remove package exclusion logic from ruby_block - [@bmhughes](https://github.com/bmhughes)
+- Package resource run in unified mode - [@bmhughes](https://github.com/bmhughes)
+- Add CentOS 8 stream to kitchen testing - [@bmhughes](https://github.com/bmhughes)
+
 ## 1.1.1 - *2020-11-28*
 
 - Remove service action from ruby_block - [@bmhughes](https://github.com/bmhughes)
