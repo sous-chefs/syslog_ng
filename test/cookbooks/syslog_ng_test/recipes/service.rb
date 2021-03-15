@@ -1,6 +1,6 @@
 #
 # Cookbook:: syslog_ng_test
-# Recipe:: config
+# Recipe:: service
 #
 # Copyright:: Ben Hughes <bmhughes@bmhughes.co.uk>
 #
@@ -16,8 +16,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-syslog_ng_config '/etc/syslog-ng/syslog-ng.conf' do
-  sensitive false
-  notifies :restart, 'syslog_ng_service[syslog-ng]', :delayed
-  action :create
+syslog_ng_service 'syslog-ng' do
+  action :enable
+  delayed_action :start
 end

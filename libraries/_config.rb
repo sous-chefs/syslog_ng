@@ -94,15 +94,7 @@ module SyslogNg
       end
 
       def nil_or_empty?(property)
-        return true if property.nil? || safe_empty?(property)
-
-        false
-      end
-
-      def safe_empty?(property)
-        return true if property.respond_to?(:empty?) && property.empty?
-
-        false
+        property.nil? || (property.respond_to?(:empty?) && property.empty?)
       end
 
       def log_chef(level, message)

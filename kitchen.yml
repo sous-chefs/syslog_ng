@@ -9,7 +9,7 @@ provisioner:
   product_name: chef
   product_version: <%= ENV['CHEF_VERSION'] || 'latest' %>
   install_strategy: always
-  chef_log_level: <%= ENV['CHEF_LOG_LEVEL'] || 'auto' %>
+  log_level: <%= ENV['CHEF_LOG_LEVEL'] || 'auto' %>
 
 verifier:
   name: inspec
@@ -17,7 +17,7 @@ verifier:
 platforms:
   - name: centos-7
   - name: centos-8
-  - name: fedora-32
+  - name: fedora-latest
   - name: ubuntu-18.04
   - name: ubuntu-20.04
   - name: debian-10
@@ -30,6 +30,7 @@ suites:
     run_list:
       - recipe[syslog_ng_test::selinux]
       - recipe[syslog_ng_test::package]
+      - recipe[syslog_ng_test::service]
       - recipe[syslog_ng_test::config]
     verifier:
       inspec_tests:
@@ -38,6 +39,7 @@ suites:
     run_list:
       - recipe[syslog_ng_test::selinux]
       - recipe[syslog_ng_test::package_copr]
+      - recipe[syslog_ng_test::service]
       - recipe[syslog_ng_test::config]
       - recipe[syslog_ng_test::block]
       - recipe[syslog_ng_test::destination]
