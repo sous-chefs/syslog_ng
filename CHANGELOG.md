@@ -1,5 +1,7 @@
 # CHANGELOG
 
+## Unreleased
+
 ## 2.0.0 - *2021-03-15*
 
 - Remove package exclusion logic from ruby_block - [@bmhughes](https://github.com/bmhughes)
