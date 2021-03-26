@@ -51,9 +51,11 @@ action_class do
         declare_resource(:service, new_resource.service_name.delete_suffix('.service')).action(resource_action)
       rescue Mixlib::ShellOut::ShellCommandFailed
         if new_resource.config_test_fail_action.eql?(:log)
-          Chef::Log.error("Configuration test failed, #{new_resource.service_name} #{resource_action} action aborted!\n\nError\n-----\n#{cmd.stderr}")
+          Chef::Log.error("Configuration test failed, #{new_resource.service_name} #{resource_action} action aborted!\n\n"\
+                          "Error\n-----\n#{cmd.stderr}")
         else
-          raise "Configuration test failed, #{new_resource.service_name} #{resource_action} action aborted!\n\nError\n-----\n#{cmd.stderr}"
+          raise "Configuration test failed, #{new_resource.service_name} #{resource_action} action aborted!\n\n"\
+                "Error\n-----\nAction: #{resource_action}\n#{cmd.stderr}"
         end
       end
     else
