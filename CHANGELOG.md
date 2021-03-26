@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## Unreleased
+## 2.1.0 - *2021-03-26*
 
 - Fix generating multiple actions from the service resource - [@bmhughes](https://github.com/bmhughes)
 
