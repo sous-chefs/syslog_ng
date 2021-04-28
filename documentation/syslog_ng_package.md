@@ -10,12 +10,12 @@
 
 ## Properties
 
-| Name                   | Type          | Default                          | Description                                                         | Allowed Values      |
-| ---------------------- | ------------- | -------------------------------- | ------------------------------------------------------------------- | ------------------- |
-| `packages`             | String, Array | All Syslog-NG packages in repos  | Packages to install                                                 |                     |
-| `packages_exclude`     | String, Array |                                  | Package to exclude                                                  |                     |
-| `package_repository`   | String        |                                  | Package repository/repositories to install from                     |                     |
-| `package_repository_exclude` | String, Array| `[]`                        | Package repository/repositories to exclude when installing          |                     |
+| Name                         | Type          | Default                         | Description                                                | Allowed Values |
+| ---------------------------- | ------------- | ------------------------------- | ---------------------------------------------------------- | -------------- |
+| `packages`                   | String, Array | All Syslog-NG packages in repos | Packages to install                                        |                |
+| `packages_exclude`           | String, Array | `[]`                            | Package to exclude via `String.match?()`                   |                |
+| `package_repository`         | String        |                                 | Package repository/repositories to install from            |                |
+| `package_repository_exclude` | String, Array | `[]`                            | Package repository/repositories to exclude when installing |                |
 
 ## Usage
 
