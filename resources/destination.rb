@@ -90,12 +90,7 @@ action :create do
     variables(
       name: new_resource.name,
       description: new_resource.description || new_resource.name,
-      destination: source_dest_config_builder(
-        driver: new_resource.driver,
-        path: new_resource.path,
-        parameters: new_resource.parameters,
-        configuration: new_resource.configuration
-      ),
+      destination: source_dest_config_builder,
       blocks: new_resource.blocks,
       multiline: new_resource.multiline
     )
