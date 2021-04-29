@@ -16,6 +16,8 @@
 # See the License for the spcific language governing prmissions and
 # limitations under the License.
 
+unified_mode true
+
 include SyslogNg::Cookbook::PackageHelpers
 
 property :packages, [String, Array],
