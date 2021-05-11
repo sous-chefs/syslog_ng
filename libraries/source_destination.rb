@@ -23,20 +23,20 @@ module SyslogNg
     module SourceDestinationHelpers
       include SyslogNg::Cookbook::ConfigHelpers
 
-      def source_dest_config_builder(driver: nil, path: nil, parameters: nil, configuration: nil)
-        unless nil_or_empty?(configuration)
-          log_chef(:debug, "Given raw configuration. Returning '#{configuration}'.")
-          return configuration
+      def source_dest_config_builder
+        unless nil_or_empty?(new_resource.configuration)
+          log_chef(:debug, "Given raw configuration. Returning '#{new_resource.configuration}'.")
+          return new_resource.configuration
         end
 
-        log_chef(:debug, "Building source/destination config. Driver: #{driver} | Path: #{path} | Parameters: #{parameters} | Configuration: #{configuration}")
+        log_chef(:debug, "Building source/destination config. Driver: #{new_resource.driver} | Path: #{new_resource.path} | Parameters: #{new_resource.parameters} | Configuration: #{new_resource.configuration}")
 
         # Build configuration from properties
         configs = []
-        if nil_or_empty?(driver)
+        if nil_or_empty?(new_resource.driver)
           log_chef(:debug, 'Nil configuration given, presumably being used with a Block. Returning empty array.')
         else
-          driver.zip(path, parameters).each do |drv, pth, param|
+          new_resource.driver.zip(new_resource.path, new_resource.parameters).each do |drv, pth, param|
             log_chef(:debug, "Zipped configuration set. Driver: #{drv} | Path: #{pth} | Parameters: #{param}.")
 
             config = {}

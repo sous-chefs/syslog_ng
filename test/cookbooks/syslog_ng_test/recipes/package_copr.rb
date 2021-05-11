@@ -18,24 +18,26 @@
 
 case node['platform_family']
 when 'rhel'
-  yum_repository 'copr:copr.fedorainfracloud.org:czanik:syslog-ng329' do
-    baseurl "https://download.copr.fedorainfracloud.org/results/czanik/syslog-ng331/epel-#{node['platform_version'].to_i}-$basearch/"
+  yum_repository 'copr:copr.fedorainfracloud.org:czanik:syslog-ng-stable' do
+    baseurl "https://download.copr.fedorainfracloud.org/results/czanik/syslog-ng-stable/epel-#{node['platform_version'].to_i}-$basearch/"
     skip_if_unavailable true
     gpgcheck true
-    gpgkey 'https://download.copr.fedorainfracloud.org/results/czanik/syslog-ng331/pubkey.gpg'
+    gpgkey 'https://download.copr.fedorainfracloud.org/results/czanik/syslog-ng-stable/pubkey.gpg'
     repo_gpgcheck false
     enabled true
+    description 'copr:copr.fedorainfracloud.org:czanik:syslog-ng-stable'
 
     action :create
   end
 when 'fedora'
-  yum_repository 'copr:copr.fedorainfracloud.org:czanik:syslog-ng329' do
-    baseurl 'https://download.copr.fedorainfracloud.org/results/czanik/syslog-ng331/fedora-$releasever-$basearch/'
+  yum_repository 'copr:copr.fedorainfracloud.org:czanik:syslog-ng-stable' do
+    baseurl 'https://download.copr.fedorainfracloud.org/results/czanik/syslog-ng-stable/fedora-$releasever-$basearch/'
     skip_if_unavailable true
     gpgcheck true
-    gpgkey 'https://download.copr.fedorainfracloud.org/results/czanik/syslog-ng331/pubkey.gpg'
+    gpgkey 'https://download.copr.fedorainfracloud.org/results/czanik/syslog-ng-stable/pubkey.gpg'
     repo_gpgcheck false
     enabled true
+    description 'copr:copr.fedorainfracloud.org:czanik:syslog-ng-stable'
 
     action :create
   end
@@ -46,7 +48,7 @@ service 'rsyslog' do
 end
 
 syslog_ng_package 'syslog-ng' do
-  package_repository 'copr:copr.fedorainfracloud.org:czanik:syslog-ng329'
-  packages_exclude %w(syslog-ng-debuginfo syslog-ng-devel)
+  package_repository 'copr:copr.fedorainfracloud.org:czanik:syslog-ng-stable'
+  packages_exclude %w(.*-debuginfo syslog-ng-snmpdest syslog-ng-devel)
   action :install
 end

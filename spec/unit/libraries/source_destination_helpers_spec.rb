@@ -20,62 +20,6 @@ require 'spec_helper'
 
 describe 'SyslogNg::Cookbook::SourceDestinationHelpers' do
   let(:dummy_class) { Class.new { include SyslogNg::Cookbook::SourceDestinationHelpers } }
-  describe 'source_dest_config_builder' do
-    context('given driver with no path or parameters') do
-      it 'returns array' do
-        expect(dummy_class.new.source_dest_config_builder(driver: ['file'], path: [], parameters: {})).to be_a(Array)
-      end
-    end
-
-    context('given driver with path and no parameters') do
-      it 'returns array' do
-        expect(dummy_class.new.source_dest_config_builder(driver: ['file'], path: ['/file.log'], parameters: {})).to be_a(Array)
-      end
-    end
-
-    context('given driver with path and parameters') do
-      it 'returns array' do
-        expect(dummy_class.new.source_dest_config_builder(driver: ['file'], path: ['/file.log'], parameters: [{ 'flush_lines' => 10, 'create-dirs' => 'yes' }])).to be_a(Array)
-      end
-    end
-
-    context('given array of drivers with no path or parameters') do
-      it 'returns array' do
-        expect(dummy_class.new.source_dest_config_builder(driver: %w(file file), path: [], parameters: {})).to be_a(Array)
-      end
-    end
-
-    context('given array of drivers with paths and no parameters') do
-      it 'returns array' do
-        expect(dummy_class.new.source_dest_config_builder(driver: %w(file file), path: ['file1.log', 'file2.log'], parameters: {})).to be_a(Array)
-      end
-    end
-
-    context('given array of drivers with no path and parameters') do
-      it 'returns array' do
-        expect(dummy_class.new.source_dest_config_builder(driver: %w(network network), path: [], parameters: [ { 'ip' => '127.0.0.1', 'port' => '5514' }, { 'ip' => '127.0.0.1', 'port' => '5514' } ])).to be_a(Array)
-      end
-    end
-
-    context('given array of drivers with paths and parameters') do
-      it 'returns array' do
-        expect(dummy_class.new.source_dest_config_builder(driver: %w(file file), path: ['file1.log', 'file2.log'], parameters: [ { 'flush_lines' => 10, 'create-dirs' => 'yes' }, { 'flush_lines' => 20, 'create-dirs' => 'yes' } ])).to be_a(Array)
-      end
-    end
-
-    context('given raw configuration') do
-      it 'returns array' do
-        expect(dummy_class.new.source_dest_config_builder(configuration: [ { 'tcp' => { 'parameters' => { 'ip' => '127.0.0.1', 'port' => '5514' } } }, { 'udp' => { 'parameters' => { 'ip' => '127.0.0.1', 'port' => '5514' } } } ])).to be_a(Array)
-      end
-    end
-
-    context('given nil/block argument set') do
-      it 'returns empty array' do
-        expect(dummy_class.new.source_dest_config_builder()).to be_a(Array)
-        expect(dummy_class.new.source_dest_config_builder()).to eql([])
-      end
-    end
-  end
 
   describe 'destination_builder destinations' do
     context('given driver with no parameters and a path') do

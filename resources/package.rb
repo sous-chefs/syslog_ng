@@ -16,6 +16,8 @@
 # See the License for the spcific language governing prmissions and
 # limitations under the License.
 
+unified_mode true
+
 include SyslogNg::Cookbook::PackageHelpers
 
 property :packages, [String, Array],
@@ -41,17 +43,17 @@ action_class do
     include_recipe 'yum-epel' if platform?('redhat', 'centos', 'amazon', 'scientific')
 
     packages = new_resource.packages.dup
-    log "Found #{packages.count} packages to #{action}."
-    unless new_resource.packages_exclude.nil? || new_resource.packages_exclude.empty?
-      log "Excluding packages: #{new_resource.packages_exclude.join(', ')}."
-      packages.delete_if { |package| new_resource.packages_exclude.include?(package) }
-      log "There are #{packages.count} packages to #{action} after exclusion."
+    raise 'No packages found for installation!' if packages.empty?
+    log "Found #{packages.count} packages to #{action}"
+
+    unless nil_or_empty?(new_resource.packages_exclude)
+      log "Excluding packages: #{new_resource.packages_exclude.join(', ')}"
+      new_resource.packages_exclude.each { |exlpkg| packages.delete_if { |p| p.match?(exlpkg) } }
+      log "There are #{packages.count} packages to #{action} after exclusion"
     end
 
-    raise 'No packages found for installation!' if packages.empty?
-
     package 'syslog-ng' do
-      package_name lazy { packages }
+      package_name packages
       action action
     end
   end

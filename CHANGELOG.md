@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Chef 17 compatiblity changes - [@bmhughes](https://github.com/bmhughes)
+- Use `.match?()` for package resource package exclusion - [@bmhughes](https://github.com/bmhughes)
+
 ## 2.1.0 - *2021-03-26*
 
 - Fix generating multiple actions from the service resource - [@bmhughes](https://github.com/bmhughes)

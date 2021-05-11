@@ -16,6 +16,8 @@
 # See the License for the spcific language governing prmissions and
 # limitations under the License.
 
+unified_mode true
+
 include SyslogNg::Cookbook::GeneralHelpers
 
 property :service_name, String,
@@ -48,7 +50,7 @@ action_class do
           Chef::Log.info("Configuration test disabled, creating #{new_resource.service_name} #{new_resource.declared_type} resource with action #{resource_action}")
         end
 
-        declare_resource(:service, new_resource.service_name.delete_suffix('.service')).action(resource_action)
+        declare_resource(:service, new_resource.service_name.delete_suffix('.service')) { action(resource_action) }
       rescue Mixlib::ShellOut::ShellCommandFailed
         if new_resource.config_test_fail_action.eql?(:log)
           Chef::Log.error("Configuration test failed, #{new_resource.service_name} #{resource_action} action aborted!\n\n"\
@@ -59,7 +61,7 @@ action_class do
         end
       end
     else
-      declare_resource(:service, new_resource.service_name.delete_suffix('.service')).action(resource_action)
+      declare_resource(:service, new_resource.service_name.delete_suffix('.service')) { action(resource_action) }
     end
   end
 end

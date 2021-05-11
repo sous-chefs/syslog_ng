@@ -93,8 +93,8 @@ module SyslogNg
         array.join(' ').gsub(/(\( )|( \))/, '( ' => '(', ' )' => ')').strip
       end
 
-      def nil_or_empty?(property)
-        property.nil? || (property.respond_to?(:empty?) && property.empty?)
+      def nil_or_empty?(*values)
+        values.any? { |v| v.nil? || (v.respond_to?(:empty?) && v.empty?) }
       end
 
       def log_chef(level, message)
