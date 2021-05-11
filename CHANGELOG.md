@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## Unreleased
+## 3.0.0 - *2021-05-11*
 
 - Chef 17 compatiblity changes - [@bmhughes](https://github.com/bmhughes)
 - Use `.match?()` for package resource package exclusion - [@bmhughes](https://github.com/bmhughes)
