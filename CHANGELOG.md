@@ -2,9 +2,11 @@
 
 ## Unreleased
 
-Standardise files with files in sous-chefs/repo-management
+- Standardise files with files in sous-chefs/repo-management
 
 ## 3.0.1 - *2021-06-01*
+
+- Standardise files with files in sous-chefs/repo-management
 
 ## 3.0.0 - *2021-05-11*
 
