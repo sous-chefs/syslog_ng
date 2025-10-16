@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## [3.0.9](https://github.com/sous-chefs/syslog_ng/compare/3.0.8...v3.0.9) (2025-10-16)
+
+
+### Bug Fixes
+
+* **ci:** Update workflows to use release pipeline ([#83](https://github.com/sous-chefs/syslog_ng/issues/83)) ([6a6a34a](https://github.com/sous-chefs/syslog_ng/commit/6a6a34ab3d5df754821714b03b1168addd4b1eea))
+
 ## 3.0.2 - *2021-08-30*
 
 * Standardise files with files in sous-chefs/repo-management
