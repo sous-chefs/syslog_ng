@@ -217,7 +217,7 @@ module SyslogNg
       end
 
       def message_append_caller(message)
-        "#{caller[1][/`.*'/][1..-2]}: #{message}"
+        "#{caller.find { |v| v.match?(/\.rb:\d+/) }[/[`'].*'/][1..-2]}: #{message}"
       end
     end
   end
