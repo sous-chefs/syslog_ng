@@ -15,18 +15,14 @@ verifier:
   name: inspec
 
 platforms:
-  - name: centos-7
-  - name: centos-8
-  - name: fedora-latest
-  - name: ubuntu-18.04
-  - name: ubuntu-20.04
-  - name: debian-10
-  - name: amazonlinux-2
-    driver_config:
-      box: ywatase/amzn2
+  - name: debian-12
+  - name: debian-13
+  - name: ubuntu-22.04
+  - name: ubuntu-24.04
 
 suites:
   - name: default
+    named_run_list: default
     run_list:
       - recipe[syslog_ng_test::selinux]
       - recipe[syslog_ng_test::package]
@@ -36,6 +32,7 @@ suites:
       inspec_tests:
         - test/integration/default
   - name: config
+    named_run_list: config
     run_list:
       - recipe[syslog_ng_test::selinux]
       - recipe[syslog_ng_test::package_copr]
