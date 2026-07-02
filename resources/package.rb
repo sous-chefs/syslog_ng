@@ -40,7 +40,7 @@ unified_mode true
 
 action_class do
   def do_package_action(action)
-    include_recipe 'yum-epel' if platform?('redhat', 'centos', 'amazon', 'scientific')
+    yum_epel 'default' if platform?('redhat', 'centos', 'amazon', 'scientific')
 
     packages = new_resource.packages.dup
     raise 'No packages found for installation!' if packages.empty?
