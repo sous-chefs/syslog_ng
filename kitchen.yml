@@ -27,6 +27,7 @@ platforms:
 
 suites:
   - name: default
+    named_run_list: default
     run_list:
       - recipe[syslog_ng_test::selinux]
       - recipe[syslog_ng_test::package]
@@ -36,6 +37,7 @@ suites:
       inspec_tests:
         - test/integration/default
   - name: config
+    named_run_list: config
     run_list:
       - recipe[syslog_ng_test::selinux]
       - recipe[syslog_ng_test::package_copr]
