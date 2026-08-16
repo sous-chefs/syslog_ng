@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## [3.0.10](https://github.com/sous-chefs/syslog_ng/compare/v3.0.9...v3.0.10) (2026-08-15)
+
+
+### Bug Fixes
+
+* **ci:** Update workflows to use release pipeline ([#83](https://github.com/sous-chefs/syslog_ng/issues/83)) ([6a6a34a](https://github.com/sous-chefs/syslog_ng/commit/6a6a34ab3d5df754821714b03b1168addd4b1eea))
+* **library:** chef 19/ruby 3.4 called backtrace format change ([#88](https://github.com/sous-chefs/syslog_ng/issues/88)) ([e04da9d](https://github.com/sous-chefs/syslog_ng/commit/e04da9d4eeee96e7a02f6a9a4a1c00645fadb1f9))
+* migrate to Policyfile ([#94](https://github.com/sous-chefs/syslog_ng/issues/94)) ([e5317b8](https://github.com/sous-chefs/syslog_ng/commit/e5317b8658299377d1cc55dd4c924ac889d831a3))
+
 ## [3.0.9](https://github.com/sous-chefs/syslog_ng/compare/3.0.8...v3.0.9) (2025-10-16)
 
 
